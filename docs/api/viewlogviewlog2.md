@@ -19,7 +19,7 @@ Viwe specified log file.
   "task":"viewlog",
   "token":"cdfb4c5717170c5e9c6856b4d1c61ee8132bcc7d82bd609066ed9ece2554c47f7926f07dd201b6aa",
   "dbname":"demodb",
-  "path":"$CUBRID/log/manager/cub_js.access.log",
+  "path":"$ARNIADB/log/manager/arn_js.access.log",
   "start":"1",
   "end":"1000"
 }
@@ -58,7 +58,7 @@ Viwe specified log file.
             "Number of pages was not given on line 1.",
             "",
             "Time: 01/07/13 14:44:06.484 - ERROR *** file ../../src/transaction/boot_sr.c, line 2827 ERROR CODE = -123 Tran = -1, EID = 3",
-            "Unable to create \"allvols\" for database \"/home/huangqiyu/cubrid_8.4.3/databases/testdb/testdb\".",
+            "Unable to create \"allvols\" for database \"/home/huangqiyu/arniadb_8.4.3/databases/testdb/testdb\".",
             "",
             "*** The previous error message is the last one. ***",
             "",
@@ -67,14 +67,14 @@ Viwe specified log file.
             "Number of pages was not given on line 1.",
             "",
             "Time: 01/07/13 14:45:25.822 - ERROR *** file ../../src/transaction/boot_sr.c, line 2827 ERROR CODE = -123 Tran = -1, EID = 2",
-            "Unable to create \"allvols\" for database \"/home/huangqiyu/cubrid_8.4.3/databases/testdb/testdb\".",
+            "Unable to create \"allvols\" for database \"/home/huangqiyu/arniadb_8.4.3/databases/testdb/testdb\".",
             "",
             "*** The previous error message is the last one. ***",
             ""
       }
    ],
    "note" : "none",
-   "path" : "/home/huangqiyu/cubrid_8.4.3/log/testdb_createdb.err",
+   "path" : "/home/huangqiyu/arniadb_8.4.3/log/testdb_createdb.err",
    "start" : "1",
    "status" : "success",
    "task" : "viewlog",

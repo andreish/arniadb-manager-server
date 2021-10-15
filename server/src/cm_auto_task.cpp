@@ -181,20 +181,20 @@ ts_get_server_version (nvplist *req, nvplist *res)
   char tmpfile[PATH_MAX];
   char strbuf[1024];
   FILE *infile;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
 
   nv_update_val (res, "task", "getversion");
   snprintf (tmpfile, PATH_MAX - 1, "%s/DBMT_task_015", sco.dbmt_tmp_dir);
 
   cmd_name[0] = '\0';
-  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szCubrid,
-            CUBRID_DIR_BIN, UTIL_CUBRID_REL_NAME);
+  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szArniadb,
+            ARNIADB_DIR_BIN, UTIL_ARNIADB_REL_NAME);
 
   argv[0] = cmd_name;
   argv[1] = NULL;
 
-  run_child (argv, 1, NULL, tmpfile, NULL, NULL);	/* cubrid_rel */
+  run_child (argv, 1, NULL, tmpfile, NULL, NULL);	/* arniadb_rel */
 
   if ((infile = fopen (tmpfile, "r")) != NULL)
     {
@@ -203,12 +203,12 @@ ts_get_server_version (nvplist *req, nvplist *res)
       uRemoveCRLF (strbuf);
       fclose (infile);
       unlink (tmpfile);
-      nv_add_nvp (res, "CUBRIDVER", strbuf);
+      nv_add_nvp (res, "ARNIADBVER", strbuf);
       nv_update_val (res, "status", "success");
     }
   else
     {
-      nv_add_nvp (res, "CUBRIDVER", "none");
+      nv_add_nvp (res, "ARNIADBVER", "none");
       nv_update_val (res, "status", "failure");
       nv_update_val (res, "note", "version information not available");
       return 0;

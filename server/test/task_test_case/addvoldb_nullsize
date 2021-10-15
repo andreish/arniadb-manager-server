@@ -3,7 +3,7 @@ token:cdfb4c5717170c5e51196b3bf16112949ea2e1dcf05030c13351f8d4306356bf7926f07dd2
 dbname:alatestdb
 volname:
 purpose:generic
-path:$CUBRID_DATABASES/alatestdb
+path:$ARNIADB_DATABASES/alatestdb
 numberofpages:100
 
 

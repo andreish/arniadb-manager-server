@@ -51,14 +51,14 @@ extern T_EMGR_VERSION CLIENT_VERSION;
 
 typedef struct
 {
-  char cubrid[MAX_PATH];              /*cubrid home; CUBRID=/root/CUBRID */
-  char cubrid_databases[MAX_PATH];    /*cubrid databases home,default $(cubrid home)/databases */
-  char cubrid_err_log[MAX_PATH];      /*cubrid err log, use for save cmd log */
-  // char cubrid_charset[MAX_PATH];
-} cubrid_env_t;
+  char arniadb[MAX_PATH];              /*arniadb home; ARNIADB=/root/ARNIADB */
+  char arniadb_databases[MAX_PATH];    /*arniadb databases home,default $(arniadb home)/databases */
+  char arniadb_err_log[MAX_PATH];      /*arniadb err log, use for save cmd log */
+  // char arniadb_charset[MAX_PATH];
+} arniadb_env_t;
 mutex_t cm_mutex;
-/*global cubrid env*/
-cubrid_env_t cub_httpd_env;
+/*global arniadb env*/
+arniadb_env_t arn_httpd_env;
 
 /**
  * @brief initial monitoring stat information
@@ -68,10 +68,10 @@ cubrid_env_t cub_httpd_env;
 int
 mon_stat_init (void)
 {
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (sco.sMonStatDataPath, "%s/%s", sco.szCubrid, DBMT_MON_DATA_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (sco.sMonStatDataPath, "%s/%s", sco.szArniadb, DBMT_MON_DATA_DIR);
 #else
-  sprintf (sco.sMonStatDataPath, "%s", CUBRID_MONDATADIR);
+  sprintf (sco.sMonStatDataPath, "%s", ARNIADB_MONDATADIR);
 #endif
 
   if (access (sco.sMonStatDataPath, F_OK) < 0)
@@ -93,28 +93,28 @@ mon_stat_init (void)
 }
 
 void
-cub_cm_init_env ()
+arn_cm_init_env ()
 {
   char conf_name[256];
   char tmpstrbuf[DBMT_ERROR_MSG_SIZE];
   char process_name[PATH_MAX];
-  char default_cubrid_lang_type[PATH_MAX];
-  char default_cubrid_lang_msg_type[PATH_MAX];
+  char default_arniadb_lang_type[PATH_MAX];
+  char default_arniadb_lang_msg_type[PATH_MAX];
 
   tmpstrbuf[0]= '\0';
   //  char *charset = NULL;
   snprintf (process_name, PATH_MAX, "%s", CMS_NAME);
-  snprintf (default_cubrid_lang_type, PATH_MAX, "CUBRID_LANG=en_US");
-  snprintf (default_cubrid_lang_msg_type, PATH_MAX, "CUBRID_MSG_LANG=en_US");
+  snprintf (default_arniadb_lang_type, PATH_MAX, "ARNIADB_LANG=en_US");
+  snprintf (default_arniadb_lang_msg_type, PATH_MAX, "ARNIADB_MSG_LANG=en_US");
 
   sys_config_init ();
   uReadEnvVariables (process_name);
 
   if (uReadSystemConfig () < 0)
     {
-      snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE, "CUBRID Manager Server : Cannot find the configuration file[%s].\n",
+      snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE, "ARNIADB Manager Server : Cannot find the configuration file[%s].\n",
                 conf_get_dbmt_file (FID_DBMT_CONF, conf_name));
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       exit (1);
     }
   make_default_env ();
@@ -122,43 +122,43 @@ cub_cm_init_env ()
   /* check system configuration */
   if (uCheckSystemConfig (process_name) < 0)
     {
-      ut_record_cubrid_utility_log_stderr ("CUBRID Manager Server : Error while checking system configuration file.\n");
+      ut_record_arniadb_utility_log_stderr ("ARNIADB Manager Server : Error while checking system configuration file.\n");
       exit (1);
     }
 
   if (mon_stat_init () < 0)
     {
-      ut_record_cubrid_utility_log_stderr ("CUBRID Manager Server : Error while checking monitoring data.\n");
+      ut_record_arniadb_utility_log_stderr ("ARNIADB Manager Server : Error while checking monitoring data.\n");
       exit (1);
     }
 
-  memset (&cub_httpd_env, 0, sizeof (cubrid_env_t));
-  putenv (default_cubrid_lang_type);    /* set as default language type */
-  putenv (default_cubrid_lang_msg_type);    /* set as default language type */
-  //putenv ("CUBRID_CHARSET=en_US");    /* set as default language type */
+  memset (&arn_httpd_env, 0, sizeof (arniadb_env_t));
+  putenv (default_arniadb_lang_type);    /* set as default language type */
+  putenv (default_arniadb_lang_msg_type);    /* set as default language type */
+  //putenv ("ARNIADB_CHARSET=en_US");    /* set as default language type */
 
-  snprintf (cub_httpd_env.cubrid_err_log, MAX_PATH,
-            "CUBRID_ERROR_LOG=%s/cmclt.%d.err", sco.dbmt_tmp_dir, (int) getpid ());
-  putenv (cub_httpd_env.cubrid_err_log);
+  snprintf (arn_httpd_env.arniadb_err_log, MAX_PATH,
+            "ARNIADB_ERROR_LOG=%s/cmclt.%d.err", sco.dbmt_tmp_dir, (int) getpid ());
+  putenv (arn_httpd_env.arniadb_err_log);
 
-  snprintf (cub_httpd_env.cubrid, MAX_PATH, "CUBRID=%s", sco.szCubrid);
-  putenv (cub_httpd_env.cubrid);
+  snprintf (arn_httpd_env.arniadb, MAX_PATH, "ARNIADB=%s", sco.szArniadb);
+  putenv (arn_httpd_env.arniadb);
 
-  snprintf (cub_httpd_env.cubrid_databases, MAX_PATH, "CUBRID_DATABASES=%s",
-            sco.szCubrid_databases);
-  putenv (cub_httpd_env.cubrid_databases);
+  snprintf (arn_httpd_env.arniadb_databases, MAX_PATH, "ARNIADB_DATABASES=%s",
+            sco.szArniadb_databases);
+  putenv (arn_httpd_env.arniadb_databases);
 
-  /*  charset = getenv ("CUBRID_CHARSET");
+  /*  charset = getenv ("ARNIADB_CHARSET");
   if (charset != NULL)
   {
-      snprintf (cub_httpd_env.cubrid_charset, MAX_PATH, "CUBRID_CHARSET=%s",
+      snprintf (arn_httpd_env.arniadb_charset, MAX_PATH, "ARNIADB_CHARSET=%s",
                 charset);
   }
   else
   {
-      snprintf (cub_httpd_env.cubrid_charset, MAX_PATH,
-                "CUBRID_CHARSET=en_US");
-      putenv (cub_httpd_env.cubrid_charset);
+      snprintf (arn_httpd_env.arniadb_charset, MAX_PATH,
+                "ARNIADB_CHARSET=en_US");
+      putenv (arn_httpd_env.arniadb_charset);
   }
   */
   mutex_init (cm_mutex);
@@ -166,7 +166,7 @@ cub_cm_init_env ()
 }
 
 void
-cub_cm_destory_env ()
+arn_cm_destory_env ()
 {
   mutex_destory (cm_mutex);
 }
@@ -288,26 +288,26 @@ ch_process_request (nvplist *req, nvplist *res)
 
       /*    if (charset != NULL)
       {
-      snprintf (charsetenv, PATH_MAX, "CUBRID_CHARSET=%s", charset);
+      snprintf (charsetenv, PATH_MAX, "ARNIADB_CHARSET=%s", charset);
       putenv (charsetenv);
       }
       */
-      /* record the start time of running cub_manager */
+      /* record the start time of running arn_manager */
       gettimeofday (&task_begin, NULL);
 
       retval = (*task_func) (req, res, _dbmt_error);
 
-      /* record the end time of running cub_manager */
+      /* record the end time of running arn_manager */
       gettimeofday (&task_end, NULL);
       /*     if (charset != NULL)
       {
-      putenv (cub_httpd_env.cubrid_charset);
+      putenv (arn_httpd_env.arniadb_charset);
       }
       */
-      /* caculate the running time of cub_manager. */
+      /* caculate the running time of arn_manager. */
       _ut_timeval_diff (&task_begin, &task_end, &elapsed_msec);
 
-      /* add cub_manager task running time to response. */
+      /* add arn_manager task running time to response. */
       snprintf (elapsed_time_str, sizeof (elapsed_time_str), "%d ms",
                 elapsed_msec);
       nv_add_nvp (res, "__EXEC_TIME", elapsed_time_str);
@@ -432,7 +432,7 @@ dump_nvplist (nvplist *root, char *dumpfile)
 
 
 int
-cub_cm_extend_request (Json::Value &request, Json::Value &response)
+arn_cm_extend_request (Json::Value &request, Json::Value &response)
 {
   T_EXT_TASK_FUNC task_func = NULL;
   string task;
@@ -676,7 +676,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
 #endif
 
 int
-cub_check_async_status (Json::Value &request, Json::Value &response)
+arn_check_async_status (Json::Value &request, Json::Value &response)
 {
   string task;
   unsigned int uuid;
@@ -715,7 +715,7 @@ cub_check_async_status (Json::Value &request, Json::Value &response)
 }
 
 int
-cub_cm_request_handler (Json::Value &request, Json::Value &response)
+arn_cm_request_handler (Json::Value &request, Json::Value &response)
 {
 
   mutex_lock (cm_mutex);
@@ -740,12 +740,12 @@ cub_cm_request_handler (Json::Value &request, Json::Value &response)
       return 1;
     }
 
-  if (cub_check_async_status (request, response))
+  if (arn_check_async_status (request, response))
     {
       mutex_unlock (cm_mutex);
       return 1;
     }
-  if (cub_cm_extend_request (request, response))
+  if (arn_cm_extend_request (request, response))
     {
       mutex_unlock (cm_mutex);
       return 1;

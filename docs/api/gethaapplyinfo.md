@@ -19,7 +19,7 @@ Get copylog and apply log operations information
   "task": "gethaapplyinfo",
   "token": "8ec1ab8a91333c789ca635659ff41d6887cec4cd14324d3baee6412d6bbc1277e3e8c307e2088d187926f07dd201b6aa7926f07dd201b6aa7926f07dd201b6aa",
   "dbname": "ha_testdb",
-  "copylogpath": "/home/huangqiyu/cubrid_8.4.3/databases/ha_testdb_DEV_92/",
+  "copylogpath": "/home/huangqiyu/arniadb_8.4.3/databases/ha_testdb_DEV_92/",
   "remotehostname": "DEV_92"
 }
 ```

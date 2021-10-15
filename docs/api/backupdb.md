@@ -18,7 +18,7 @@ The backupdb interface will create databases backup file.
   "dbname": "alatestdb",
   "level": "0",
   "volname": "alatestdb_backup_lv0",
-  "backupdir": "$CUBRID_DATABASES/alatestdb/backup",
+  "backupdir": "$ARNIADB_DATABASES/alatestdb/backup",
   "removelog": "n",
   "check": "y",
   "mt": "0",

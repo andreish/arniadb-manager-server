@@ -1,6 +1,6 @@
 # startinfo
 
-Get databases' information in cubrid.
+Get databases' information in arniadb.
 
 ## Request Json Syntax
 
@@ -30,7 +30,7 @@ Get databases' information in cubrid.
 | task | task name |
 | status | execution result, success or failed. |
 | note | if failed, a brief description will be given here |
-| dblist | the whole databases in the cubrid, including its name and path.  |
+| dblist | the whole databases in the arniadb, including its name and path.  |
 | activelist | get the databaes' name in active status. |
 
 
@@ -51,15 +51,15 @@ Get databases' information in cubrid.
       {
          "dbs" : [
             {
-               "dbdir" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb3",
+               "dbdir" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb3",
                "dbname" : "testdb3"
             },
             {
-               "dbdir" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb2",
+               "dbdir" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb2",
                "dbname" : "testdb2"
             },
             {
-               "dbdir" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+               "dbdir" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
                "dbname" : "testdb"
             }
       }

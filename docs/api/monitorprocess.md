@@ -25,13 +25,13 @@ Monitor CMS process status.
 | task | task name |
 | status | execution result, success or failed. |
 | note | if failed, a brief description will be given here |
-| cub_master | the value should be "exist" or "don't exist" in order to indicate whether this process exists. |
+| arn_master | the value should be "exist" or "don't exist" in order to indicate whether this process exists. |
 
 ## Response Sample
 
 ```
 {
-  "cub_master": "don't exist",
+  "arn_master": "don't exist",
   "note": "none",
   "status": "success",
   "task": "monitorprocess"

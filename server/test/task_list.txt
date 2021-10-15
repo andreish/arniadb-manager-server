@@ -141,7 +141,7 @@ getdbmode
 
 // tasks set conf files
 setsysparam_cmconf
-//setsysparam_cubridconf
+//setsysparam_arniadbconf
 //broker_setparam
 getdiagdata
 killprocess

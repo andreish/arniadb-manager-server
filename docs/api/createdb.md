@@ -15,7 +15,7 @@ Create database.
 | genvolpath | data volume path |
 | logvolpath | log volume path |
 | exvol | extend volume information |
-| charset | language and charset, ex. en_US.iso88591, ko_KR.utf8. please refer to $CUBRID/conf/cubrid_locales.all.txt |
+| charset | language and charset, ex. en_US.iso88591, ko_KR.utf8. please refer to $ARNIADB/conf/arniadb_locales.all.txt |
 
 ## Request Sample
 
@@ -28,9 +28,9 @@ Create database.
    "pagesize":"4096",
    "logsize":"10240",
    "logpagesize":"4096",
-   "genvolpath":"$CUBRID_DATABASES/alatestdb",
-   "logvolpath":"$CUBRID_DATABASES/alatestdb",
-   "exvol":{"alatestdb_data_x001":"data;100;$CUBRID_DATABASES/alatestdb"},
+   "genvolpath":"$ARNIADB_DATABASES/alatestdb",
+   "logvolpath":"$ARNIADB_DATABASES/alatestdb",
+   "exvol":{"alatestdb_data_x001":"data;100;$ARNIADB_DATABASES/alatestdb"},
    "charset":"en_US.utf8",
    "overwrite_config_file":"YES"
  }
@@ -84,9 +84,9 @@ Create database.
   "pagesize":"4096",
   "logsize":"10240",
   "logpagesize":"4096",
-  "genvolpath":"$CUBRID_DATABASES/alatestdb",
-  "logvolpath":"$CUBRID_DATABASES/alatestdb",
-  "exvol":{"alatestdb_data_x001":"data;100;$CUBRID_DATABASES/alatestdb"},
+  "genvolpath":"$ARNIADB_DATABASES/alatestdb",
+  "logvolpath":"$ARNIADB_DATABASES/alatestdb",
+  "exvol":{"alatestdb_data_x001":"data;100;$ARNIADB_DATABASES/alatestdb"},
   "overwrite_config_file":"YES"
 }
 ```

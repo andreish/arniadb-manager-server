@@ -36,7 +36,7 @@
 #endif
 
 #define cmd_servstat_result_free(RESULT)        cmd_result_free(RESULT)
-#define cmd_csql_result_free(RESULT)            cmd_result_free(RESULT)
+#define cmd_asql_result_free(RESULT)            cmd_result_free(RESULT)
 
 #define ERR_MSG_SIZE    1024
 #define COLUMN_VALUE_MAX_SIZE 32
@@ -44,36 +44,36 @@
 #define FILES_DESCRIPTION_NUM_LINES 4
 #define BUFFER_MAX_LEN 128
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-#define CUBRID_ERROR_LOG_DIR            "log/server"
-#define CUBRID_BROKER_LOG_DIR           "log/broker"
+#if !defined (DO_NOT_USE_ARNIADBENV)
+#define ARNIADB_ERROR_LOG_DIR            "log/server"
+#define ARNIADB_BROKER_LOG_DIR           "log/broker"
 #else
-#define CUBRID_ERROR_LOG_DIR            CUBRID_LOGDIR "/server"
-#define CUBRID_BROKER_LOG_DIR           CUBRID_LOGDIR"/broker"
+#define ARNIADB_ERROR_LOG_DIR            ARNIADB_LOGDIR "/server"
+#define ARNIADB_BROKER_LOG_DIR           ARNIADB_LOGDIR"/broker"
 #endif
 
-#define CUBRID_DATABASE_TXT             "databases.txt"
-#define CUBRID_CUBRID_CONF              "cubrid.conf"
-#define CUBRID_DBMT_CONF                "cm.conf"
-#define CUBRID_BROKER_CONF              "cubrid_broker.conf"
-#define CUBRID_HA_CONF                  "cubrid_ha.conf"
-#define CUBRID_UNLOAD_EXT_INDEX         "_indexes"
-#define CUBRID_UNLOAD_EXT_TRIGGER       "_trigger"
-#define CUBRID_UNLOAD_EXT_OBJ           "_objects"
-#define CUBRID_UNLOAD_EXT_SCHEMA        "_schema"
-#define CUBRID_SERVER_LOCK_EXT          "_lgat__lock"
-#define CUBRID_ACT_LOG_EXT              "_lgat"
-#define CUBRID_ARC_LOG_EXT              "_lgar"
-#define CUBRID_BACKUP_INFO_EXT          "_bkvinf"
-#define CUBRID_ARC_LOG_EXT_LEN          strlen(CUBRID_ARC_LOG_EXT)
+#define ARNIADB_DATABASE_TXT             "databases.txt"
+#define ARNIADB_ARNIADB_CONF              "arniadb.conf"
+#define ARNIADB_DBMT_CONF                "cm.conf"
+#define ARNIADB_BROKER_CONF              "arniadb_broker.conf"
+#define ARNIADB_HA_CONF                  "arniadb_ha.conf"
+#define ARNIADB_UNLOAD_EXT_INDEX         "_indexes"
+#define ARNIADB_UNLOAD_EXT_TRIGGER       "_trigger"
+#define ARNIADB_UNLOAD_EXT_OBJ           "_objects"
+#define ARNIADB_UNLOAD_EXT_SCHEMA        "_schema"
+#define ARNIADB_SERVER_LOCK_EXT          "_lgat__lock"
+#define ARNIADB_ACT_LOG_EXT              "_lgat"
+#define ARNIADB_ARC_LOG_EXT              "_lgar"
+#define ARNIADB_BACKUP_INFO_EXT          "_bkvinf"
+#define ARNIADB_ARC_LOG_EXT_LEN          strlen(ARNIADB_ARC_LOG_EXT)
 
-#define CUBRID_CMD_NAME_LEN    128
+#define ARNIADB_CMD_NAME_LEN    128
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
 #if defined(WINDOWS)
-#define CUBRID_DIR_BIN          "bin\\"
+#define ARNIADB_DIR_BIN          "bin\\"
 #else
-#define CUBRID_DIR_BIN          "bin/"
+#define ARNIADB_DIR_BIN          "bin/"
 #endif
 #endif
 
@@ -82,9 +82,9 @@
 
 typedef enum
 {
-  CUBRID_MODE_CS = 0,
-  CUBRID_MODE_SA = 1
-} T_CUBRID_MODE;
+  ARNIADB_MODE_CS = 0,
+  ARNIADB_MODE_SA = 1
+} T_ARNIADB_MODE;
 
 struct SpaceDbVolumeInfoOldFormat
 {
@@ -263,17 +263,17 @@ class SpaceDbResultOldFormat : public GeneralSpacedbResult
     std::vector<SpaceDbVolumeInfoOldFormat> temporary_volumes;
 };
 
-typedef T_CMD_RESULT T_CSQL_RESULT;
+typedef T_CMD_RESULT T_ASQL_RESULT;
 
-GeneralSpacedbResult *cmd_spacedb (const char *dbname, T_CUBRID_MODE mode);
-T_CSQL_RESULT *cmd_csql (char *dbname, char *uid, char *passwd,
-                         T_CUBRID_MODE mode, char *infile, char *command, char *error_continue);
+GeneralSpacedbResult *cmd_spacedb (const char *dbname, T_ARNIADB_MODE mode);
+T_ASQL_RESULT *cmd_asql (char *dbname, char *uid, char *passwd,
+                         T_ARNIADB_MODE mode, char *infile, char *command, char *error_continue);
 int cmd_start_server (char *dbname, char *err_buf, int err_buf_size);
 int cmd_stop_server (char *dbname, char *err_buf, int err_buf_size);
 void cmd_start_master (void);
-char *cubrid_cmd_name (char *buf);
+char *arniadb_cmd_name (char *buf);
 int read_error_file (const char *err_file, char *err_buf, int err_buf_size);
 int read_error_file2 (char *err_file, char *err_buf, int err_buf_size, int *err_code);
-int read_csql_error_file (char *err_file, char *err_buf, int err_buf_size);
+int read_asql_error_file (char *err_file, char *err_buf, int err_buf_size);
 
 #endif                /* _CM_COMMAND_EXECUTE_H_ */

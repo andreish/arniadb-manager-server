@@ -208,8 +208,8 @@ int remove_extra_subdir (const char *dirpath, const char *pattern,
 int ut_get_filename (char *fullpath, int with_ext, char *ret_filename);
 int ut_get_host_stat (T_CMS_HOST_STAT *stat, char *_dbmt_error);
 int ut_get_proc_stat (T_CMS_PROC_STAT *stat, int pid);
-int ut_record_cubrid_utility_log_stderr (const char *msg);
-int ut_record_cubrid_utility_log_stdout (const char *msg);
+int ut_record_arniadb_utility_log_stderr (const char *msg);
+int ut_record_arniadb_utility_log_stdout (const char *msg);
 int run_child_linux (const char *pname, const char *const argv[], int wait_flag,
                      const char *stdin_file, char *stdout_file, char *stderr_file,
                      int *exit_status);

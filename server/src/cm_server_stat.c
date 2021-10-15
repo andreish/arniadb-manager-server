@@ -91,7 +91,7 @@ record_system_info (sys_stat *sstat)
 }
 
 void
-record_cubrid_proc_info (userdata *ud)
+record_arniadb_proc_info (userdata *ud)
 {
 #ifdef HOST_MONITOR_PROC
   int i, fd;

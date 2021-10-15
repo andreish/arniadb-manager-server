@@ -3,14 +3,14 @@
 
 #ifdef WINDOWS
 
-#define DEFAULT_UPDATE_HOST_NAME "jira.cubrid.org"
+#define DEFAULT_UPDATE_HOST_NAME "jira.arniadb.org"
 #define DEFAULT_UPDATE_REMOTE_PATH "/secure/attachment/14895/"
 #define DOWNLOAD_BUFFER 16384
 #define SHELL_NAME "auto_update.bat"
 
 #else
 
-#define DEFAULT_PATCH_URL "http://jira.cubrid.org/secure/attachment/14806/patch_9.1.0001.zip"
+#define DEFAULT_PATCH_URL "http://jira.arniadb.org/secure/attachment/14806/patch_9.1.0001.zip"
 #define SHELL_NAME "auto_update.sh"
 
 #endif

@@ -29,42 +29,42 @@ cp src/lib_json/libjson.a /usr/local/lib
 
 cd ..
 
-#build cubrid
-wget ftp://ftp.cubrid.org/CUBRID_Engine/8.4.1/Linux/CUBRID-8.4.1.2032.src.tar.gz
-tar xzvf CUBRID-8.4.1.2032.src.tar.gz
+#build arniadb
+wget ftp://ftp.arniadb.org/ARNIADB_Engine/8.4.1/Linux/ARNIADB-8.4.1.2032.src.tar.gz
+tar xzvf ARNIADB-8.4.1.2032.src.tar.gz
 
-cd cubrid-8.4.1.2032
+cd arniadb-8.4.1.2032
 ./configure --enable-64bit --enable-debug
 make
 make install
 
-#configure cubrid env
+#configure arniadb env
 
-cat >> .cubrid.sh << EOF
+cat >> .arniadb.sh << EOF
 #!/bin/bash
-CUBRID=/root/cubrid
-CUBRID_DATABASES=/root/cubrid/databases
-CUBRID_LANG=en_US
+ARNIADB=/root/arniadb
+ARNIADB_DATABASES=/root/arniadb/databases
+ARNIADB_LANG=en_US
 ld_lib_path=`printenv LD_LIBRARY_PATH`
 if [ "$ld_lib_path" = "" ]
 then
-LD_LIBRARY_PATH=$CUBRID/lib
+LD_LIBRARY_PATH=$ARNIADB/lib
 else
-LD_LIBRARY_PATH=$CUBRID/lib:$LD_LIBRARY_PATH
+LD_LIBRARY_PATH=$ARNIADB/lib:$LD_LIBRARY_PATH
 fi
 SHLIB_PATH=$LD_LIBRARY_PATH
 LIBPATH=$LD_LIBRARY_PATH
-PATH=$CUBRID/bin:$CUBRID/cubridmanager:$PATH
-export CUBRID
-export CUBRID_DATABASES
-export CUBRID_LANG
+PATH=$ARNIADB/bin:$ARNIADB/arniadbmanager:$PATH
+export ARNIADB
+export ARNIADB_DATABASES
+export ARNIADB_LANG
 export LD_LIBRARY_PATH
 export SHLIB_PATH
 export LIBPATH
 export PATH
 EOF
-chmod +x .cubrid.sh
-./.cubrid.sh
+chmod +x .arniadb.sh
+./.arniadb.sh
 
-mkdir $CUBRID_DATABASES
+mkdir $ARNIADB_DATABASES
 

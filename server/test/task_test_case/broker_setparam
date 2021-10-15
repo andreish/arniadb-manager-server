@@ -20,7 +20,7 @@ confdata:
 confdata:#
 confdata:[broker]
 confdata:MASTER_SHM_ID=30001
-confdata:ADMIN_LOG_FILE=log/broker/cubrid_broker.log
+confdata:ADMIN_LOG_FILE=log/broker/arniadb_broker.log
 confdata:
 confdata:
 confdata:[%broker1]

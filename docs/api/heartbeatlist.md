@@ -1,6 +1,6 @@
 # heartbeatlist
 
-Runs `cubrid heartbeat list` command.
+Runs `arniadb heartbeat list` command.
 
 ## Request Json Syntax
 

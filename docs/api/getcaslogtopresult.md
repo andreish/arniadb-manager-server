@@ -1,6 +1,6 @@
 # getcaslogtopresult
 
-Get databases' information in cubrid.
+Get databases' information in arniadb.
 
 ## Request Json Syntax
 
@@ -18,7 +18,7 @@ Get databases' information in cubrid.
 {
   "task": "getcaslogtopresult",
   "token": "cdfb4c5717170c5e9c6856b4d1c61ee8132bcc7d82bd609066ed9ece2554c47f7926f07dd201b6aa",
-  "filename": "$CUBRID/tmp/analyzelog_1.res",
+  "filename": "$ARNIADB/tmp/analyzelog_1.res",
   "qindex": "[Q14]"
 }
 ```

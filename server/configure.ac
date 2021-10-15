@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT([CUBRID 2008], RELEASE, , cubrid)
+AC_INIT([ARNIADB 2008], RELEASE, , arniadb)
 
-AC_PREFIX_DEFAULT("${CUBRID}")
+AC_PREFIX_DEFAULT("${ARNIADB}")
 
 AC_CONFIG_SRCDIR([src/cm_autojob.cpp])
 AC_CONFIG_AUX_DIR(config)
@@ -41,7 +41,7 @@ AM_CONDITIONAL([BUILD_64], [test "$bit_model" = "yes"])
 
 if test x"$prefix" = x"NONE"
 then
-    prefix="${CUBRID}"
+    prefix="${ARNIADB}"
 fi
 
 #System type
@@ -210,46 +210,46 @@ then
     CXXFLAGS="$CXXFLAGS -g -pg"
 fi
 
-AC_ARG_WITH([cubrid-dir],
-    AS_HELP_STRING([--with-cubrid-dir=PATH],
-        [directory for cubrid @<:@default=$CUBRID@:>@]),
-    [CUBRID_DIR=$withval],
-    [CUBRID_DIR="${CUBRID}"])
+AC_ARG_WITH([arniadb-dir],
+    AS_HELP_STRING([--with-arniadb-dir=PATH],
+        [directory for arniadb @<:@default=$ARNIADB@:>@]),
+    [ARNIADB_DIR=$withval],
+    [ARNIADB_DIR="${ARNIADB}"])
 
-AC_MSG_CHECKING([cubrid lib directory])
-AC_ARG_WITH([cubrid-libdir],
-    AS_HELP_STRING([--with-cubrid-libdir=PATH],
-                   [directory for cubrid lib files @<:@default=with-cubrid-dir/lib@:>@]),
-    [CUBRID_LIBDIR=$withval],
-    [CUBRID_LIBDIR="$CUBRID_DIR/lib"])
-AC_MSG_RESULT($CUBRID_LIBDIR)
+AC_MSG_CHECKING([arniadb lib directory])
+AC_ARG_WITH([arniadb-libdir],
+    AS_HELP_STRING([--with-arniadb-libdir=PATH],
+                   [directory for arniadb lib files @<:@default=with-arniadb-dir/lib@:>@]),
+    [ARNIADB_LIBDIR=$withval],
+    [ARNIADB_LIBDIR="$ARNIADB_DIR/lib"])
+AC_MSG_RESULT($ARNIADB_LIBDIR)
 
-AC_MSG_CHECKING([cubrid include directory])
-AC_ARG_WITH([cubrid-includedir],
-    AS_HELP_STRING([--with-cubrid-includedir=PATH],
-                   [directory for cubrid include files @<:@default=with-cubrid-dir/include@:>@]),
-    [CUBRID_INCLUDEDIR=$withval],
-    [CUBRID_INCLUDEDIR="$CUBRID_DIR/include"])
-AC_MSG_RESULT($CUBRID_INCLUDEDIR)
+AC_MSG_CHECKING([arniadb include directory])
+AC_ARG_WITH([arniadb-includedir],
+    AS_HELP_STRING([--with-arniadb-includedir=PATH],
+                   [directory for arniadb include files @<:@default=with-arniadb-dir/include@:>@]),
+    [ARNIADB_INCLUDEDIR=$withval],
+    [ARNIADB_INCLUDEDIR="$ARNIADB_DIR/include"])
+AC_MSG_RESULT($ARNIADB_INCLUDEDIR)
 
 
-if test x"$CUBRID_LIBDIR" = x"/lib"
+if test x"$ARNIADB_LIBDIR" = x"/lib"
 then
-    AC_MSG_ERROR([--with-cubrid-libdir option not set properly, must not be empty!])
-elif test x"$CUBRID_INCLUDEDIR" = x"/include"
+    AC_MSG_ERROR([--with-arniadb-libdir option not set properly, must not be empty!])
+elif test x"$ARNIADB_INCLUDEDIR" = x"/include"
 then
-    AC_MSG_ERROR([--with-cubrid-includedir option not set properly, must not be empty!])
+    AC_MSG_ERROR([--with-arniadb-includedir option not set properly, must not be empty!])
 else
-    if test ! -d $CUBRID_LIBDIR; then
-        AC_MSG_ERROR([--with-cubrid-libdir option not set properly, direcoty "$CUBRID_LIBDIR" is not exist.])
+    if test ! -d $ARNIADB_LIBDIR; then
+        AC_MSG_ERROR([--with-arniadb-libdir option not set properly, direcoty "$ARNIADB_LIBDIR" is not exist.])
     fi
-    if test ! -d $CUBRID_INCLUDEDIR; then
-        AC_MSG_ERROR([--with-cubrid-includedir option not set properly, direcoty "$CUBRID_INCLUDEDIR" is not exist.])
+    if test ! -d $ARNIADB_INCLUDEDIR; then
+        AC_MSG_ERROR([--with-arniadb-includedir option not set properly, direcoty "$ARNIADB_INCLUDEDIR" is not exist.])
     fi
-    CUBCS_LIB="-lcubridcs"
-    CMDEP_LIB="-L$CUBRID_LIBDIR -lcmdep $CUBCS_LIB"
-    CMSTAT_LIB="-L$CUBRID_LIBDIR -lcmstat $CMSTAT_LIB"
-    SRC_INC="-I$CUBRID_INCLUDEDIR"
+    ARNCS_LIB="-larniadbcs"
+    CMDEP_LIB="-L$ARNIADB_LIBDIR -lcmdep $ARNCS_LIB"
+    CMSTAT_LIB="-L$ARNIADB_LIBDIR -lcmstat $CMSTAT_LIB"
+    SRC_INC="-I$ARNIADB_INCLUDEDIR"
 fi
 
 if test -e "$srcdir/build_external.sh"; then

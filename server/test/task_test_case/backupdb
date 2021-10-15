@@ -3,7 +3,7 @@ token:cdfb4c5717170c5e237a227a2ceeccc6ae9e10c16754fb85371c0d74fa0d9d577926f07dd2
 dbname:alatestdb
 level:0
 volname:alatestdb_backup_lv0
-backupdir:$CUBRID_DATABASES/alatestdb/backup
+backupdir:$ARNIADB_DATABASES/alatestdb/backup
 removelog:n
 check:y
 mt:0

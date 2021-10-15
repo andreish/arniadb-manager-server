@@ -24,7 +24,7 @@ Rename database.
   "rename":"anotherdb",
   "exvolpath":"none",
   "advanced":"on",
-  "volume":{"$CUBRID_DATABASES/destinationdb/destinationdb":"$CUBRID_DATABASES/anotherdb/anotherdb"},
+  "volume":{"$ARNIADB_DATABASES/destinationdb/destinationdb":"$ARNIADB_DATABASES/anotherdb/anotherdb"},
   "forcedel":"y"
 }
 ```

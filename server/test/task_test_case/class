@@ -4,7 +4,7 @@ dbname:demodb
 classname:athlete
 _STAMP:32
 _SVRTYPE:fsvr
-_PROGNAME:cub_js
+_PROGNAME:arn_js
 _CLIENTIP:127.0.0.1
 _CLIENTPORT:60375
 _ID:admin

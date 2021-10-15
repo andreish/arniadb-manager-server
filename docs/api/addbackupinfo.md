@@ -17,7 +17,7 @@ Add a backup schedule.
   "token": "cdfb4c5717170c5e51196b3bf16112949ea2e1dcf05030c13351f8d4306356bf7926f07dd201b6aa",
   "dbname": "demodb",
   "backupid": "qw",
-  "path": "$CUBRID_DATABASES/alatestdb/backup",
+  "path": "$ARNIADB_DATABASES/alatestdb/backup",
   "period_type": "Special",
   "period_date": "$AUTO_DATE",
   "time": "$AUTO_TIME",

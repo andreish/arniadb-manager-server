@@ -44,10 +44,10 @@ typedef union tagUNI_CCI_A_TYPE
     if (Json::Value::null == root[key]) \
         return err;
 
-int http_cubrid_exportdb (Json::Value &request, Json::Value &response);
-int http_cubrid_importdb (Json::Value &request, Json::Value &response);
-int http_cubrid_sql (Json::Value &request, Json::Value &response);
+int http_arniadb_exportdb (Json::Value &request, Json::Value &response);
+int http_arniadb_importdb (Json::Value &request, Json::Value &response);
+int http_arniadb_sql (Json::Value &request, Json::Value &response);
 int get_cci_task_info (const char *task, T_HTTP_TASK_FUNC *task_func);
-int cub_cci_request_handler (Json::Value &request, Json::Value &response);
+int arn_cci_request_handler (Json::Value &request, Json::Value &response);
 
 #endif

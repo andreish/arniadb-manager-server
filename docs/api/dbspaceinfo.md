@@ -52,7 +52,7 @@ Get specified database space information.
       {
          "date" : "20130131",
          "freepage" : "1192",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb",
          "totalpage" : "1280",
          "type" : "GENERIC"
@@ -60,7 +60,7 @@ Get specified database space information.
       {
          "date" : "20130131",
          "freepage" : "0",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb_v1",
          "totalpage" : "1000",
          "type" : "DATA"
@@ -68,7 +68,7 @@ Get specified database space information.
       {
          "date" : "20130131",
          "freepage" : "1746",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb_x002",
          "totalpage" : "1920",
          "type" : "DATA"
@@ -76,7 +76,7 @@ Get specified database space information.
       {
          "date" : "20130131",
          "freepage" : "385",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb_t32766",
          "totalpage" : "434",
          "type" : "TEMP"
@@ -84,7 +84,7 @@ Get specified database space information.
       {
          "date" : "20130201",
          "freepage" : " ",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb_lgat",
          "totalpage" : "32768",
          "type" : "Active_log"
@@ -92,7 +92,7 @@ Get specified database space information.
       {
          "date" : "20130131",
          "freepage" : " ",
-         "location" : "/home/huangqiyu/cubrid_8.4.3/databases/testdb",
+         "location" : "/home/huangqiyu/arniadb_8.4.3/databases/testdb",
          "spacename" : "testdb_lgar_t",
          "totalpage" : "32768",
          "type" : "Archive_log"

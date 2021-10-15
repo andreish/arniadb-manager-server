@@ -59,7 +59,7 @@ int ext_set_auto_start (Json::Value &request, Json::Value &response);
 int ext_get_auto_start (Json::Value &request, Json::Value &response);
 int ext_exec_auto_start (Json::Value &request, Json::Value &response);
 int ext_exec_auto_jobs (Json::Value &request, Json::Value &response);
-int ext_cub_broker_start (Json::Value &request, Json::Value &response);
+int ext_arn_broker_start (Json::Value &request, Json::Value &response);
 int ext_get_db_err_log (Json::Value &request, Json::Value &response);
 int ext_get_broker_start_log (Json::Value &request, Json::Value &response);
 int ext_send_mail (Json::Value &request, Json::Value &response);

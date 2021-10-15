@@ -1,13 +1,13 @@
 Copyright (C) 2008-2015 Search Solution Corporation. All rights reserved.
-CUBRID is registered trademark of Search Solution Corporation.
+ARNIADB is registered trademark of Search Solution Corporation.
 
-This Software is released under GNU GPL v2, GPL v3 according to CUBRID Manager components.
-For brevity, CUBRID Manager Server is under GPL v2 and it uses MIT, BSD licensed libraries.
-CUBRID Web Manager is under GPL v3 and it uses MIT, BSD and GPL v3 licensed libraries.
-For details, please refer to the CUBRID License Page(http://www.cubrid.org/license).
+This Software is released under GNU GPL v2, GPL v3 according to ARNIADB Manager components.
+For brevity, ARNIADB Manager Server is under GPL v2 and it uses MIT, BSD licensed libraries.
+ARNIADB Web Manager is under GPL v3 and it uses MIT, BSD and GPL v3 licensed libraries.
+For details, please refer to the ARNIADB License Page(http://www.arniadb.org/license).
 
 
-* CUBRID Manager Server under GPL v2 or later(http://opensource.org/licenses/GPL-2.0)
+* ARNIADB Manager Server under GPL v2 or later(http://opensource.org/licenses/GPL-2.0)
 --------------------------------------------------------------------------------
 The GNU General Public License (GPL)
 Version 2, June 1991
@@ -133,7 +133,7 @@ Yoyodyne, Inc., hereby disclaims all copyright interest in the program `Gnomovis
 This General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Library General Public License instead of this License.
 --------------------------------------------------------------------------------
 
-* Library license for CUBRID Manager Server
+* Library license for ARNIADB Manager Server
 
 ** The JsonCpp library under MIT License(http://opensource.org/licenses/mit-license.php)
 --------------------------------------------------------------------------------
@@ -398,7 +398,7 @@ The arc4module is available under the following, sometimes called the
 --------------------------------------------------------------------------------
 
 
-* CUBRID Web Manager under GPL v3(http://opensource.org/licenses/GPL-3.0)
+* ARNIADB Web Manager under GPL v3(http://opensource.org/licenses/GPL-3.0)
 --------------------------------------------------------------------------------
 GNU GENERAL PUBLIC LICENSE
  Version 3, 29 June 2007
@@ -641,7 +641,7 @@ You should also get your employer (if you work as a programmer) or school, if an
 The GNU General Public License does not permit incorporating your program into proprietary programs. If your program is a subroutine library, you may consider it more useful to permit linking proprietary applications with the library. If this is what you want to do, use the GNU Lesser General Public License instead of this License. But first, please read <http://www.gnu.org/philosophy/why-not-lgpl.html>.
 --------------------------------------------------------------------------------
 
-* Library license for CUBRID Web Manager
+* Library license for ARNIADB Web Manager
 
 ** Code Mirror library under MIT License(http://opensource.org/licenses/mit-license.php)
 --------------------------------------------------------------------------------

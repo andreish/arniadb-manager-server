@@ -92,7 +92,7 @@ using namespace std;
 
 #define DBMT_ERR_MSG_SET(ERR_BUF, MSG)    \
     strncpy(ERR_BUF, MSG, DBMT_ERROR_MSG_SIZE - 1)
-#define CUBRID_ERR_MSG_SET(ERR_BUF)       \
+#define ARNIADB_ERR_MSG_SET(ERR_BUF)       \
     DBMT_ERR_MSG_SET(ERR_BUF, db_error_string(1))
 
 #define MAX_BROKER_NAMELENGTH 128
@@ -281,7 +281,7 @@ static char *get_ip_from_hostname (char *hostname, char *ipaddr, int ip_len);
 static int parse_standby_server_stat (T_STANDBY_SERVER_STAT *stat,
 				      FILE *outfile, char *_dbmt_error);
 static int analyze_heartbeat_cmd_outfile (FILE *infile, char *_dbmt_error);
-static char *cub_admin_cmd_name (char *cmd_name, int buf_len);
+static char *arn_admin_cmd_name (char *cmd_name, int buf_len);
 static int cmd_get_db_mode (T_DB_MODE_INFO *dbmode, char *dbname,
 			    char *dbmt_error);
 static int fill_dbmode_into_dbinfo_list (T_HA_SERVER_INFO_ALL **all_info,
@@ -299,7 +299,7 @@ static int cmd_heartbeat_act (char *_dbmt_error);
 static int cmd_heartbeat_deact (char *_dbmt_error);
 static int cmd_changemode (char *dbname, char *modify, char *force,
 			   char *server_mode_out, int mode_len, char *_dbmt_error);
-static int run_csql_statement (const char *sql_stat, char *dbname,
+static int run_asql_statement (const char *sql_stat, char *dbname,
 			       char *dbuser, char *dbpasswd, char *outfilepath, char *_dbmt_error);
 
 static void set_copylogdb_mode (T_HA_LOG_PROC_INFO *copylogdb);
@@ -363,9 +363,9 @@ _verify_user_passwd (char *dbname, char *dbuser, char *dbpasswd,
     }
 
   /*
-  * using csql to verify the user's password.
+  * using asql to verify the user's password.
   */
-  retval = run_csql_statement (sql_stat, dbname, dbuser, dbpasswd, NULL, _dbmt_error);    /* csql */
+  retval = run_asql_statement (sql_stat, dbname, dbuser, dbpasswd, NULL, _dbmt_error);    /* asql */
 
   return retval;
 }
@@ -441,7 +441,7 @@ ts_add_nvp_time (nvplist *ref, const char *name, time_t t, const char *fmt,
     }
 }
 
-/* if cubrid.conf's error_log is null, construct it by default value if existing */
+/* if arniadb.conf's error_log is null, construct it by default value if existing */
 static char *
 _ts_get_error_log_param (char *dbname)
 {
@@ -454,10 +454,10 @@ _ts_get_error_log_param (char *dbname)
       return NULL;
     }
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  snprintf (buf, PATH_MAX - 1, "%s/conf/%s", sco.szCubrid, CUBRID_CUBRID_CONF);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  snprintf (buf, PATH_MAX - 1, "%s/conf/%s", sco.szArniadb, ARNIADB_ARNIADB_CONF);
 #else
-  snprintf (buf, PATH_MAX - 1, "%s/%s", CUBRID_CONFDIR, CUBRID_CUBRID_CONF);
+  snprintf (buf, PATH_MAX - 1, "%s/%s", ARNIADB_CONFDIR, ARNIADB_ARNIADB_CONF);
 #endif
 
   if ((infile = fopen (buf, "r")) == NULL)
@@ -667,29 +667,29 @@ ts_get_diagdata (nvplist *cli_request, nvplist *cli_response,
   #else
       nv_add_nvp (cli_response, "db_mon", "start");
   #endif
-      nv_add_nvp_int64 (cli_response, "mon_cub_query_open_page",
+      nv_add_nvp_int64 (cli_response, "mon_arn_query_open_page",
                         server_result.query_open_page);
-      nv_add_nvp_int64 (cli_response, "mon_cub_query_opened_page",
+      nv_add_nvp_int64 (cli_response, "mon_arn_query_opened_page",
                         server_result.query_opened_page);
-      nv_add_nvp_int64 (cli_response, "mon_cub_query_slow_query",
+      nv_add_nvp_int64 (cli_response, "mon_arn_query_slow_query",
                         server_result.query_slow_query);
-      nv_add_nvp_int64 (cli_response, "mon_cub_query_full_scan",
+      nv_add_nvp_int64 (cli_response, "mon_arn_query_full_scan",
                         server_result.query_full_scan);
-      nv_add_nvp_int64 (cli_response, "mon_cub_lock_deadlock",
+      nv_add_nvp_int64 (cli_response, "mon_arn_lock_deadlock",
                         server_result.lock_deadlock);
-      nv_add_nvp_int64 (cli_response, "mon_cub_lock_request",
+      nv_add_nvp_int64 (cli_response, "mon_arn_lock_request",
                         server_result.lock_request);
-      nv_add_nvp_int64 (cli_response, "mon_cub_conn_cli_request",
+      nv_add_nvp_int64 (cli_response, "mon_arn_conn_cli_request",
                         server_result.conn_cli_request);
-      nv_add_nvp_int64 (cli_response, "mon_cub_conn_aborted_clients",
+      nv_add_nvp_int64 (cli_response, "mon_arn_conn_aborted_clients",
                         server_result.conn_aborted_clients);
-      nv_add_nvp_int64 (cli_response, "mon_cub_conn_conn_req",
+      nv_add_nvp_int64 (cli_response, "mon_arn_conn_conn_req",
                         server_result.conn_conn_req);
-      nv_add_nvp_int64 (cli_response, "mon_cub_conn_conn_reject",
+      nv_add_nvp_int64 (cli_response, "mon_arn_conn_conn_reject",
                         server_result.conn_conn_reject);
-      nv_add_nvp_int64 (cli_response, "mon_cub_buffer_page_write",
+      nv_add_nvp_int64 (cli_response, "mon_arn_buffer_page_write",
                         server_result.buffer_page_write);
-      nv_add_nvp_int64 (cli_response, "mon_cub_buffer_page_read",
+      nv_add_nvp_int64 (cli_response, "mon_arn_buffer_page_read",
                         server_result.buffer_page_read);
   #ifdef JSON_SUPPORT
       nv_add_nvp (cli_response, "close", "db_mon");
@@ -1101,7 +1101,7 @@ ts2_get_logfile_info (nvplist *in, nvplist *out, char *_dbmt_error)
       strcpy (_dbmt_error, "broker");
       return ERR_PARAM_MISSING;
     }
-  chdir (sco.szCubrid);
+  chdir (sco.szArniadb);
   if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
@@ -1309,7 +1309,7 @@ ts2_get_add_broker_info (nvplist *in, nvplist *out, char *_dbmt_error)
   FILE *infile;
   char broker_conf_path[PATH_MAX], strbuf[1024];
 
-  cm_get_broker_file (UC_FID_CUBRID_BROKER_CONF, broker_conf_path);
+  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
 
   if (access (broker_conf_path, F_OK) < 0)
     {
@@ -1485,7 +1485,7 @@ ts2_set_broker_conf (nvplist *in, nvplist *out, char *_dbmt_error)
   char *conf, *confdata;
   int nv_len, i;
 
-  cm_get_broker_file (UC_FID_CUBRID_BROKER_CONF, broker_conf_path);
+  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
 
   if ((outfile = fopen (broker_conf_path, "w")) == NULL)
     {
@@ -1679,29 +1679,29 @@ _get_confpath_by_name (const char *conf_name, char *conf_path, int buflen)
 {
   int retval = 0;
 
-  if (uStringEqual (conf_name, "cubridconf"))
+  if (uStringEqual (conf_name, "arniadbconf"))
     {
-      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szCubrid,
-		CUBRID_CUBRID_CONF);
+      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szArniadb,
+		ARNIADB_ARNIADB_CONF);
     }
   else if (uStringEqual (conf_name, "cmconf"))
     {
-      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szCubrid,
-		CUBRID_DBMT_CONF);
+      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szArniadb,
+		ARNIADB_DBMT_CONF);
     }
   else if (uStringEqual (conf_name, "haconf"))
     {
-      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szCubrid,
-		CUBRID_HA_CONF);
+      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szArniadb,
+		ARNIADB_HA_CONF);
     }
   else if (uStringEqual (conf_name, "databases"))
     {
-      snprintf (conf_path, buflen - 1, "%s/%s", sco.szCubrid_databases,
-		CUBRID_DATABASE_TXT);
+      snprintf (conf_path, buflen - 1, "%s/%s", sco.szArniadb_databases,
+		ARNIADB_DATABASE_TXT);
     }
   else
     {
-      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szCubrid, conf_name);
+      snprintf (conf_path, buflen - 1, "%s/conf/%s", sco.szArniadb, conf_name);
     }
 
   return retval;
@@ -1918,7 +1918,7 @@ tsDeleteDBMTUser (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   if (usr_index < 0)
     {
-      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS, file));
+      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS, file));
       dbmt_user_free (&dbmt_user);
       return ERR_FILE_INTEGRITY;
     }
@@ -2104,7 +2104,7 @@ tsUpdateDBMTUser (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   if (usr_index < 0)
     {
-      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS, file));
+      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS, file));
       dbmt_user_free (&dbmt_user);
       if (usr_dbinfo != NULL)
 	{
@@ -2300,7 +2300,7 @@ tsChangeDBMTUserPasswd (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   if (usr_index < 0)
     {
-      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS, file));
+      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS, file));
       dbmt_user_free (&dbmt_user);
       return ERR_FILE_INTEGRITY;
     }
@@ -2375,7 +2375,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
   char *ip, *port;
   T_DBMT_USER dbmt_user;
   T_DBMT_CON_DBINFO con_dbinfo;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[20];
   int argc = 0;
   int gen_dir_created, log_dir_created, ext_dir_created;
@@ -2509,12 +2509,12 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
       FILE *outfile = NULL;
       char dstrbuf[PATH_MAX];
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-      snprintf (dstrbuf, PATH_MAX - 1, "%s/conf/%s", sco.szCubrid,
-		CUBRID_CUBRID_CONF);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+      snprintf (dstrbuf, PATH_MAX - 1, "%s/conf/%s", sco.szArniadb,
+		ARNIADB_ARNIADB_CONF);
 #else
-      snprintf (dstrbuf, PATH_MAX - 1, "%s/%s", CUBRID_CONFDIR,
-		CUBRID_CUBRID_CONF);
+      snprintf (dstrbuf, PATH_MAX - 1, "%s/%s", ARNIADB_CONFDIR,
+		ARNIADB_ARNIADB_CONF);
 #endif
       infile = fopen (dstrbuf, "r");
       if (infile == NULL)
@@ -2523,7 +2523,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
 	  return ERR_FILE_OPEN_FAIL;
 	}
 
-      snprintf (dstrbuf, PATH_MAX - 1, "%s/%s", targetdir, CUBRID_CUBRID_CONF);
+      snprintf (dstrbuf, PATH_MAX - 1, "%s/%s", targetdir, ARNIADB_ARNIADB_CONF);
       outfile = fopen (dstrbuf, "w");
       if (outfile == NULL)
 	{
@@ -2580,7 +2580,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
       memset (newfilename, '\0', sizeof (newfilename));
 
       snprintf (oldfilename, PATH_MAX - 1, "%s/%s", targetdir,
-		CUBRID_CUBRID_CONF);
+		ARNIADB_ARNIADB_CONF);
       infile = fopen (oldfilename, "r");
       if (infile == NULL)
 	{
@@ -2588,7 +2588,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
 	  return ERR_FILE_OPEN_FAIL;
 	}
 
-      snprintf (newfilename, PATH_MAX - 1, "%s/tempcubrid.conf", targetdir);
+      snprintf (newfilename, PATH_MAX - 1, "%s/temparniadb.conf", targetdir);
       outfile = fopen (newfilename, "w");
       if (outfile == NULL)
 	{
@@ -2661,7 +2661,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   /* construct command */
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
 #if defined(WINDOWS)
   nt_style_path (targetdir, targetdir);
 #endif
@@ -2834,7 +2834,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
       memset (newfilename, '\0', sizeof (newfilename));
 
       snprintf (oldfilename, PATH_MAX - 1, "%s/%s", targetdir,
-		CUBRID_CUBRID_CONF);
+		ARNIADB_ARNIADB_CONF);
       infile = fopen (oldfilename, "r");
       if (infile == NULL)
 	{
@@ -2842,7 +2842,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
 	  return ERR_FILE_OPEN_FAIL;
 	}
 
-      snprintf (newfilename, PATH_MAX - 1, "%s/tempcubrid.conf", targetdir);
+      snprintf (newfilename, PATH_MAX - 1, "%s/temparniadb.conf", targetdir);
       outfile = fopen (newfilename, "w");
       if (outfile == NULL)
 	{
@@ -2875,7 +2875,7 @@ tsCreateDB (nvplist *req, nvplist *res, char *_dbmt_error)
     {
       char strbuf[PATH_MAX];
 
-      snprintf (strbuf, PATH_MAX - 1, "%s/%s", targetdir, CUBRID_CUBRID_CONF);
+      snprintf (strbuf, PATH_MAX - 1, "%s/%s", targetdir, ARNIADB_ARNIADB_CONF);
       unlink (strbuf);
     }
 
@@ -2892,8 +2892,8 @@ tsDeleteDB (nvplist *req, nvplist *res, char *_dbmt_error)
   T_DBMT_USER dbmt_user;
   int retval = ERR_NO_ERROR;
   char *dbname = NULL, *delbackup;
-  char cubrid_err_file[PATH_MAX];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char arniadb_err_file[PATH_MAX];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   int argc = 0;
 
@@ -2901,7 +2901,7 @@ tsDeleteDB (nvplist *req, nvplist *res, char *_dbmt_error)
   char dbvolpath[PATH_MAX];
   char dblogpath[PATH_MAX];
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((dbname = nv_get_val (req, "_DBNAME")) == NULL)
     {
@@ -2917,7 +2917,7 @@ tsDeleteDB (nvplist *req, nvplist *res, char *_dbmt_error)
 
   delbackup = nv_get_val (req, "delbackup");
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_DELETEDB;
   if (uStringEqual (delbackup, "y"))
@@ -2927,26 +2927,26 @@ tsDeleteDB (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = dbname;
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "deletedb", getpid ());
 
   /*get dbvolpath and dblogpath. */
-  get_dbvoldir (dbvolpath, sizeof (dbvolpath), dbname, cubrid_err_file);
-  get_dblogdir (dblogpath, sizeof (dblogpath), dbname, cubrid_err_file);
+  get_dbvoldir (dbvolpath, sizeof (dbvolpath), dbname, arniadb_err_file);
+  get_dblogdir (dblogpath, sizeof (dblogpath), dbname, arniadb_err_file);
 
-  retval = run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL);    /* deletedb */
+  retval = run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL);    /* deletedb */
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   if (retval < 0)
     {
@@ -2994,7 +2994,7 @@ tsRenameDB (nvplist *req, nvplist *res, char *_dbmt_error)
   T_DB_SERVICE_MODE db_mode;
   T_DBMT_USER dbmt_user;
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char tmpfile[PATH_MAX];
 
   cmd_name[0] = '\0';
@@ -3039,7 +3039,7 @@ tsRenameDB (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_DB_ACTIVE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_RENAMEDB;
 
@@ -3243,7 +3243,7 @@ tsDbspaceInfo (nvplist *req, nvplist *res, char *_dbmt_error)
   const char *err_message;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   int ha_mode = 0;
-  T_CUBRID_MODE cubrid_mode;
+  T_ARNIADB_MODE arniadb_mode;
   GeneralSpacedbResult *cmd_res;
   T_DB_SERVICE_MODE db_mode;
 
@@ -3265,17 +3265,17 @@ tsDbspaceInfo (nvplist *req, nvplist *res, char *_dbmt_error)
   nv_add_nvp (res, "pagesize", "-1");
   nv_add_nvp (res, "logpagesize", "-1");
 
-  cubrid_mode =
-	  (db_mode == DB_SERVICE_MODE_NONE) ? CUBRID_MODE_SA : CUBRID_MODE_CS;
+  arniadb_mode =
+	  (db_mode == DB_SERVICE_MODE_NONE) ? ARNIADB_MODE_SA : ARNIADB_MODE_CS;
 
   if (ha_mode != 0)
     {
       append_host_to_dbname (dbname_at_hostname, dbname, sizeof (dbname_at_hostname));
-      cmd_res = cmd_spacedb (dbname_at_hostname, cubrid_mode);
+      cmd_res = cmd_spacedb (dbname_at_hostname, arniadb_mode);
     }
   else
     {
-      cmd_res = cmd_spacedb (dbname, cubrid_mode);
+      cmd_res = cmd_spacedb (dbname, arniadb_mode);
     }
 
   err_message = cmd_res->get_err_msg();
@@ -3375,7 +3375,7 @@ tsRunAddvoldb (nvplist *req, nvplist *res, char *_dbmt_error)
   T_DB_SERVICE_MODE db_mode;
   char err_file[PATH_MAX];
   int ret;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[15];
   int argc = 0;
   int free_space_mb;
@@ -3450,7 +3450,7 @@ tsRunAddvoldb (nvplist *req, nvplist *res, char *_dbmt_error)
   snprintf (dbvolsize_t, sizeof (dbvolsize_t) - 1, "%lldB",
 	    (long long) (atof (dbvolsize) * BYTES_IN_M));
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_ADDVOLDB;
 
@@ -3529,12 +3529,12 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
   int move_flag = 0;
   int overwrite_flag = 0;
   int adv_flag = 0;
-  char tmpfile[PATH_MAX], cmd_name[CUBRID_CMD_NAME_LEN],
+  char tmpfile[PATH_MAX], cmd_name[ARNIADB_CMD_NAME_LEN],
        lob_base_path[PATH_MAX];
   char src_conf_file[PATH_MAX], dest_conf_file[PATH_MAX], conf_dir[PATH_MAX];
   int i = -1;
   int retval = -1;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   T_DBMT_USER dbmt_user;
   T_DB_SERVICE_MODE db_mode;
   const char *argv[15];
@@ -3547,7 +3547,7 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
   src_conf_file[0] = '\0';
   dest_conf_file[0] = '\0';
   conf_dir[0] = '\0';
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((srcdbname = nv_get_val (req, "srcdbname")) == NULL)
     {
@@ -3593,7 +3593,7 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   /* create command */
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_COPYDB;
   argv[argc++] = "--" COPY_LOG_PATH_L;
@@ -3703,25 +3703,25 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_DIR_CREATE_FAIL;
     }
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "copydb", getpid ());
 
-  retval = run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL);    /* copydb */
+  retval = run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL);    /* copydb */
   if (adv_flag)
     {
       unlink (tmpfile);
     }
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   if (retval < 0)
     {
@@ -3735,14 +3735,14 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
       strcpy (_dbmt_error, srcdbname);
       return ERR_DBDIRNAME_NULL;
     }
-  snprintf (src_conf_file, sizeof (src_conf_file) - 1, "%s/%s", conf_dir, CUBRID_CUBRID_CONF);
+  snprintf (src_conf_file, sizeof (src_conf_file) - 1, "%s/%s", conf_dir, ARNIADB_ARNIADB_CONF);
 
   if (uRetrieveDBDirectory (destdbname, conf_dir) != ERR_NO_ERROR)
     {
       strcpy (_dbmt_error, destdbname);
       return ERR_DBDIRNAME_NULL;
     }
-  snprintf (dest_conf_file, sizeof (dest_conf_file) - 1, "%s/%s", conf_dir, CUBRID_CUBRID_CONF);
+  snprintf (dest_conf_file, sizeof (dest_conf_file) - 1, "%s/%s", conf_dir, ARNIADB_ARNIADB_CONF);
 
   /* Doesn't copy if src and desc is same */
   if (strcmp (src_conf_file, dest_conf_file) != 0)
@@ -3753,10 +3753,10 @@ ts_copydb (nvplist *req, nvplist *res, char *_dbmt_error)
   /* if move, delete exist database */
   if (move_flag)
     {
-      char cmd_name[CUBRID_CMD_NAME_LEN];
+      char cmd_name[ARNIADB_CMD_NAME_LEN];
       const char *argv[5];
 
-      cubrid_cmd_name (cmd_name);
+      arniadb_cmd_name (cmd_name);
       argv[0] = cmd_name;
       argv[1] = UTIL_OPTION_DELETEDB;
       argv[2] = srcdbname;
@@ -3812,15 +3812,15 @@ ts_plandump (nvplist *req, nvplist *res, char *_dbmt_error)
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   int ha_mode = 0;
   T_DB_SERVICE_MODE db_mode;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char *plandrop = NULL;
   const char *argv[10];
   int argc = 0;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   char tmpfilepath[PATH_MAX];
   int retval = ERR_NO_ERROR;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((dbname = nv_get_val (req, "dbname")) == NULL)
     {
@@ -3840,7 +3840,7 @@ ts_plandump (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_STANDALONE_MODE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_PLANDUMP;
   if (uStringEqual (plandrop, "y"))
@@ -3861,7 +3861,7 @@ ts_plandump (nvplist *req, nvplist *res, char *_dbmt_error)
 
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "plandump", getpid ());
 
   /*
@@ -3871,14 +3871,14 @@ ts_plandump (nvplist *req, nvplist *res, char *_dbmt_error)
   snprintf (tmpfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d",
 	    sco.dbmt_tmp_dir, TS_PLANDUMP, (int) getpid ());
 
-  if (run_child (argv, 1, NULL, tmpfilepath, cubrid_err_file, NULL) < 0)    /* plandump */
+  if (run_child (argv, 1, NULL, tmpfilepath, arniadb_err_file, NULL) < 0)    /* plandump */
     {
       strcpy (_dbmt_error, argv[0]);
       retval = ERR_SYSTEM_CALL;
       goto rm_tmpfile;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto rm_tmpfile;
@@ -3894,9 +3894,9 @@ ts_plandump (nvplist *req, nvplist *res, char *_dbmt_error)
 
 rm_tmpfile:
   unlink (tmpfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
@@ -3909,15 +3909,15 @@ ts_paramdump (nvplist *req, nvplist *res, char *_dbmt_error)
   int ha_mode = 0;
   char *bothclientserver = NULL;
   T_DB_SERVICE_MODE db_mode;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[10];
   int argc = 0;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   FILE *infile = NULL;
   char tmpfilepath[PATH_MAX];
   int retval = ERR_NO_ERROR;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((dbname = nv_get_val (req, "dbname")) == NULL)
     {
@@ -3939,7 +3939,7 @@ ts_paramdump (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_STANDALONE_MODE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_PARAMDUMP;
   if (db_mode == DB_SERVICE_MODE_NONE)
@@ -3968,7 +3968,7 @@ ts_paramdump (nvplist *req, nvplist *res, char *_dbmt_error)
 
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp", sco.dbmt_tmp_dir, "paramdump", getpid ());
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp", sco.dbmt_tmp_dir, "paramdump", getpid ());
 
   /*
   * create a new tmp file to record the content
@@ -3976,14 +3976,14 @@ ts_paramdump (nvplist *req, nvplist *res, char *_dbmt_error)
   */
   snprintf (tmpfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d", sco.dbmt_tmp_dir, TS_PARAMDUMP, (int) getpid ());
 
-  if (run_child (argv, 1, NULL, tmpfilepath, cubrid_err_file, NULL) < 0)    /* paramdump */
+  if (run_child (argv, 1, NULL, tmpfilepath, arniadb_err_file, NULL) < 0)    /* paramdump */
     {
       strcpy (_dbmt_error, argv[0]);
       retval = ERR_SYSTEM_CALL;
       goto rm_tmpfile;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto rm_tmpfile;
@@ -4012,9 +4012,9 @@ ts_paramdump (nvplist *req, nvplist *res, char *_dbmt_error)
 
 rm_tmpfile:
   unlink (tmpfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
@@ -4029,7 +4029,7 @@ int
 ts_checkdb (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char task_name[TASKNAME_LEN];
   const char *argv[7];
   T_DB_SERVICE_MODE db_mode;
@@ -4068,7 +4068,7 @@ ts_checkdb (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_STANDALONE_MODE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_CHECKDB;
   if (db_mode == DB_SERVICE_MODE_NONE)
@@ -4277,7 +4277,7 @@ statdump_finale:
 int
 ts_compactdb (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char out_file[PATH_MAX];
   char err_file[PATH_MAX];
 
@@ -4322,7 +4322,7 @@ ts_compactdb (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_STANDALONE_MODE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_COMPACTDB;
   if (uStringEqual (verbose, "y"))
@@ -4404,15 +4404,15 @@ ts_backupdb (nvplist *req, nvplist *res, char *_dbmt_error)
   char *mt, *zip, *safe_replication;
   char backupfilepath[PATH_MAX];
   char inputfilepath[PATH_MAX];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char sp_option[256];
   const char *argv[16];
   int argc = 0;
   FILE *inputfile;
   T_DB_SERVICE_MODE db_mode;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((dbname = nv_get_val (req, "dbname")) == NULL)
     {
@@ -4453,7 +4453,7 @@ ts_backupdb (nvplist *req, nvplist *res, char *_dbmt_error)
 	}
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_BACKUPDB;
   if (db_mode == DB_SERVICE_MODE_NONE)
@@ -4519,35 +4519,35 @@ ts_backupdb (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_FILE_OPEN_FAIL;
     }
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "backupdb", getpid ());
 
-  if (run_child (argv, 1, inputfilepath, NULL, cubrid_err_file, NULL) < 0)
+  if (run_child (argv, 1, inputfilepath, NULL, arniadb_err_file, NULL) < 0)
     {
       /* backupdb */
       strcpy (_dbmt_error, argv[0]);
       unlink (inputfilepath);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_SYSTEM_CALL;
     }
 
   unlink (inputfilepath);
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
 
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return ERR_NO_ERROR;
 }
@@ -4562,8 +4562,8 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   int ha_mode = 0;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
-  char cubrid_err_file[PATH_MAX];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
+  char arniadb_err_file[PATH_MAX];
   FILE *infile, *outfile;
   int i, flag = 0, no_class = 0, index_exist = 0, trigger_exist = 0;
   struct stat statbuf;
@@ -4575,7 +4575,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
   char *dbuser = NULL;
   char *dbpasswd = NULL;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   dbname = nv_get_val (req, "dbname");
   if (dbname == NULL)
@@ -4678,7 +4678,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
   fclose (outfile);
 
   /* makeup command and execute */
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_UNLOADDB;
   if (db_mode == DB_SERVICE_MODE_NONE)
@@ -4771,33 +4771,33 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "unloaddb", getpid ());
 
-  if (run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL) < 0)
+  if (run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL) < 0)
     {
       /* unloaddb */
       strcpy (_dbmt_error, argv[0]);
       unlink (tmpfile);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_SYSTEM_CALL;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       unlink (tmpfile);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   unlink (tmpfile);
 
@@ -4828,7 +4828,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
   /* save uploaded result file to 'unloaddb.info' file */
   flag = 0;
   snprintf (infofile, PATH_MAX - 1, "%s/unloaddb.info",
-	    sco.szCubrid_databases);
+	    sco.szArniadb_databases);
   if ((infile = fopen (infofile, "rt")) == NULL)
     {
       outfile = fopen (infofile, "w");
@@ -4844,36 +4844,36 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
       if (!strcmp (target, "both"))
 	{
 	  fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_SCHEMA);
+		   ARNIADB_UNLOAD_EXT_SCHEMA);
 	  fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_OBJ);
+		   ARNIADB_UNLOAD_EXT_OBJ);
 	}
       else if (!strcmp (target, "schema"))
 	{
 	  fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_SCHEMA);
+		   ARNIADB_UNLOAD_EXT_SCHEMA);
 	}
       else if (!strcmp (target, "object"))
 	{
 	  fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_OBJ);
+		   ARNIADB_UNLOAD_EXT_OBJ);
 	}
 
       /* check index file and append if exist */
       snprintf (buf, sizeof (buf) - 1, "%s/%s%s", targetdir, dbname,
-		CUBRID_UNLOAD_EXT_INDEX);
+		ARNIADB_UNLOAD_EXT_INDEX);
       if (stat (buf, &statbuf) == 0)
 	{
 	  fprintf (outfile, "index %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_INDEX);
+		   ARNIADB_UNLOAD_EXT_INDEX);
 	}
       /* check trigger file and append if exist */
       snprintf (buf, sizeof (buf) - 1, "%s/%s%s", targetdir, dbname,
-		CUBRID_UNLOAD_EXT_TRIGGER);
+		ARNIADB_UNLOAD_EXT_TRIGGER);
       if (stat (buf, &statbuf) == 0)
 	{
 	  fprintf (outfile, "trigger %s/%s%s\n", targetdir, dbname,
-		   CUBRID_UNLOAD_EXT_TRIGGER);
+		   ARNIADB_UNLOAD_EXT_TRIGGER);
 	}
       fclose (outfile);
     }
@@ -4903,37 +4903,37 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	      if (!strcmp (target, "both"))
 		{
 		  fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_SCHEMA);
+			   ARNIADB_UNLOAD_EXT_SCHEMA);
 		  fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_OBJ);
+			   ARNIADB_UNLOAD_EXT_OBJ);
 		}
 	      else if (!strcmp (target, "schema"))
 		{
 		  fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_SCHEMA);
+			   ARNIADB_UNLOAD_EXT_SCHEMA);
 		}
 	      else if (!strcmp (target, "object"))
 		{
 		  fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_OBJ);
+			   ARNIADB_UNLOAD_EXT_OBJ);
 		}
 
 	      /* check index file and append if exist */
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_INDEX);
+			ARNIADB_UNLOAD_EXT_INDEX);
 	      if (stat (temp, &statbuf) == 0)
 		{
 		  fprintf (outfile, "index %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_INDEX);
+			   ARNIADB_UNLOAD_EXT_INDEX);
 		  index_exist = 1;
 		}
 	      /* check trigger file and append if exist */
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_TRIGGER);
+			ARNIADB_UNLOAD_EXT_TRIGGER);
 	      if (stat (temp, &statbuf) == 0)
 		{
 		  fprintf (outfile, "trigger %s/%s%s\n", targetdir, dbname,
-			   CUBRID_UNLOAD_EXT_TRIGGER);
+			   ARNIADB_UNLOAD_EXT_TRIGGER);
 		  trigger_exist = 1;
 		}
 	      flag = 1;
@@ -4942,7 +4942,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	  if (!strcmp (target, "both") || !strcmp (target, "schema"))
 	    {
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_SCHEMA);
+			ARNIADB_UNLOAD_EXT_SCHEMA);
 	      if (!strcmp (n, "schema") && !strcmp (v, temp))
 		{
 		  continue;
@@ -4951,7 +4951,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	  if (!strcmp (target, "both") || !strcmp (target, "object"))
 	    {
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_OBJ);
+			ARNIADB_UNLOAD_EXT_OBJ);
 	      if (!strcmp (n, "object") && !strcmp (v, temp))
 		{
 		  continue;
@@ -4960,7 +4960,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	  if (index_exist)
 	    {
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_INDEX);
+			ARNIADB_UNLOAD_EXT_INDEX);
 	      if (!strcmp (n, "index") && !strcmp (v, temp))
 		{
 		  continue;
@@ -4969,7 +4969,7 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	  if (trigger_exist)
 	    {
 	      snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-			CUBRID_UNLOAD_EXT_TRIGGER);
+			ARNIADB_UNLOAD_EXT_TRIGGER);
 	      if (!strcmp (n, "trigger") && !strcmp (v, temp))
 		{
 		  continue;
@@ -4983,36 +4983,36 @@ ts_unloaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 	  if (!strcmp (target, "both"))
 	    {
 	      fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_SCHEMA);
+		       ARNIADB_UNLOAD_EXT_SCHEMA);
 	      fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_OBJ);
+		       ARNIADB_UNLOAD_EXT_OBJ);
 	    }
 	  else if (!strcmp (target, "schema"))
 	    {
 	      fprintf (outfile, "schema %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_SCHEMA);
+		       ARNIADB_UNLOAD_EXT_SCHEMA);
 	    }
 	  else if (!strcmp (target, "object"))
 	    {
 	      fprintf (outfile, "object %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_OBJ);
+		       ARNIADB_UNLOAD_EXT_OBJ);
 	    }
 	  /* check index file and append if exist */
 	  snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-		    CUBRID_UNLOAD_EXT_INDEX);
+		    ARNIADB_UNLOAD_EXT_INDEX);
 	  if (stat (temp, &statbuf) == 0)
 	    {
 	      fprintf (outfile, "index %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_INDEX);
+		       ARNIADB_UNLOAD_EXT_INDEX);
 	      index_exist = 1;
 	    }
 	  /* check trigger file and append if exist */
 	  snprintf (temp, PATH_MAX - 1, "%s/%s%s", targetdir, dbname,
-		    CUBRID_UNLOAD_EXT_TRIGGER);
+		    ARNIADB_UNLOAD_EXT_TRIGGER);
 	  if (stat (temp, &statbuf) == 0)
 	    {
 	      fprintf (outfile, "trigger %s/%s%s\n", targetdir, dbname,
-		       CUBRID_UNLOAD_EXT_TRIGGER);
+		       ARNIADB_UNLOAD_EXT_TRIGGER);
 	      trigger_exist = 1;
 	    }
 	}
@@ -5056,13 +5056,13 @@ ts_loaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 
   T_DB_SERVICE_MODE db_mode;
   char *dbuser, *dbpasswd;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   int retval;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[32];
   int argc = 0;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if ((dbname = nv_get_val (req, "_DBNAME")) == NULL)
     {
@@ -5102,7 +5102,7 @@ ts_loaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 
   snprintf (tmpfile, PATH_MAX - 1, "%s/DBMT_task_%d.%d", sco.dbmt_tmp_dir,
 	    TS_LOADDB, (int) getpid ());
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
 
   argc = 0;
   argv[argc++] = cmd_name;
@@ -5200,15 +5200,15 @@ ts_loaddb (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = dbname;
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "loaddb", getpid ());
 
-  retval = run_child (argv, 1, NULL, tmpfile, cubrid_err_file, NULL);    /* loaddb */
+  retval = run_child (argv, 1, NULL, tmpfile, arniadb_err_file, NULL);    /* loaddb */
   if (retval < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       strcpy (_dbmt_error, argv[0]);
       return ERR_SYSTEM_CALL;
@@ -5216,9 +5216,9 @@ ts_loaddb (nvplist *req, nvplist *res, char *_dbmt_error)
 
   if (file_to_nvpairs (tmpfile, res) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       strcpy (_dbmt_error, tmpfile);
       return ERR_TMPFILE_OPEN_FAIL;
@@ -5226,11 +5226,11 @@ ts_loaddb (nvplist *req, nvplist *res, char *_dbmt_error)
   unlink (tmpfile);
 
   /* the error file may not exist, don't check the error of it. */
-  file_to_nvpairs (cubrid_err_file, res);
+  file_to_nvpairs (arniadb_err_file, res);
 
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   if (uStringEqualIgnoreCase (nv_get_val (req, "delete_orignal_files"), "y"))
     {
@@ -5256,14 +5256,14 @@ ts_restoredb (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   int retval = ERR_NO_ERROR;
   char *dbname, *date, *lv, *pathname, *partial, *recovery_path;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[17];
   int argc = 0;
   T_DB_SERVICE_MODE db_mode;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   int status;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   dbname = nv_get_val (req, "dbname");
   db_mode = uDatabaseMode (dbname, NULL);
@@ -5284,7 +5284,7 @@ ts_restoredb (nvplist *req, nvplist *res, char *_dbmt_error)
   partial = nv_get_val (req, "partial");
   recovery_path = nv_get_val (req, "recoverypath");
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_RESTOREDB;
   if ((date != NULL) && (strcmp (date, "none") != 0))
@@ -5332,32 +5332,32 @@ ts_restoredb (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = dbname;
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "restoredb", getpid ());
 
-  if (run_child (argv, 1, NULL, NULL, cubrid_err_file, &status) < 0)
+  if (run_child (argv, 1, NULL, NULL, arniadb_err_file, &status) < 0)
     {
       strcpy_limit (_dbmt_error, argv[0], DBMT_ERROR_MSG_SIZE);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_SYSTEM_CALL;
     }
 
-  if (status != 0 && read_error_file (cubrid_err_file, _dbmt_error,
+  if (status != 0 && read_error_file (arniadb_err_file, _dbmt_error,
 				      DBMT_ERROR_MSG_SIZE) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
 
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return ERR_NO_ERROR;
 }
@@ -5368,7 +5368,7 @@ ts_backup_vol_info (nvplist *req, nvplist *res, char *_dbmt_error)
   char *dbname, *lv, *pathname, buf[1024], tmpfile[PATH_MAX];
   int ret;
   FILE *infile;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[10];
   int argc = 0;
 
@@ -5391,7 +5391,7 @@ ts_backup_vol_info (nvplist *req, nvplist *res, char *_dbmt_error)
   lv = nv_get_val (req, "level");
   pathname = nv_get_val (req, "pathname");
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_RESTOREDB;
   argv[argc++] = "--" RESTORE_LIST_L;
@@ -5450,7 +5450,7 @@ ts_get_dbsize (nvplist *req, nvplist *res, char *_dbmt_error)
   int no_tpage = 0, log_size = 0, baselen;
   struct stat statbuf;
   GeneralSpacedbResult *cmd_res;
-  T_CUBRID_MODE cubrid_mode;
+  T_ARNIADB_MODE arniadb_mode;
 #if defined(WINDOWS)
   char find_file[PATH_MAX];
   WIN32_FIND_DATA data;
@@ -5475,19 +5475,19 @@ ts_get_dbsize (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_DBDIRNAME_NULL;
     }
 
-  cubrid_mode =
+  arniadb_mode =
 	  (uDatabaseMode (dbname, &ha_mode) ==
-	   DB_SERVICE_MODE_NONE) ? CUBRID_MODE_SA : CUBRID_MODE_CS;
+	   DB_SERVICE_MODE_NONE) ? ARNIADB_MODE_SA : ARNIADB_MODE_CS;
 
   if (ha_mode != 0)
     {
       append_host_to_dbname (dbname_at_hostname, dbname,
 			     sizeof (dbname_at_hostname));
-      cmd_res = cmd_spacedb (dbname_at_hostname, cubrid_mode);
+      cmd_res = cmd_spacedb (dbname_at_hostname, arniadb_mode);
     }
   else
     {
-      cmd_res = cmd_spacedb (dbname, cubrid_mode);
+      cmd_res = cmd_spacedb (dbname, arniadb_mode);
     }
 
   if (cmd_res == NULL || cmd_res->has_error())
@@ -5523,8 +5523,8 @@ ts_get_dbsize (nvplist *req, nvplist *res, char *_dbmt_error)
       cur_file = dp->d_name;
 #endif
       if (!strncmp (cur_file + baselen, "_lginf", 6)
-	  || !strcmp (cur_file + baselen, CUBRID_ACT_LOG_EXT)
-	  || !strncmp (cur_file + baselen, CUBRID_ARC_LOG_EXT, CUBRID_ARC_LOG_EXT_LEN))
+	  || !strcmp (cur_file + baselen, ARNIADB_ACT_LOG_EXT)
+	  || !strncmp (cur_file + baselen, ARNIADB_ARC_LOG_EXT, ARNIADB_ARC_LOG_EXT_LEN))
 	{
 	  snprintf (strbuf, sizeof (strbuf) - 1, "%s/%s", dbdir, cur_file);
 	  stat (strbuf, &statbuf);
@@ -5551,24 +5551,24 @@ tsGetEnvironment (nvplist *req, nvplist *res, char *_dbmt_error)
   char tmpfile[PATH_MAX];
   char strbuf[1024];
   FILE *infile;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
 
-  nv_add_nvp (res, "CUBRID", sco.szCubrid);
-  nv_add_nvp (res, "CUBRID_DATABASES", sco.szCubrid_databases);
-  nv_add_nvp (res, "CUBRID_DBMT", sco.szCubrid);
-  //  nv_add_nvp (res, "CUBRID_CHARSET", getenv ("CUBRID_CHARSET"));
+  nv_add_nvp (res, "ARNIADB", sco.szArniadb);
+  nv_add_nvp (res, "ARNIADB_DATABASES", sco.szArniadb_databases);
+  nv_add_nvp (res, "ARNIADB_DBMT", sco.szArniadb);
+  //  nv_add_nvp (res, "ARNIADB_CHARSET", getenv ("ARNIADB_CHARSET"));
   snprintf (tmpfile, PATH_MAX - 1, "%s/DBMT_task_015.%d", sco.dbmt_tmp_dir,
 	    (int) getpid ());
 
   cmd_name[0] = '\0';
-  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szCubrid,
-	    CUBRID_DIR_BIN, UTIL_CUBRID_REL_NAME);
+  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szArniadb,
+	    ARNIADB_DIR_BIN, UTIL_ARNIADB_REL_NAME);
 
   argv[0] = cmd_name;
   argv[1] = NULL;
 
-  run_child (argv, 1, NULL, tmpfile, NULL, NULL);    /* cubrid_rel */
+  run_child (argv, 1, NULL, tmpfile, NULL, NULL);    /* arniadb_rel */
 
   if ((infile = fopen (tmpfile, "r")) != NULL)
     {
@@ -5577,23 +5577,23 @@ tsGetEnvironment (nvplist *req, nvplist *res, char *_dbmt_error)
       uRemoveCRLF (strbuf);
       fclose (infile);
       unlink (tmpfile);
-      nv_add_nvp (res, "CUBRIDVER", strbuf);
+      nv_add_nvp (res, "ARNIADBVER", strbuf);
     }
   else
     {
-      nv_add_nvp (res, "CUBRIDVER", "version information not available");
+      nv_add_nvp (res, "ARNIADBVER", "version information not available");
     }
 
   snprintf (tmpfile, PATH_MAX - 1, "%s/DBMT_task_015.%d", sco.dbmt_tmp_dir,
 	    (int) getpid ());
-  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/bin/cubrid_broker%s",
-	    sco.szCubrid, DBMT_EXE_EXT);
+  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/bin/arniadb_broker%s",
+	    sco.szArniadb, DBMT_EXE_EXT);
 
   argv[0] = cmd_name;
   argv[1] = "--version";
   argv[2] = NULL;
 
-  run_child (argv, 1, NULL, tmpfile, NULL, NULL);    /* cubrid_broker --version */
+  run_child (argv, 1, NULL, tmpfile, NULL, NULL);    /* arniadb_broker --version */
 
   if ((infile = fopen (tmpfile, "r")) != NULL)
     {
@@ -6038,7 +6038,7 @@ ts_backupdb_info (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   snprintf (vinf, sizeof (vinf), "%s/%s%s", log_dir, dbname,
-	    CUBRID_BACKUP_INFO_EXT);
+	    ARNIADB_BACKUP_INFO_EXT);
 
   if (access (vinf, F_OK) < 0)
     {
@@ -6074,7 +6074,7 @@ ts_backupdb_info (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
 exit_success:
-  /* In CUBRID Manager, $db_dir/backup is default path. */
+  /* In ARNIADB Manager, $db_dir/backup is default path. */
   snprintf (db_backup_dir, sizeof (db_backup_dir), "%s/backup", db_dir);
   nv_add_nvp (res, "dbdir", db_backup_dir);
 
@@ -6092,7 +6092,7 @@ ts_unloaddb_info (nvplist *req, nvplist *res, char *_dbmt_error)
   struct stat statbuf;
 
   snprintf (buf, sizeof (buf) - 1, "%s/unloaddb.info",
-	    sco.szCubrid_databases);
+	    sco.szArniadb_databases);
   if ((infile = fopen (buf, "rt")) == NULL)
     {
       return ERR_NO_ERROR;
@@ -6519,7 +6519,7 @@ ts_get_log_info (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   FREE_MEM (error_log_param);
 
-  snprintf (buf, sizeof (buf) - 1, "%s/cub_server.err", log_dir);
+  snprintf (buf, sizeof (buf) - 1, "%s/arn_server.err", log_dir);
   if (stat (buf, &statbuf) == 0)
     {
       nv_add_nvp (res, "open", "log");
@@ -6532,8 +6532,8 @@ ts_get_log_info (nvplist *req, nvplist *res, char *_dbmt_error)
       nv_add_nvp (res, "close", "log");
     }
 
-  snprintf (find_file, PATH_MAX - 1, "%s/%s", sco.szCubrid,
-	    CUBRID_ERROR_LOG_DIR);
+  snprintf (find_file, PATH_MAX - 1, "%s/%s", sco.szArniadb,
+	    ARNIADB_ERROR_LOG_DIR);
 #if defined(WINDOWS)
   snprintf (&find_file[strlen (find_file)], PATH_MAX - strlen (find_file) - 1,
 	    "/*");
@@ -6570,8 +6570,8 @@ ts_get_log_info (nvplist *req, nvplist *res, char *_dbmt_error)
 	{
 	  continue;
 	}
-      snprintf (buf, sizeof (buf) - 1, "%s/%s/%s", sco.szCubrid,
-		CUBRID_ERROR_LOG_DIR, fname);
+      snprintf (buf, sizeof (buf) - 1, "%s/%s/%s", sco.szArniadb,
+		ARNIADB_ERROR_LOG_DIR, fname);
       if (stat (buf, &statbuf) == 0)
 	{
 	  nv_add_nvp (res, "open", "log");
@@ -6848,7 +6848,7 @@ ts_get_tran_info (nvplist *req, nvplist *res, char *_dbmt_error)
   char errfile[PATH_MAX];
   FILE *infile = NULL;
   char *tok[9];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[10];
   int argc = 0;
   int retval = 0;
@@ -6881,7 +6881,7 @@ ts_get_tran_info (nvplist *req, nvplist *res, char *_dbmt_error)
   snprintf (errfile, PATH_MAX - 1, "%s/DBMT_task_%d.stderr.%d",
 	    sco.dbmt_tmp_dir, TS_GETTRANINFO, (int) getpid ());
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_TRANLIST;
 
@@ -7075,7 +7075,7 @@ ts_killtran (nvplist *req, nvplist *res, char *_dbmt_error)
   char *type = NULL;
   char *param = NULL;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char task_name[TASKNAME_LEN];
   const char *argv[10];
   int ha_mode = 0;
@@ -7111,7 +7111,7 @@ ts_killtran (nvplist *req, nvplist *res, char *_dbmt_error)
       return ERR_STANDALONE_MODE;
     }
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_KILLTRAN;
   if (dbpasswd != NULL)
@@ -7204,7 +7204,7 @@ ts_lockdb (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char buf[1024], tmpfile[PATH_MAX], tmpfile2[PATH_MAX], s[32];
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char task_name[TASKNAME_LEN];
 
   const char *argv[10];
@@ -7240,7 +7240,7 @@ ts_lockdb (nvplist *req, nvplist *res, char *_dbmt_error)
   snprintf (tmpfile, PATH_MAX, "%s/DBMT_task_%d_1.%d.tmp", sco.dbmt_tmp_dir,
 	    TS_LOCKDB, (int) getpid ());
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_LOCKDB;
   argv[argc++] = "--" LOCK_OUTPUT_FILE_L;
@@ -7336,7 +7336,7 @@ ts_get_backup_list (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   snprintf (file, PATH_MAX - 1, "%s/%s%s", log_dir, dbname,
-	    CUBRID_BACKUP_INFO_EXT);
+	    ARNIADB_BACKUP_INFO_EXT);
   if ((infile = fopen (file, "rt")) != NULL)
     {
       while (fgets (buf, sizeof (buf), infile))
@@ -7514,7 +7514,7 @@ ts_load_access_log (nvplist *req, nvplist *res, char *_dbmt_error)
   log_full_dir[0] = '\0';
   err_full_dir[0] = '\0';
 
-  snprintf (root_dir, PATH_MAX, "%s/%s/", sco.szCubrid, DBMT_LOG_DIR);
+  snprintf (root_dir, PATH_MAX, "%s/%s/", sco.szArniadb, DBMT_LOG_DIR);
 
   _get_dir_list (all_files_list, root_dir, cms_process_name);
 
@@ -7651,7 +7651,7 @@ _get_error_access_log_files (nvplist *req, nvplist *res, bool is_access_log)
 
   log_full_dir[0] = '\0';
 
-  snprintf (root_dir, PATH_MAX, "%s/%s/", sco.szCubrid, DBMT_LOG_DIR);
+  snprintf (root_dir, PATH_MAX, "%s/%s/", sco.szArniadb, DBMT_LOG_DIR);
 
   _get_dir_list (all_files_list, root_dir, cms_process_name);
   log_files_list = _get_filtered_files_list (all_files_list, log_exp);
@@ -7795,7 +7795,7 @@ ts_get_autobackupdb_error_log (nvplist *req, nvplist *res,
   end_time = nv_get_val (req, "end_time");
 
   snprintf (logfile, PATH_MAX - 1, "%s/log/manager/auto_backupdb.log",
-	    sco.szCubrid);
+	    sco.szArniadb);
   if ((infile = fopen (logfile, "r")) == NULL)
     {
       return ERR_NO_ERROR;
@@ -7856,7 +7856,7 @@ ts_get_autoexecquery_error_log (nvplist *req, nvplist *res,
   end_time = nv_get_val (req, "end_time");
 
   snprintf (logfile, PATH_MAX - 1, "%s/log/manager/auto_execquery.log",
-	    sco.szCubrid);
+	    sco.szArniadb);
   if ((infile = fopen (logfile, "r")) == NULL)
     {
       return ERR_NO_ERROR;
@@ -7916,15 +7916,15 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
   char *task, *dbname, *dbuser, *dbpasswd;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   int ha_mode = 0;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[11];
   char input_file[PATH_MAX];
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   int retval, argc;
   T_DB_SERVICE_MODE db_mode;
 
   input_file[0] = '\0';
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   task = nv_get_val (req, "task");
   if (task != NULL)
@@ -7951,8 +7951,8 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
   dbpasswd = nv_get_val (req, "_DBPASSWD");
 
   cmd_name[0] = '\0';
-  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szCubrid,
-	    CUBRID_DIR_BIN, UTIL_CSQL_NAME);
+  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szArniadb,
+	    ARNIADB_DIR_BIN, UTIL_ASQL_NAME);
   argc = 0;
   argv[argc++] = cmd_name;
 
@@ -7969,20 +7969,20 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   argv[argc++] = NULL;
-  argv[argc++] = "--" CSQL_INPUT_FILE_L;
+  argv[argc++] = "--" ASQL_INPUT_FILE_L;
   argv[argc++] = input_file;
   if (dbuser)
     {
-      argv[argc++] = "--" CSQL_USER_L;
+      argv[argc++] = "--" ASQL_USER_L;
       argv[argc++] = dbuser;
       if (dbpasswd)
 	{
-	  argv[argc++] = "--" CSQL_PASSWORD_L;
+	  argv[argc++] = "--" ASQL_PASSWORD_L;
 	  argv[argc++] = dbpasswd;
 	}
     }
 
-  argv[argc++] = "--" CSQL_NO_AUTO_COMMIT_L;
+  argv[argc++] = "--" ASQL_NO_AUTO_COMMIT_L;
 
   for (; argc < 11; argc++)
     {
@@ -8002,17 +8002,17 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
 
   if (db_mode == DB_SERVICE_MODE_CS)
     {
-      /* run csql command with -cs option */
-      argv[2] = "--" CSQL_CS_MODE_L;
+      /* run asql command with -cs option */
+      argv[2] = "--" ASQL_CS_MODE_L;
     }
 
   if (db_mode == DB_SERVICE_MODE_NONE)
     {
-      /* run csql command with -sa option */
-      argv[2] = "--" CSQL_SA_MODE_L;
+      /* run asql command with -sa option */
+      argv[2] = "--" ASQL_SA_MODE_L;
     }
 
-  /* csql -sa -i input_file dbname  */
+  /* asql -sa -i input_file dbname  */
   if (task != NULL)
     {
       if (strcmp (task, "addtrigger") == 0)
@@ -8041,27 +8041,27 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
 	}
     }
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "trigger_operation", getpid ());
   SET_TRANSACTION_NO_WAIT_MODE_ENV ();
 
-  retval = run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL);    /* csql - trigger */
+  retval = run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL);    /* asql - trigger */
   if (strlen (input_file) > 0)
     {
       unlink (input_file);
     }
 
-  if (read_csql_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_asql_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
 	{
-	  unlink (cubrid_err_file);
+	  unlink (arniadb_err_file);
 	}
       return ERR_WITH_MSG;
     }
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   if (retval < 0)
     {
@@ -8880,7 +8880,7 @@ ts_analyzecaslog (nvplist *cli_request, nvplist *cli_response,
   char tmpfileQ[PATH_MAX], tmpfileRes[PATH_MAX], tmpfileT[PATH_MAX],
        tmpfileanalyzeresult[PATH_MAX];
   char *logfile, *option_t;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char diag_err_file[PATH_MAX];
   const char *argv[256];
   char buf[1024], logbuf[2048];
@@ -8897,9 +8897,9 @@ ts_analyzecaslog (nvplist *cli_request, nvplist *cli_response,
   option_t = nv_get_val (cli_request, "option_t");
 
   /* set prarameter with logfile and execute broker_log_top */
-  /* execute at current directory and copy result to $CUBRID/tmp directory */
+  /* execute at current directory and copy result to $ARNIADB/tmp directory */
   snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/bin/broker_log_top%s",
-	    sco.szCubrid, DBMT_EXE_EXT);
+	    sco.szArniadb, DBMT_EXE_EXT);
   arg_index = 0;
   argv[arg_index++] = cmd_name;
   if (option_t &&!strcmp (option_t, "yes"))
@@ -9180,7 +9180,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
   FILE *flogfile, *fresfile2;
   char tmplogfilename[PATH_MAX], resfile[PATH_MAX], resfile2[PATH_MAX];
   char log_converter_res[PATH_MAX];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[25];
   T_CM_BROKER_CONF uc_conf;
   char out_msg_file_env[1024];
@@ -9293,7 +9293,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
   snprintf (log_converter_res, PATH_MAX - 1, "%s/log_converted_%lu.q_res",
 	    sco.dbmt_tmp_dir, th_id);
   snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/bin/broker_log_converter%s",
-	    sco.szCubrid, DBMT_EXE_EXT);
+	    sco.szArniadb, DBMT_EXE_EXT);
 
   i = 0;
   argv[i] = cmd_name;
@@ -9310,7 +9310,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
 
   /* execute broker_log_runner through logfile that converted */
   snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/bin/broker_log_runner%s",
-	    sco.szCubrid, DBMT_EXE_EXT);
+	    sco.szArniadb, DBMT_EXE_EXT);
   i = 0;
   argv[i] = cmd_name;
   argv[++i] = "-I";
@@ -9340,7 +9340,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
   argv[++i] = NULL;
 
   snprintf (out_msg_file_env, sizeof (out_msg_file_env) - 1,
-	    "CUBRID_MANAGER_OUT_MSG_FILE=%s", resfile2);
+	    "ARNIADB_MANAGER_OUT_MSG_FILE=%s", resfile2);
   putenv (out_msg_file_env);
 
   if (run_child (argv, 1, NULL, NULL, NULL, NULL) < 0)
@@ -9440,7 +9440,7 @@ ts_removecasrunnertmpfile (nvplist *cli_request, nvplist *cli_response,
 {
   char command[PATH_MAX];
   char filename[PATH_MAX];
-  char cubrid_tmp_path[PATH_MAX];
+  char arniadb_tmp_path[PATH_MAX];
   char *fullpath_with_filename = NULL;
 
   const char *casrunnertmp_short[] =
@@ -9452,7 +9452,7 @@ ts_removecasrunnertmpfile (nvplist *cli_request, nvplist *cli_response,
 
   command[0] = '\0';
   filename[0] = '\0';
-  cubrid_tmp_path[0] = '\0';
+  arniadb_tmp_path[0] = '\0';
 
   fullpath_with_filename = nv_get_val (cli_request, "filename");
   if (fullpath_with_filename == NULL)
@@ -9461,14 +9461,14 @@ ts_removecasrunnertmpfile (nvplist *cli_request, nvplist *cli_response,
       return ERR_PARAM_MISSING;
     }
 
-  /* check permission : must under $CUBRID/tmp/ */
+  /* check permission : must under $ARNIADB/tmp/ */
 #if defined(WINDOWS)
-  snprintf (cubrid_tmp_path, PATH_MAX, "%s\\", sco.dbmt_tmp_dir);
+  snprintf (arniadb_tmp_path, PATH_MAX, "%s\\", sco.dbmt_tmp_dir);
 #else
-  snprintf (cubrid_tmp_path, PATH_MAX, "%s/", sco.dbmt_tmp_dir);
+  snprintf (arniadb_tmp_path, PATH_MAX, "%s/", sco.dbmt_tmp_dir);
 #endif
 
-  if (strstr (fullpath_with_filename, cubrid_tmp_path) == NULL)
+  if (strstr (fullpath_with_filename, arniadb_tmp_path) == NULL)
     {
       snprintf (diag_error, DBMT_ERROR_MSG_SIZE, "%s",
 		fullpath_with_filename);
@@ -9673,9 +9673,9 @@ cmd_dbmt_user_login (nvplist *in, nvplist *out, char *_dbmt_error)
   nv_add_nvp (out, "dbname", dbname);
 
   snprintf (outfile, sizeof (outfile) - 1, "%s/tmp/DBMT_user_login.%d",
-	    sco.szCubrid, cmdid++);
+	    sco.szArniadb, cmdid++);
   errcode =
-	  run_csql_statement (statement, dbname, dbuser, dbpasswd, outfile, _dbmt_error);
+	  run_asql_statement (statement, dbname, dbuser, dbpasswd, outfile, _dbmt_error);
   if (errcode != ERR_NO_ERROR)
     {
       return errcode;
@@ -9912,14 +9912,14 @@ analyze_heartbeat_cmd_outfile (FILE *infile, char *_dbmt_error)
 }
 
 static char *
-cub_admin_cmd_name (char *cmd_name, int buf_len)
+arn_admin_cmd_name (char *cmd_name, int buf_len)
 {
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  snprintf (cmd_name, buf_len, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN,
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  snprintf (cmd_name, buf_len, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN,
 	    UTIL_ADMIN_NAME);
 #else
-  sprintf (cmd_name, buf_len, "%s/%s", CUBRID_BINDIR, UTIL_ADMIN_NAME);
+  sprintf (cmd_name, buf_len, "%s/%s", ARNIADB_BINDIR, UTIL_ADMIN_NAME);
 #endif
   return cmd_name;
 }
@@ -9930,18 +9930,18 @@ cmd_heartbeat_deact (char *_dbmt_error)
   int retval = ERR_NO_ERROR;
   const char *argv[8];
   int argc = 0;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   FILE *outputfile = NULL;
   char outputfilepath[PATH_MAX];
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
   outputfilepath[0] = '\0';
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "heartbeat_deact", getpid ());
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = PRINT_CMD_HEARTBEAT;
   argv[argc++] = PRINT_CMD_DEACT;
@@ -9950,7 +9950,7 @@ cmd_heartbeat_deact (char *_dbmt_error)
   snprintf (outputfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d",
 	    sco.dbmt_tmp_dir, TS_HEARTBEAT_DEACT, (int) getpid ());
 
-  if (run_child (argv, 1, NULL, outputfilepath, cubrid_err_file, NULL) < 0)
+  if (run_child (argv, 1, NULL, outputfilepath, arniadb_err_file, NULL) < 0)
     {
       /* heartbeat deact */
       strcpy (_dbmt_error, argv[0]);
@@ -9958,7 +9958,7 @@ cmd_heartbeat_deact (char *_dbmt_error)
       goto rm_outputfile;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto rm_outputfile;
@@ -9984,9 +9984,9 @@ cmd_heartbeat_deact (char *_dbmt_error)
 
 rm_outputfile:
   unlink (outputfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
@@ -9997,18 +9997,18 @@ cmd_heartbeat_act (char *_dbmt_error)
   int retval = ERR_NO_ERROR;
   const char *argv[8];
   int argc = 0;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   FILE *outputfile = NULL;
   char outputfilepath[PATH_MAX];
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
 
   outputfilepath[0] = '\0';
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "cmd_heartbeat_act", getpid ());
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = PRINT_CMD_HEARTBEAT;
   argv[argc++] = PRINT_CMD_ACT;
@@ -10017,7 +10017,7 @@ cmd_heartbeat_act (char *_dbmt_error)
   snprintf (outputfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d",
 	    sco.dbmt_tmp_dir, TS_HEARTBEAT_ACT, (int) getpid ());
 
-  if (run_child (argv, 1, NULL, outputfilepath, cubrid_err_file, NULL) < 0)
+  if (run_child (argv, 1, NULL, outputfilepath, arniadb_err_file, NULL) < 0)
     {
       /* heartbeat act */
       strcpy (_dbmt_error, argv[0]);
@@ -10025,7 +10025,7 @@ cmd_heartbeat_act (char *_dbmt_error)
       goto rm_outputfile;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto rm_outputfile;
@@ -10051,19 +10051,19 @@ cmd_heartbeat_act (char *_dbmt_error)
 
 rm_outputfile:
   unlink (outputfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
 
 static int
-run_csql_statement (const char *sql_stat, char *dbname, char *dbuser,
+run_asql_statement (const char *sql_stat, char *dbname, char *dbuser,
 		    char *dbpasswd, char *outfilepath, char *_dbmt_error)
 {
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char task_name[TASKNAME_LEN];
   const char *argv[15];
 
@@ -10077,8 +10077,8 @@ run_csql_statement (const char *sql_stat, char *dbname, char *dbuser,
   dbname_at_hostname[0] = '\0';
   cmd_name[0] = '\0';
 
-  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szCubrid,
-	    CUBRID_DIR_BIN, UTIL_CSQL_NAME);
+  snprintf (cmd_name, sizeof (cmd_name) - 1, "%s/%s%s", sco.szArniadb,
+	    ARNIADB_DIR_BIN, UTIL_ASQL_NAME);
 
   if (!_isRegisteredDB (dbname))
     {
@@ -10097,19 +10097,19 @@ run_csql_statement (const char *sql_stat, char *dbname, char *dbuser,
 
   if (db_mode == DB_SERVICE_MODE_NONE)
     {
-      argv[argc++] = "--" CSQL_SA_MODE_L;
+      argv[argc++] = "--" ASQL_SA_MODE_L;
     }
   else
     {
-      argv[argc++] = "--" CSQL_CS_MODE_L;
+      argv[argc++] = "--" ASQL_CS_MODE_L;
     }
 
   if (dbuser != NULL)
     {
-      argv[argc++] = "--" CSQL_USER_L;
+      argv[argc++] = "--" ASQL_USER_L;
       argv[argc++] = dbuser;
 
-      argv[argc++] = "--" CSQL_PASSWORD_L;
+      argv[argc++] = "--" ASQL_PASSWORD_L;
       if (dbpasswd != NULL)
 	{
 	  argv[argc++] = dbpasswd;
@@ -10125,7 +10125,7 @@ run_csql_statement (const char *sql_stat, char *dbname, char *dbuser,
       return ERR_PARAM_MISSING;
     }
 
-  argv[argc++] = "--" CSQL_COMMAND_L;
+  argv[argc++] = "--" ASQL_COMMAND_L;
   argv[argc++] = sql_stat;
 
   if (ha_mode != 0)
@@ -10143,7 +10143,7 @@ run_csql_statement (const char *sql_stat, char *dbname, char *dbuser,
 
   SET_TRANSACTION_NO_WAIT_MODE_ENV ();
 
-  strncpy (task_name, "csql", TASKNAME_LEN);
+  strncpy (task_name, "asql", TASKNAME_LEN);
   retval = _run_child (argv, 1, task_name, outfilepath, _dbmt_error);
 
   return retval;
@@ -10175,9 +10175,9 @@ ts_user_verify (nvplist *req, nvplist *res, char *_dbmt_error)
     }
 
   /*
-  * using csql to verify the user's password.
+  * using asql to verify the user's password.
   */
-  retval = run_csql_statement (sql_stat, dbname, dbuser, dbpasswd, NULL, _dbmt_error);    /* csql */
+  retval = run_asql_statement (sql_stat, dbname, dbuser, dbpasswd, NULL, _dbmt_error);    /* asql */
 
   return retval;
 }
@@ -10228,7 +10228,7 @@ ts_get_standby_server_stat (nvplist *req, nvplist *res, char *_dbmt_error)
       goto func_return;
     }
 
-  retval = run_csql_statement (sql_stat, dbname, dbuser, dbpasswd, output_file, _dbmt_error);    /* csql */
+  retval = run_asql_statement (sql_stat, dbname, dbuser, dbpasswd, output_file, _dbmt_error);    /* asql */
 
   if (retval != ERR_NO_ERROR)
     {
@@ -10356,7 +10356,7 @@ cmd_get_db_mode (T_DB_MODE_INFO *dbmodeinfo, char *dbname, char *_dbmt_error)
 
   if (ha_mode == 0)
     {
-      /* To CUBRID Client, the SA and NONE mode all means the database is stopped. */
+      /* To ARNIADB Client, the SA and NONE mode all means the database is stopped. */
       if (dbmode == DB_SERVICE_MODE_SA || dbmode == DB_SERVICE_MODE_NONE)
 	{
 	  strcpy_limit (server_mode, "stopped", sizeof (server_mode));
@@ -10469,14 +10469,14 @@ cmd_changemode (char *dbname, char *modify, char *force,
   int argc = 0;
   int ha_mode = 0;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   T_DB_SERVICE_MODE dbmode;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   FILE *outputfile;
   char tmpfilepath[PATH_MAX];
   int retval = ERR_NO_ERROR;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   if (dbname == NULL)
     {
@@ -10491,12 +10491,12 @@ cmd_changemode (char *dbname, char *modify, char *force,
       return ERR_STANDALONE_MODE;
     }
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "changemode", getpid ());
   snprintf (tmpfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d",
 	    sco.dbmt_tmp_dir, TS_CHANGEMODE, (int) getpid ());
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_CHANGEMODE;
 
@@ -10524,14 +10524,14 @@ cmd_changemode (char *dbname, char *modify, char *force,
 
   argv[argc++] = NULL;
 
-  if (run_child (argv, 1, NULL, tmpfilepath, cubrid_err_file, NULL) < 0)    /* changemode */
+  if (run_child (argv, 1, NULL, tmpfilepath, arniadb_err_file, NULL) < 0)    /* changemode */
     {
       strcpy_limit (_dbmt_error, argv[0], DBMT_ERROR_MSG_SIZE);
       retval = ERR_SYSTEM_CALL;
       goto error_return;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto error_return;
@@ -10559,17 +10559,17 @@ cmd_changemode (char *dbname, char *modify, char *force,
 
   fclose (outputfile);
   unlink (tmpfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return ERR_NO_ERROR;
 
 error_return:
   unlink (tmpfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
@@ -10583,7 +10583,7 @@ ts_role_change (nvplist *req, nvplist *res, char *_dbmt_error)
   FILE *infile = NULL;
   char *tok[8];
   const char *cmd_argv[8];
-  char cub_admin_cmd[CUBRID_CMD_NAME_LEN];
+  char arn_admin_cmd[ARNIADB_CMD_NAME_LEN];
   char buf[2048] = { 0 };
 
   const char *argv[] =
@@ -10650,9 +10650,9 @@ ts_role_change (nvplist *req, nvplist *res, char *_dbmt_error)
 	{
 	  /* restart applylogdb & copylogdb processes. */
 	  string_tokenize2 (buf, tok, 8, ' ');
-	  cub_admin_cmd_name (cub_admin_cmd, sizeof (cub_admin_cmd));
+	  arn_admin_cmd_name (arn_admin_cmd, sizeof (arn_admin_cmd));
 
-	  cmd_argv[0] = cub_admin_cmd;
+	  cmd_argv[0] = arn_admin_cmd;
 
 	  for (i = 1; tok[i] != NULL; i++)
 	    {
@@ -10665,7 +10665,7 @@ ts_role_change (nvplist *req, nvplist *res, char *_dbmt_error)
 	      goto error_return;
 	    }
 	}
-      else if (strstr (buf, "cub_server") != NULL)
+      else if (strstr (buf, "arn_server") != NULL)
 	{
 	  /* restart database server processes. */
 	  string_tokenize2 (buf, tok, 3, ' ');
@@ -10872,8 +10872,8 @@ ts_write_and_save_conf (nvplist *req, nvplist *res, char *_dbmt_error)
 int
 ts_run_sql_statement (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  T_CUBRID_MODE mode;
-  T_CSQL_RESULT *csql_res = NULL;
+  T_ARNIADB_MODE mode;
+  T_ASQL_RESULT *asql_res = NULL;
   int retval = ERR_NO_ERROR;
   char *dbname, *uid, *passwd;
   char *infile;
@@ -10895,23 +10895,23 @@ ts_run_sql_statement (nvplist *req, nvplist *res, char *_dbmt_error)
 
   mode =
 	  (uDatabaseMode (dbname, NULL) ==
-	   DB_SERVICE_MODE_NONE ? CUBRID_MODE_SA : CUBRID_MODE_CS);
+	   DB_SERVICE_MODE_NONE ? ARNIADB_MODE_SA : ARNIADB_MODE_CS);
 
-  csql_res = cmd_csql (dbname, uid, passwd, mode, infile, command, error_continue);    /* csql */
+  asql_res = cmd_asql (dbname, uid, passwd, mode, infile, command, error_continue);    /* asql */
 
-  if (csql_res == NULL)
+  if (asql_res == NULL)
     {
-      strcpy_limit (_dbmt_error, "Error occur when execurating csql.",
+      strcpy_limit (_dbmt_error, "Error occur when execurating asql.",
 		    DBMT_ERROR_MSG_SIZE);
       return ERR_WITH_MSG;
     }
 
-  if (strlen (csql_res->err_msg) != 0)
+  if (strlen (asql_res->err_msg) != 0)
     {
-      strcpy_limit (_dbmt_error, csql_res->err_msg, DBMT_ERROR_MSG_SIZE);
+      strcpy_limit (_dbmt_error, asql_res->err_msg, DBMT_ERROR_MSG_SIZE);
       retval = ERR_WITH_MSG;
     }
-  free (csql_res);
+  free (asql_res);
   return retval;
 }
 
@@ -11124,10 +11124,10 @@ ts_remove_files (nvplist *req, nvplist *res, char *_dbmt_error)
 		       path);
 	      return ERR_WITH_MSG;
 	    }
-	  if (*path == '+' && * (path + 1) == 'T')   // for CUBRID/tmp
+	  if (*path == '+' && * (path + 1) == 'T')   // for ARNIADB/tmp
 	    {
 	      snprintf (fullpath, sizeof (fullpath) - 1, "%s/tmp/%s",
-			sco.szCubrid, (path + 2));
+			sco.szArniadb, (path + 2));
 	    }
 	  else
 	    {
@@ -11344,29 +11344,29 @@ static int
 cmd_heartbeat_list (T_HA_SERVER_INFO_ALL **all_info, int get_all_dbmode,
 		    char *dblist, char *_dbmt_error)
 {
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   int argc = 0;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   char outputfilepath[PATH_MAX];
   int retval = ERR_NO_ERROR;
   FILE *tmpfile = NULL;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = PRINT_CMD_HEARTBEAT;
   argv[argc++] = PRINT_CMD_LIST;
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
 	    sco.dbmt_tmp_dir, "heartbeat_list", getpid ());
 
   snprintf (outputfilepath, PATH_MAX - 1, "%s/DBMT_task_%d.%d",
 	    sco.dbmt_tmp_dir, TS_HEARTBEAT_LIST, (int) getpid ());
 
-  if (run_child (argv, 1, NULL, outputfilepath, cubrid_err_file, NULL) < 0)
+  if (run_child (argv, 1, NULL, outputfilepath, arniadb_err_file, NULL) < 0)
     {
       /* heartbeat list */
       strcpy (_dbmt_error, argv[0]);
@@ -11374,7 +11374,7 @@ cmd_heartbeat_list (T_HA_SERVER_INFO_ALL **all_info, int get_all_dbmode,
       goto rm_tmpfile;
     }
 
-  if (read_error_file (cubrid_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
+  if (read_error_file (arniadb_err_file, _dbmt_error, DBMT_ERROR_MSG_SIZE) < 0)
     {
       retval = ERR_WITH_MSG;
       goto rm_tmpfile;
@@ -11401,9 +11401,9 @@ cmd_heartbeat_list (T_HA_SERVER_INFO_ALL **all_info, int get_all_dbmode,
 
 rm_tmpfile:
   unlink (outputfilepath);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   return retval;
 }
@@ -12319,17 +12319,17 @@ uca_conf_write (T_CM_BROKER_CONF *uc_conf, char *del_broker,
 	}
     }
 
-  cm_get_broker_file (UC_FID_CUBRID_BROKER_CONF, buf);
+  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
 
   if (stat (buf, &statbuf) < 0)
     {
-      cm_get_broker_file (UC_FID_CUBRID_CAS_CONF, buf);
+      cm_get_broker_file (UC_FID_ARNIADB_CAS_CONF, buf);
       if (stat (buf, &statbuf) < 0)
 	{
 	  cm_get_broker_file (UC_FID_UNICAS_CONF, buf);
 	  if (stat (buf, &statbuf) < 0)
 	    {
-	      cm_get_broker_file (UC_FID_CUBRID_BROKER_CONF, buf);
+	      cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
 	    }
 	}
     }
@@ -12427,13 +12427,13 @@ _tsParseSpacedb (nvplist *req, nvplist *res, char *dbname,
 
       if (strncmp (fname, dbname, baselen) == 0)
 	{
-	  if (!strcmp (fname + baselen, CUBRID_ACT_LOG_EXT))
+	  if (!strcmp (fname + baselen, ARNIADB_ACT_LOG_EXT))
 	    {
 	      _ts_gen_spaceinfo (res, fname, dbdir, "Active_log",
 				 logpagesize);
 	    }
-	  else if (!strncmp (fname + baselen, CUBRID_ARC_LOG_EXT,
-			     CUBRID_ARC_LOG_EXT_LEN))
+	  else if (!strncmp (fname + baselen, ARNIADB_ARC_LOG_EXT,
+			     ARNIADB_ARC_LOG_EXT_LEN))
 	    {
 	      _ts_gen_spaceinfo (res, fname, dbdir, "Archive_log",
 				 logpagesize);
@@ -13058,7 +13058,7 @@ get_broker_info_from_filename (char *path, char *br_name, int *as_id)
       return -1;
     }
   path_len = (int) strlen (path);
-  if (strncmp (path, sco.szCubrid, strlen (sco.szCubrid)) != 0 ||
+  if (strncmp (path, sco.szArniadb, strlen (sco.szArniadb)) != 0 ||
       path_len <= sql_log_ext_len ||
       strcmp (path + (path_len - sql_log_ext_len), sql_log_ext) != 0)
     {
@@ -13140,17 +13140,17 @@ get_dbitemdir (char *item_dir, size_t item_dir_size, char *dbname,
     {
       return -1;
     }
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  envpath = sco.szCubrid_databases;
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  envpath = sco.szArniadb_databases;
 #else
-  envpath = CUBRID_VARDIR;
+  envpath = ARNIADB_VARDIR;
 #endif
   if ((envpath == NULL) || (strlen (envpath) == 0))
     {
       return -1;
     }
   snprintf (db_txt, sizeof (db_txt) - 1, "%s/%s", envpath,
-	    CUBRID_DATABASE_TXT);
+	    ARNIADB_DATABASE_TXT);
   databases_txt = fopen (db_txt, "r");
 
   /*set the patten to get dir from databases.txt. */
@@ -13225,7 +13225,7 @@ cm_get_abs_file_path (const char *filename, char *buf)
       return buf;
     }
 #endif
-  sprintf (buf, "%s/%s", getenv ("CUBRID"), filename);
+  sprintf (buf, "%s/%s", getenv ("ARNIADB"), filename);
   return buf;
 }
 
@@ -13354,7 +13354,7 @@ alter_dblocation (const char *dbname, const char *new_dbpath)
   char *tok[4];
 
   snprintf (dblocation_info_path, PATH_MAX - 1, "%s/%s",
-	    sco.szCubrid_databases, CUBRID_DATABASE_TXT);
+	    sco.szArniadb_databases, ARNIADB_DATABASE_TXT);
   snprintf (tmpfile_path, PATH_MAX - 1, "%s/DBMT_util_dblocation.%d",
 	    sco.dbmt_tmp_dir, (int) getpid ());
 
@@ -13651,7 +13651,7 @@ ts_get_shard_info (nvplist *req, nvplist *res, char *_dbmt_error)
   char stderr_log_file[512];
   int pid, argc = 0;
   int ret_val;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   static int reqid = 0;
 
@@ -13661,10 +13661,10 @@ ts_get_shard_info (nvplist *req, nvplist *res, char *_dbmt_error)
   sprintf (stderr_log_file, "%s/cmshardinfo2.%d.err", sco.dbmt_tmp_dir, reqid);
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -13798,7 +13798,7 @@ ts_get_shard_status (nvplist *req, nvplist *res, char *_dbmt_error)
   char stderr_log_file[512];
   int pid, argc = 0;
   int ret_val;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   char *sname;
   static int reqid = 0;
@@ -13814,10 +13814,10 @@ ts_get_shard_status (nvplist *req, nvplist *res, char *_dbmt_error)
   sprintf (stderr_log_file, "%s/cmshardstatus2.%d.err", sco.dbmt_tmp_dir, reqid);
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -13935,7 +13935,7 @@ ts_shard_start (nvplist *req, nvplist *res, char *err_buf)
   char stderr_log_file[512];
   int pid, argc = 0;
   int ret_val;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
   char *sname = NULL;
 
@@ -13947,10 +13947,10 @@ ts_shard_start (nvplist *req, nvplist *res, char *err_buf)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14001,7 +14001,7 @@ ts_shard_stop (nvplist *req, nvplist *res, char *err_buf)
   char stderr_log_file[512];
   int pid, argc = 0;
   int ret_val;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
   char *sname = NULL;
 
@@ -14013,10 +14013,10 @@ ts_shard_stop (nvplist *req, nvplist *res, char *err_buf)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14135,7 +14135,7 @@ ts_broker_changer (nvplist *req, nvplist *res, char *_dbmt_error)
   char stdout_log_file[512];
   char stderr_log_file[512];
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
 
   char *bname = NULL;
@@ -14174,11 +14174,11 @@ ts_broker_changer (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN,
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN,
 	   UTIL_BROKER_CHANGER);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_BROKER_CHANGER);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_BROKER_CHANGER);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14565,7 +14565,7 @@ ts_ha_start (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char stdout_log_file[512];
   char stderr_log_file[512];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   char *dbname = NULL;
 
@@ -14582,10 +14582,10 @@ ts_ha_start (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14599,7 +14599,7 @@ ts_ha_start (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat start [dbname]"
+  // run "arniadb heartbeat start [dbname]"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14627,7 +14627,7 @@ ts_ha_stop (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char stdout_log_file[512];
   char stderr_log_file[512];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   char *dbname = NULL;
 
@@ -14645,10 +14645,10 @@ ts_ha_stop (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14662,7 +14662,7 @@ ts_ha_stop (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat stop [dbname]"
+  // run "arniadb heartbeat stop [dbname]"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14690,7 +14690,7 @@ ts_ha_status (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char stdout_log_file[512];
   char stderr_log_file[512];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
   int argc = 0;
   int pid;
@@ -14703,10 +14703,10 @@ ts_ha_status (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14714,7 +14714,7 @@ ts_ha_status (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = PRINT_CMD_STATUS;
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat status"
+  // run "arniadb heartbeat status"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14757,7 +14757,7 @@ ts_ha_reload (nvplist *req, nvplist *res, char *_dbmt_error)
   char stdout_log_file[512];
   char stderr_log_file[512];
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[6];
 
   int argc = 0;
@@ -14771,10 +14771,10 @@ ts_ha_reload (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14782,7 +14782,7 @@ ts_ha_reload (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = PRINT_CMD_RELOAD;
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat reload"
+  // run "arniadb heartbeat reload"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14812,7 +14812,7 @@ ts_ha_copylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
   char stdout_log_file[512];
   char stderr_log_file[512];
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[7];
 
   char *dbname = NULL;
@@ -14853,10 +14853,10 @@ ts_ha_copylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14867,7 +14867,7 @@ ts_ha_copylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = peer_node;
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat copylogdb <start|stop> dbname peer_node"
+  // run "arniadb heartbeat copylogdb <start|stop> dbname peer_node"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14896,7 +14896,7 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
   char stdout_log_file[512];
   char stderr_log_file[512];
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[7];
 
   char *dbname = NULL;
@@ -14937,10 +14937,10 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
 	   (int) getpid ());
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[argc++] = cmd_name;
@@ -14951,7 +14951,7 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
   argv[argc++] = peer_node;
   argv[argc] = NULL;
 
-  // run "cubrid heartbeat applylogdb <start|stop> dbname peer_node"
+  // run "arniadb heartbeat applylogdb <start|stop> dbname peer_node"
   pid = run_child (argv, 1, NULL, stdout_log_file, stderr_log_file, NULL);
 
   if (pid < 0)
@@ -14983,10 +14983,10 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
 
     FILE *fin;
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-    snprintf (cm_conf_file, PATH_MAX - 1, "%s/conf/%s", sco.szCubrid, CUBRID_DBMT_CONF);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+    snprintf (cm_conf_file, PATH_MAX - 1, "%s/conf/%s", sco.szArniadb, ARNIADB_DBMT_CONF);
 #else
-    snprintf (cm_conf_file, PATH_MAX - 1, "%s/%s", CUBRID_CONFDIR, CUBRID_DBMT_CONF);
+    snprintf (cm_conf_file, PATH_MAX - 1, "%s/%s", ARNIADB_CONFDIR, ARNIADB_DBMT_CONF);
 #endif
 
     fin = fopen(cm_conf_file, "r");
@@ -15044,7 +15044,7 @@ _write_auto_update_log (char *line_buf, int is_success)
 
   FILE *fin = NULL;
 
-  sprintf (log_path, "%s/log/manager/cms.update.log", sco.szCubrid);
+  sprintf (log_path, "%s/log/manager/cms.update.log", sco.szArniadb);
 
   fin = fopen (log_path, "a");
 
@@ -15085,7 +15085,7 @@ ts_is_update_success (nvplist *req, nvplist *res, char *_dbmt_error)
 
   while (fgets (line_buf, LINE_MAX, fin) != NULL)
     {
-      if (strstr (line_buf, "CUBRID Manager Server is updated.") != NULL)
+      if (strstr (line_buf, "ARNIADB Manager Server is updated.") != NULL)
 	{
 	  nv_add_nvp (res, "autoupdate_success", "success");
 
@@ -15231,10 +15231,10 @@ ts_list_dir (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   nv_add_nvp (res, "path", path);
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  snprintf (full_path, PATH_MAX, "%s/%s/", sco.szCubrid, path);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  snprintf (full_path, PATH_MAX, "%s/%s/", sco.szArniadb, path);
 #else
-  sprintf (full_path, "%s/%s/", CUBRID, path);
+  sprintf (full_path, "%s/%s/", ARNIADB, path);
 #endif
 
 #if defined(WINDOWS)
@@ -15374,7 +15374,7 @@ int
 ts_monitor_process (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   // processes need monitoring
-  const char process_name[][PATH_MAX] = {"cub_master", 0};
+  const char process_name[][PATH_MAX] = {"arn_master", 0};
   char exist[15];
   int i = 0;
 
@@ -15631,7 +15631,7 @@ _make_cert (nvplist *req, X509 **x509p, EVP_PKEY **pkeyp, int bits,
       && (organizational_unit_name == NULL) && (common_name == NULL)
       && (email_addr == NULL))
     {
-      snprintf (user_info, PATH_MAX, "CUBRID Manger Server Group.");
+      snprintf (user_info, PATH_MAX, "ARNIADB Manger Server Group.");
       _add_issuer_info (name, "OU", user_info);
     }
   /* Its self signed so set the issuer name to be the same as the
@@ -15656,7 +15656,7 @@ _make_cert (nvplist *req, X509 **x509p, EVP_PKEY **pkeyp, int bits,
 		   nid_netscape_cert_type);
 
   snprintf (nid_netscape_comment, PATH_MAX,
-	    "CUBRID Manager server comment extension");
+	    "ARNIADB Manager server comment extension");
   _add_extensions (x509_local, NID_netscape_comment, nid_netscape_comment);
 
   if (X509_sign (x509_local, pub_key, EVP_md5 ()) == 0)
@@ -15901,7 +15901,7 @@ ts_start_statdump (nvplist *req, nvplist *res, char *_dbmt_error)
     }
   strcpy (statdump_daemon[slot].dbname, db_name);
   interval = atoi (interval_str);
-  cubrid_cmd_name (path);
+  arniadb_cmd_name (path);
 
   argv[argc++] = path;
   argv[argc++] = "statdump";

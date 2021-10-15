@@ -25,7 +25,7 @@ The restoredb interface will restore database from backup.
   "date": "none",
   "level": "0",
   "partial": "y",
-  "pathname": "$CUBRID_DATABASES/alatestdb/backup/alatestdb_backup_lv0",
-  "recoverypath": "$CUBRID_DATABASES/alatestdb"
+  "pathname": "$ARNIADB_DATABASES/alatestdb/backup/alatestdb_backup_lv0",
+  "recoverypath": "$ARNIADB_DATABASES/alatestdb"
 }
 ```

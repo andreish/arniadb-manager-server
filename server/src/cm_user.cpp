@@ -37,10 +37,10 @@
 #include "cm_server_util.h"
 #include "cm_user.h"
 
-#define CUBRID_PASS_OPEN_TAG         "<<<:"
-#define CUBRID_PASS_OPEN_TAG_LEN     strlen(CUBRID_PASS_OPEN_TAG)
-#define CUBRID_PASS_CLOSE_TAG        ">>>:"
-#define CUBRID_PASS_CLOSE_TAG_LEN    strlen(CUBRID_PASS_CLOSE_TAG)
+#define ARNIADB_PASS_OPEN_TAG         "<<<:"
+#define ARNIADB_PASS_OPEN_TAG_LEN     strlen(ARNIADB_PASS_OPEN_TAG)
+#define ARNIADB_PASS_CLOSE_TAG        ">>>:"
+#define ARNIADB_PASS_CLOSE_TAG_LEN    strlen(ARNIADB_PASS_CLOSE_TAG)
 
 
 T_USER_TOKEN_INFO *user_token_info = NULL;
@@ -70,11 +70,11 @@ dbmt_user_read (T_DBMT_USER *dbmt_user, char *_dbmt_error)
       return ERR_TMPFILE_OPEN_FAIL;
     }
 
-  fp = fopen (conf_get_dbmt_file (FID_DBMT_CUBRID_PASS, strbuf), "r");
+  fp = fopen (conf_get_dbmt_file (FID_DBMT_ARNIADB_PASS, strbuf), "r");
   if (fp == NULL)
     {
       strcpy (_dbmt_error,
-	      conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS, strbuf));
+	      conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS, strbuf));
       retval = ERR_FILE_OPEN_FAIL;
       goto read_dbmt_user_error;
     }
@@ -83,9 +83,9 @@ dbmt_user_read (T_DBMT_USER *dbmt_user, char *_dbmt_error)
   while (fgets (strbuf, sizeof (strbuf), fp))
     {
       ut_trim (strbuf);
-      if (strncmp (strbuf, CUBRID_PASS_OPEN_TAG, CUBRID_PASS_OPEN_TAG_LEN) == 0)
+      if (strncmp (strbuf, ARNIADB_PASS_OPEN_TAG, ARNIADB_PASS_OPEN_TAG_LEN) == 0)
 	{
-	  snprintf (cur_user, sizeof (cur_user) - 1, "%s", strbuf + CUBRID_PASS_OPEN_TAG_LEN);
+	  snprintf (cur_user, sizeof (cur_user) - 1, "%s", strbuf + ARNIADB_PASS_OPEN_TAG_LEN);
 	  if (cur_user[0] == '\0')
 	    {
 	      continue;
@@ -120,11 +120,11 @@ dbmt_user_read (T_DBMT_USER *dbmt_user, char *_dbmt_error)
 	  continue;
 	}
 
-      if (strncmp (strbuf, CUBRID_PASS_CLOSE_TAG, CUBRID_PASS_CLOSE_TAG_LEN) == 0)
+      if (strncmp (strbuf, ARNIADB_PASS_CLOSE_TAG, ARNIADB_PASS_CLOSE_TAG_LEN) == 0)
 	{
-	  if (strcmp (strbuf + CUBRID_PASS_CLOSE_TAG_LEN, cur_user) != 0)
+	  if (strcmp (strbuf + ARNIADB_PASS_CLOSE_TAG_LEN, cur_user) != 0)
 	    {
-	      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS,
+	      strcpy (_dbmt_error, conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS,
 		      strbuf));
 	      retval = ERR_FILE_INTEGRITY;
 	      goto read_dbmt_user_error;
@@ -239,7 +239,7 @@ dbmt_user_read (T_DBMT_USER *dbmt_user, char *_dbmt_error)
   if (num_dbmt_user < 1)
     {
       strcpy (_dbmt_error,
-	      conf_get_dbmt_file2 (FID_DBMT_CUBRID_PASS, strbuf));
+	      conf_get_dbmt_file2 (FID_DBMT_ARNIADB_PASS, strbuf));
       retval = ERR_FILE_INTEGRITY;
       goto read_dbmt_user_error;
     }
@@ -335,10 +335,10 @@ dbmt_user_write_auth (T_DBMT_USER *dbmt_user, char *_dbmt_error)
   char strbuf[1024];
   int lock_fd;
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (tmpfile, "%s/tmp/DBMT_util_pass.%d", sco.szCubrid, (int) getpid ());
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (tmpfile, "%s/tmp/DBMT_util_pass.%d", sco.szArniadb, (int) getpid ());
 #else
-  sprintf (tmpfile, "%s/DBMT_util_pass.%d", CUBRID_TMPDIR, (int) getpid ());
+  sprintf (tmpfile, "%s/DBMT_util_pass.%d", ARNIADB_TMPDIR, (int) getpid ());
 #endif
   fp = fopen (tmpfile, "w");
   if (fp == NULL)
@@ -352,7 +352,7 @@ dbmt_user_write_auth (T_DBMT_USER *dbmt_user, char *_dbmt_error)
 	  continue;
 	}
 
-      fprintf (fp, "%s%s\n", CUBRID_PASS_OPEN_TAG,
+      fprintf (fp, "%s%s\n", ARNIADB_PASS_OPEN_TAG,
 	       dbmt_user->user_info[i].user_name);
       for (j = 0; j < dbmt_user->user_info[i].num_authinfo; j++)
 	{
@@ -375,7 +375,7 @@ dbmt_user_write_auth (T_DBMT_USER *dbmt_user, char *_dbmt_error)
 		   dbmt_user->user_info[i].dbinfo[j].uid,
 		   dbmt_user->user_info[i].dbinfo[j].broker_address);
 	}
-      fprintf (fp, "%s%s\n", CUBRID_PASS_CLOSE_TAG,
+      fprintf (fp, "%s%s\n", ARNIADB_PASS_CLOSE_TAG,
 	       dbmt_user->user_info[i].user_name);
     }
   fclose (fp);
@@ -386,7 +386,7 @@ dbmt_user_write_auth (T_DBMT_USER *dbmt_user, char *_dbmt_error)
       unlink (tmpfile);
       return ERR_TMPFILE_OPEN_FAIL;
     }
-  move_file (tmpfile, conf_get_dbmt_file (FID_DBMT_CUBRID_PASS, strbuf));
+  move_file (tmpfile, conf_get_dbmt_file (FID_DBMT_ARNIADB_PASS, strbuf));
   uRemoveLockFile (lock_fd);
 
   return ERR_NO_ERROR;
@@ -456,10 +456,10 @@ dbmt_user_write_pass (T_DBMT_USER *dbmt_user, char *_dbmt_error)
   FILE *fp;
   int i, lock_fd;
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (tmpfile, "%s/tmp/DBMT_util_pass.%d", sco.szCubrid, (int) getpid ());
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (tmpfile, "%s/tmp/DBMT_util_pass.%d", sco.szArniadb, (int) getpid ());
 #else
-  sprintf (tmpfile, "%s/DBMT_util_pass.%d", CUBRID_TMPDIR, (int) getpid ());
+  sprintf (tmpfile, "%s/DBMT_util_pass.%d", ARNIADB_TMPDIR, (int) getpid ());
 #endif
 
   fp = fopen (tmpfile, "w");

@@ -68,7 +68,7 @@ other letters should cause an error. 
                "@user" : "DBA",
                "host" : "huangqiyu-VirtualBox",
                "pid" : "6632",
-               "program" : "query_editor_cub_cas_1",
+               "program" : "query_editor_arn_cas_1",
                "tranindex" : "1(ACTIVE)"
             }
       }

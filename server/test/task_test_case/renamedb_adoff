@@ -5,7 +5,7 @@ rename:anotherdb
 exvolpath:/root/testpass
 advanced:off
 open:volume
-$CUBRID_DATABASES/destinationdb/destinationdb:$CUBRID_DATABASES/anotherdb/anotherdb
+$ARNIADB_DATABASES/destinationdb/destinationdb:$ARNIADB_DATABASES/anotherdb/anotherdb
 close:volume
 forcedel:y
 

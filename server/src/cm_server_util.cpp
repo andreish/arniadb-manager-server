@@ -289,7 +289,7 @@ static bool is_process_running (const char *process_name, unsigned int sleep_tim
 
 /**
 * is_process_running is to check process running or not by checking pid
-* process_name: the name of process that must be in $CUBRID/bin
+* process_name: the name of process that must be in $ARNIADB/bin
 * sleep_time: millisecond
 */
 static bool
@@ -300,11 +300,11 @@ is_process_running (const char *process_name, unsigned int sleep_time)
 
   SLEEP_MILISEC (0, sleep_time);
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd, "%s/%s/%s getpid", sco.szCubrid, CUBRID_DIR_BIN,
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd, "%s/%s/%s getpid", sco.szArniadb, ARNIADB_DIR_BIN,
            process_name);
 #else
-  sprintf (cmd, "%s/%s getpid", CUBRID_BINDIR, process_name);
+  sprintf (cmd, "%s/%s getpid", ARNIADB_BINDIR, process_name);
 #endif
   input = popen (cmd, "r");
   if (input == NULL)
@@ -1151,8 +1151,8 @@ ut_get_dblist (nvplist *res, char dbdir_flag)
   unsigned char ip_addr[4];
   char *token = NULL;
 
-  snprintf (file, PATH_MAX - 1, "%s/%s", sco.szCubrid_databases,
-            CUBRID_DATABASE_TXT);
+  snprintf (file, PATH_MAX - 1, "%s/%s", sco.szArniadb_databases,
+            ARNIADB_DATABASE_TXT);
   if ((infile = fopen (file, "rt")) == NULL)
     {
       return ERR_DATABASETXT_OPEN;
@@ -2157,8 +2157,8 @@ make_default_env (void)
   FILE *fd;
 
   /* create log/manager directory */
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (strbuf, "%s/%s", sco.szCubrid, DBMT_LOG_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (strbuf, "%s/%s", sco.szArniadb, DBMT_LOG_DIR);
 #else
   sprintf (strbuf, "%s", DBMT_LOG_DIR);
 #endif
@@ -2168,8 +2168,8 @@ make_default_env (void)
     }
 
   /* create var/manager direcory */
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (strbuf, "%s/%s", sco.szCubrid, DBMT_PID_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (strbuf, "%s/%s", sco.szArniadb, DBMT_PID_DIR);
 #else
   sprintf (strbuf, "%s", DBMT_PID_DIR);
 #endif
@@ -2179,14 +2179,14 @@ make_default_env (void)
     }
 
   /* create databases directory */
-  sprintf (strbuf, "%s", sco.szCubrid_databases);
+  sprintf (strbuf, "%s", sco.szArniadb_databases);
   if ((retval = uCreateDir (strbuf)) != ERR_NO_ERROR)
     {
       return retval;
     }
 
   /* if databases.txt file doesn't exist, create 0 byte file. */
-  sprintf (strbuf, "%s/%s", sco.szCubrid_databases, CUBRID_DATABASE_TXT);
+  sprintf (strbuf, "%s/%s", sco.szArniadb_databases, ARNIADB_DATABASE_TXT);
   if (access (strbuf, F_OK) < 0)
     {
       if ((fd = fopen (strbuf, "a")) == NULL)
@@ -2280,7 +2280,7 @@ uGenerateStatus (nvplist *req, nvplist *res, int retval,
       sprintf (strbuf, "Invalid request format");
       break;
     case ERR_DATABASETXT_OPEN:
-      sprintf (strbuf, "'%s' open error", CUBRID_DATABASE_TXT);
+      sprintf (strbuf, "'%s' open error", ARNIADB_DATABASE_TXT);
       break;
     case ERR_USER_CAPABILITY:
       sprintf (strbuf, "Failed to get user profile for '%s'", _dbmt_error);
@@ -2317,7 +2317,7 @@ uGenerateStatus (nvplist *req, nvplist *res, int retval,
       sprintf (strbuf, "Database(%s) does not exist", _dbmt_error);
       break;
     case ERR_DBMTUSER_EXIST:
-      sprintf (strbuf, "CUBRID Manager user(%s) already exist", _dbmt_error);
+      sprintf (strbuf, "ARNIADB Manager user(%s) already exist", _dbmt_error);
       break;
     case ERR_DIROPENFAIL:
       sprintf (strbuf, "Failed to read directory(%s)", _dbmt_error);
@@ -3760,7 +3760,7 @@ error_handle:
 #endif // WINDOWS
 
 int
-ut_record_cubrid_utility_log_stderr (const char *msg)
+ut_record_arniadb_utility_log_stderr (const char *msg)
 {
   if (msg == NULL)
     {
@@ -3775,7 +3775,7 @@ ut_record_cubrid_utility_log_stderr (const char *msg)
 }
 
 int
-ut_record_cubrid_utility_log_stdout (const char *msg)
+ut_record_arniadb_utility_log_stdout (const char *msg)
 {
   if (msg == NULL)
     {

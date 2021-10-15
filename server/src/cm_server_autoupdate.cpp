@@ -196,29 +196,29 @@ generate_update_script (char *patch_name, char *url, char *path,
   // backup
   fprintf (fout, "md %sbackup\n", path);
   fprintf (fout,
-           "if exist %s\\bin\\cub_manager.exe copy /y %s\\bin\\cub_manager.exe %sbackup\\.\n",
-           sco.szCubrid, sco.szCubrid, path);
+           "if exist %s\\bin\\arn_manager.exe copy /y %s\\bin\\arn_manager.exe %sbackup\\.\n",
+           sco.szArniadb, sco.szArniadb, path);
   fprintf (fout,
            "if exist %s\\bin\\cm_admin.exe copy /y %s\\bin\\cm_admin.exe %sbackup\\.\n",
-           sco.szCubrid, sco.szCubrid, path);
+           sco.szArniadb, sco.szArniadb, path);
 
-  fprintf (fout, "cubrid service stop\n");
-  fprintf (fout, "cub_manager stop\n");
+  fprintf (fout, "arniadb service stop\n");
+  fprintf (fout, "arn_manager stop\n");
 
   //update
-  fprintf (fout, "if exist %s\\cub_* copy /y %s\\cub_* %s\\bin\\.\n",
-           zip_folder, zip_folder, sco.szCubrid);
+  fprintf (fout, "if exist %s\\arn_* copy /y %s\\arn_* %s\\bin\\.\n",
+           zip_folder, zip_folder, sco.szArniadb);
   fprintf (fout,
            "if exist %s\\cm_admin copy /y %s\\cm_admin.exe %s\\bin\\.\n",
-           zip_folder, zip_folder, sco.szCubrid);
+           zip_folder, zip_folder, sco.szArniadb);
   fprintf (fout,
            "for /f %%%%c in ('dir /b %s\\conf\\') do type %s\\conf\\%%%%c >> %s\\conf\\%%%%c\n",
-           zip_folder, zip_folder, sco.szCubrid);
+           zip_folder, zip_folder, sco.szArniadb);
 
   fprintf (fout, "ping 127.0.0.1 -n 40 -w 1000 > nul\n");
-  fprintf (fout, "cubrid service start\n");
-  fprintf (fout, "cub_manager start\n");
-  fprintf (fout, "echo \"CUBRID Manager Server is updated.\"", path);
+  fprintf (fout, "arniadb service start\n");
+  fprintf (fout, "arn_manager start\n");
+  fprintf (fout, "echo \"ARNIADB Manager Server is updated.\"", path);
 
   fclose (fout);
 
@@ -260,27 +260,27 @@ generate_update_script (char *patch_name, char *url, char *path,
 
   fprintf (fout, "mkdir %sbackup\n", path);
   fprintf (fout,
-           "cp %s/bin/cm_admin %s/bin/cub_manager %sbackup/.\n",
-           sco.szCubrid, sco.szCubrid, path);
+           "cp %s/bin/cm_admin %s/bin/arn_manager %sbackup/.\n",
+           sco.szArniadb, sco.szArniadb, path);
   fprintf (fout,
-           "if [ -e %spatch/cub_manager ]; then\n", path);
-  fprintf (fout, "\tcp %spatch/cub_* %s/bin/. -f\nfi\n", path, sco.szCubrid);
+           "if [ -e %spatch/arn_manager ]; then\n", path);
+  fprintf (fout, "\tcp %spatch/arn_* %s/bin/. -f\nfi\n", path, sco.szArniadb);
 
   fprintf (fout, "if [ -e %spatch/cm_admin ]; then\n", path);
   fprintf (fout, "\tcp %spatch/cm_admin %s/bin/. -f\nfi\n", path,
-           sco.szCubrid);
+           sco.szArniadb);
 
 
   fprintf (fout, "if [ -d %spatch/conf ]; then\n", path);
   fprintf (fout, "\tfor conf_file in $(ls %spatch/conf)\n\tdo\n", path);
-  fprintf (fout, "\t\tcp %s/conf/$conf_file %sbackup/.\n", sco.szCubrid,
+  fprintf (fout, "\t\tcp %s/conf/$conf_file %sbackup/.\n", sco.szArniadb,
            path);
   fprintf (fout,
            "\t\tcat %spatch/conf/$conf_file >> %s/conf/$conf_file\n\tdone\nfi\n",
-           path, sco.szCubrid);
+           path, sco.szArniadb);
 
-  fprintf (fout, "cubrid service restart\n");
-  fprintf (fout, "echo \"CUBRID Manager Server is updated.n");
+  fprintf (fout, "arniadb service restart\n");
+  fprintf (fout, "echo \"ARNIADB Manager Server is updated.n");
 
   fclose (fout);
 

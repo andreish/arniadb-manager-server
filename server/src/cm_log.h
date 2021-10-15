@@ -255,7 +255,7 @@ class CLog
       long oldest_time = LONG_MAX;
 
       char log_path[PATH_MAX];
-      snprintf (log_path, PATH_MAX, "%s/%s", sco.szCubrid, DBMT_LOG_DIR);
+      snprintf (log_path, PATH_MAX, "%s/%s", sco.szArniadb, DBMT_LOG_DIR);
 
       if (files_list.empty() == true)
         {
@@ -342,11 +342,11 @@ class CLog
       char log_path[PATH_MAX];
       list < string > log_files_list;
 
-      string error_log_name = "cub_manager.err";
-      string log_name = "cub_manager.log";
+      string error_log_name = "arn_manager.err";
+      string log_name = "arn_manager.log";
 
       log_path[0] = '\0';
-      snprintf (log_path, PATH_MAX, "%s/%s", sco.szCubrid, DBMT_LOG_DIR);
+      snprintf (log_path, PATH_MAX, "%s/%s", sco.szArniadb, DBMT_LOG_DIR);
 
       //check log level
       if (iPriority > _logLevel ())
@@ -461,7 +461,7 @@ class CLog
           // init open file - close them firstly
           _init_file_hander ();
 
-          // then move the cub_manager.log into new name log file.
+          // then move the arn_manager.log into new name log file.
           _backup_log_files (log_path, error_log_name, log_name);
 
           // remove the oldest file

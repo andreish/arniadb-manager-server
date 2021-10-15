@@ -2,7 +2,7 @@
 
 if "%1" == "" goto PRINT_USAGE
 
-set cubrid_dir=%CUBRID%
+set arniadb_dir=%ARNIADB%
 set platform=Win32
 set mode=release
 
@@ -12,30 +12,30 @@ if "%1" == "" goto LOOP_END
 
 if "%1" == "--help" goto PRINT_USAGE
 if "%1" == "--prefix" set prefix=%2& shift & shift & goto LOOP_BEGIN
-if "%1" == "--with-cubrid-dir" set cubrid_dir=%2& shift & shift & goto LOOP_BEGIN
-if "%1" == "--with-cubrid-libdir" set cubrid_libdir=%2& shift & shift & goto LOOP_BEGIN
-if "%1" == "--with-cubrid-includedir" set cubrid_includedir=%2& shift & shift & goto LOOP_BEGIN
+if "%1" == "--with-arniadb-dir" set arniadb_dir=%2& shift & shift & goto LOOP_BEGIN
+if "%1" == "--with-arniadb-libdir" set arniadb_libdir=%2& shift & shift & goto LOOP_BEGIN
+if "%1" == "--with-arniadb-includedir" set arniadb_includedir=%2& shift & shift & goto LOOP_BEGIN
 if "%1" == "--enable-64bit" set platform=x64& shift & goto LOOP_BEGIN
 if "%1" == "--enable-debug" set mode=debug& shift & goto LOOP_BEGIN
 
 shift
 :LOOP_END
 
-if "%cubrid_libdir%" == "" (
-	set cubrid_libdir=%cubrid_dir%\lib
+if "%arniadb_libdir%" == "" (
+	set arniadb_libdir=%arniadb_dir%\lib
 )
 
-if "%cubrid_includedir%" == "" (
-	set cubrid_includedir=%cubrid_dir%\include
+if "%arniadb_includedir%" == "" (
+	set arniadb_includedir=%arniadb_dir%\include
 )
 
-if "%cubrid_libdir%" == "\lib" (
-	echo "Please specify --with-cubrid-libdir option"
+if "%arniadb_libdir%" == "\lib" (
+	echo "Please specify --with-arniadb-libdir option"
 	exit /B 1
 )
 
-if "%cubrid_includedir%" == "\include" (
-	echo "Please specify --with-cubrid-includedir option"
+if "%arniadb_includedir%" == "\include" (
+	echo "Please specify --with-arniadb-includedir option"
 	exit /B 1
 )
 
@@ -44,8 +44,8 @@ if "%prefix%" == "" (
 	exit /B 1
 )
 
-echo CUBRID include path is %cubrid_libdir%
-echo CUBRID lib path is %cubrid_includedir%
+echo ARNIADB include path is %arniadb_libdir%
+echo ARNIADB lib path is %arniadb_includedir%
 echo OUTPUT path is %prefix%
 
 echo Platform type is "%platform%"
@@ -76,19 +76,19 @@ exit /b
 
 :PRINT_USAGE
 @echo Usage: build [OPTION]
-@echo Build whole CUBRID Manager project
+@echo Build whole ARNIADB Manager project
 @echo.
 @echo   --prefix=DIR                  build result output directory (required)
-@echo   --with-cubrid-dir=DIR         directory have two sub directory (optional)
-@echo                                 'include', 'lib'. default to %%CUBRID%%
-@echo   --with-cubrid-libdir=DIR      directory have cubrid lib files (optional)
-@echo                                 default to with_cubrid_dir\lib
-@echo   --with-cubrid-includedir=DIR  directory have cubrid include files (optional)
-@echo                                 default to with_cubrid_dir\include
+@echo   --with-arniadb-dir=DIR         directory have two sub directory (optional)
+@echo                                 'include', 'lib'. default to %%ARNIADB%%
+@echo   --with-arniadb-libdir=DIR      directory have arniadb lib files (optional)
+@echo                                 default to with_arniadb_dir\lib
+@echo   --with-arniadb-includedir=DIR  directory have arniadb include files (optional)
+@echo                                 default to with_arniadb_dir\include
 @echo   --enable-64bit                build 64bit applications
 @echo   --enable-debug                build debug version applications
 @echo.
 @echo   --help                        display this help and exit
 @echo.
 @echo   Examples:
-@echo     build --prefix=c:\out\x64 --with-cubrid-dir=%%CUBRID%%
+@echo     build --prefix=c:\out\x64 --with-arniadb-dir=%%ARNIADB%%
