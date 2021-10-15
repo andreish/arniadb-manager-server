@@ -44,23 +44,23 @@
 #define AUTOBACKUP_PERIOD_TYPE_NUM      5
 #define AUTOBACKUP_PERIOD_WEEK_NUM      7
 
-#define CMS_NAME                        "cub_manager"
+#define CMS_NAME                        "arn_manager"
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
 #define DBMT_CONF_DIR                   "conf"
 #define DBMT_LOG_DIR                    "log/manager"
 #define DBMT_PID_DIR                    "var/manager"
 #define DBMT_MON_DATA_DIR               "var/manager/mon_data"
 #define DBMT_TMP_DIR                    "tmp"
 #else
-#define DBMT_CONF_DIR                   CUBRID_CONFDIR
-#define DBMT_LOG_DIR                    CUBRID_VARDIR "/manager"
-#define DBMT_PID_DIR                    CUBRID_VARDIR "/manager"
-#define DBMT_MON_DATA_DIR               CUBRID_VARDIR "/manager/mon_data"
-#define DBMT_TMP_DIR                    CUBRID_TMPDIR
+#define DBMT_CONF_DIR                   ARNIADB_CONFDIR
+#define DBMT_LOG_DIR                    ARNIADB_VARDIR "/manager"
+#define DBMT_PID_DIR                    ARNIADB_VARDIR "/manager"
+#define DBMT_MON_DATA_DIR               ARNIADB_VARDIR "/manager/mon_data"
+#define DBMT_TMP_DIR                    ARNIADB_TMPDIR
 #endif
 
-#define DBMT_CUB_CMS_PID                "cub_manager.pid"
+#define DBMT_ARN_CMS_PID                "arn_manager.pid"
 
 /* utility option list, from executables/utility.h */
 #define UTIL_OPTION_CREATEDB                    "createdb"
@@ -120,34 +120,34 @@
 
 
 /* sqlx option list */
-#define CSQL_SA_MODE_S                          'S'
-#define CSQL_SA_MODE_L                          "SA-mode"
-#define CSQL_CS_MODE_S                          'C'
-#define CSQL_CS_MODE_L                          "CS-mode"
-#define CSQL_USER_S                             'u'
-#define CSQL_USER_L                             "user"
-#define CSQL_PASSWORD_S                         'p'
-#define CSQL_PASSWORD_L                         "password"
-#define CSQL_ERROR_CONTINUE_S                   'e'
-#define CSQL_ERROR_CONTINUE_L                   "error-continue"
-#define CSQL_INPUT_FILE_S                       'i'
-#define CSQL_INPUT_FILE_L                       "input-file"
-#define CSQL_OUTPUT_FILE_S                      'o'
-#define CSQL_OUTPUT_FILE_L                      "output-file"
-#define CSQL_SINGLE_LINE_S                      's'
-#define CSQL_SINGLE_LINE_L                      "single-line"
-#define CSQL_COMMAND_S                          'c'
-#define CSQL_COMMAND_L                          "command"
-#define CSQL_LINE_OUTPUT_S                      'l'
-#define CSQL_LINE_OUTPUT_L                      "line-output"
-#define CSQL_READ_ONLY_S                        'r'
-#define CSQL_READ_ONLY_L                        "read-only"
-#define CSQL_NO_AUTO_COMMIT_S                   12010
-#define CSQL_NO_AUTO_COMMIT_L                   "no-auto-commit"
-#define CSQL_NO_PAGER_S                         12011
-#define CSQL_NO_PAGER_L                         "no-pager"
-#define CSQL_SYSADM_S                           12012
-#define CSQL_SYSADM_L                           "sysadm"
+#define ASQL_SA_MODE_S                          'S'
+#define ASQL_SA_MODE_L                          "SA-mode"
+#define ASQL_CS_MODE_S                          'C'
+#define ASQL_CS_MODE_L                          "CS-mode"
+#define ASQL_USER_S                             'u'
+#define ASQL_USER_L                             "user"
+#define ASQL_PASSWORD_S                         'p'
+#define ASQL_PASSWORD_L                         "password"
+#define ASQL_ERROR_CONTINUE_S                   'e'
+#define ASQL_ERROR_CONTINUE_L                   "error-continue"
+#define ASQL_INPUT_FILE_S                       'i'
+#define ASQL_INPUT_FILE_L                       "input-file"
+#define ASQL_OUTPUT_FILE_S                      'o'
+#define ASQL_OUTPUT_FILE_L                      "output-file"
+#define ASQL_SINGLE_LINE_S                      's'
+#define ASQL_SINGLE_LINE_L                      "single-line"
+#define ASQL_COMMAND_S                          'c'
+#define ASQL_COMMAND_L                          "command"
+#define ASQL_LINE_OUTPUT_S                      'l'
+#define ASQL_LINE_OUTPUT_L                      "line-output"
+#define ASQL_READ_ONLY_S                        'r'
+#define ASQL_READ_ONLY_L                        "read-only"
+#define ASQL_NO_AUTO_COMMIT_S                   12010
+#define ASQL_NO_AUTO_COMMIT_L                   "no-auto-commit"
+#define ASQL_NO_PAGER_S                         12011
+#define ASQL_NO_PAGER_L                         "no-pager"
+#define ASQL_SYSADM_S                           12012
+#define ASQL_SYSADM_L                           "sysadm"
 
 /* addvoldb option list */
 #define ADDVOL_VOLUME_NAME_S                    'n'
@@ -276,8 +276,8 @@
 #define CREATE_MORE_VOLUME_FILE_L               "more-volume-file"
 #define CREATE_USER_DEFINITION_FILE_S           10108
 #define CREATE_USER_DEFINITION_FILE_L           "user-definition-file"
-#define CREATE_CSQL_INITIALIZATION_FILE_S       10109
-#define CREATE_CSQL_INITIALIZATION_FILE_L       "csql-initialization-file"
+#define CREATE_ASQL_INITIALIZATION_FILE_S       10109
+#define CREATE_ASQL_INITIALIZATION_FILE_L       "asql-initialization-file"
 #define CREATE_OUTPUT_FILE_S                    'o'
 #define CREATE_OUTPUT_FILE_L                    "output-file"
 #define CREATE_VERBOSE_S                        'v'
@@ -403,19 +403,19 @@
 #else
 #define UTIL_SCRIPT_EXT                        ".sh"
 #endif
-#define UTIL_MASTER_NAME        "cub_master" UTIL_EXE_EXT
-#define UTIL_COMMDB_NAME        "cub_commdb" UTIL_EXE_EXT
-#define UTIL_CUBRID_NAME        "cub_server" UTIL_EXE_EXT
-#define UTIL_BROKER_NAME        "cubrid_broker" UTIL_EXE_EXT
+#define UTIL_MASTER_NAME        "arn_master" UTIL_EXE_EXT
+#define UTIL_COMMDB_NAME        "arn_commdb" UTIL_EXE_EXT
+#define UTIL_ARNIADB_NAME        "arn_server" UTIL_EXE_EXT
+#define UTIL_BROKER_NAME        "arniadb_broker" UTIL_EXE_EXT
 #define UTIL_MONITOR_NAME       "broker_monitor" UTIL_EXE_EXT
 #define UTIL_REPL_SERVER_NAME   "repl_server" UTIL_EXE_EXT
 #define UTIL_REPL_AGENT_NAME    "repl_agent" UTIL_EXE_EXT
-#define UTIL_ADMIN_NAME         "cub_admin" UTIL_EXE_EXT
+#define UTIL_ADMIN_NAME         "arn_admin" UTIL_EXE_EXT
 #define UTIL_SQLX_NAME          "sqlx" UTIL_EXE_EXT
-#define UTIL_CSQL_NAME          "csql" UTIL_EXE_EXT
-#define UTIL_CUBRID_REL_NAME    "cubrid_rel" UTIL_EXE_EXT
+#define UTIL_ASQL_NAME          "asql" UTIL_EXE_EXT
+#define UTIL_ARNIADB_REL_NAME    "arniadb_rel" UTIL_EXE_EXT
 #define UTIL_OLD_COMMDB_NAME    "commdb" UTIL_EXE_EXT
-#define UTIL_CUBRID             "cubrid" UTIL_EXE_EXT
+#define UTIL_ARNIADB             "arniadb" UTIL_EXE_EXT
 #define UTIL_CM_SERVER          CMS_NAME UTIL_EXE_EXT
 #define UTIL_BROKER_CHANGER     "broker_changer" UTIL_EXE_EXT
 
@@ -531,7 +531,7 @@ typedef enum
 {
   FID_DBMT_CONF,
   FID_DBMT_PASS,
-  FID_DBMT_CUBRID_PASS,
+  FID_DBMT_ARNIADB_PASS,
   FID_CONN_LIST,
   FID_AUTO_ADDVOLDB_CONF,
   FID_AUTO_ADDVOLDB_LOG,
@@ -569,10 +569,10 @@ typedef struct
   char *szProgname;
 
   /*
-   *  CUBRID environment variables
+   *  ARNIADB environment variables
    */
-  char *szCubrid;              /* CUBRID           */
-  char *szCubrid_databases;    /* CUBRID_DATABASES */
+  char *szArniadb;              /* ARNIADB           */
+  char *szArniadb_databases;    /* ARNIADB_DATABASES */
 
   char *dbmt_tmp_dir;
 
@@ -613,10 +613,10 @@ extern const char *autounicas_conf_entry[AUTOUNICAS_CONF_ENTRY_NUM];
 extern const char *autobackup_period_type[AUTOBACKUP_PERIOD_TYPE_NUM];
 extern const char *autobackup_period_week[AUTOBACKUP_PERIOD_WEEK_NUM];
 
-extern int cubrid_version_major;
-extern int cubrid_version_minor;
-void find_and_parse_cub_admin_version (int &major_version, int &minor_version);
-#define IS_INVALID_CUBRID_VERS_MAJOR(major)	(major <= 0)
+extern int arniadb_version_major;
+extern int arniadb_version_minor;
+void find_and_parse_arn_admin_version (int &major_version, int &minor_version);
+#define IS_INVALID_ARNIADB_VERS_MAJOR(major)	(major <= 0)
 
 extern int auto_conf_delete (T_DBMT_FILE_ID fid, char *dbname);
 extern int auto_conf_rename (T_DBMT_FILE_ID fid, char *src_dbname,

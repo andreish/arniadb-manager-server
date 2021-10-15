@@ -1,12 +1,12 @@
-# CUBRID Manager Server API Manual
+# ARNIADB Manager Server API Manual
 
 ## Overview
 
-The CUBRID Manager Server (CMS) HTTP Interface is an interface that exists between the CUBRID manager server and the application client, through which a web-based application client can access the CUBRID manager server. The CUBRID manager server delivers the request received from an application client to the CUBRID, and transfers the execution result to the client.
+The ARNIADB Manager Server (CMS) HTTP Interface is an interface that exists between the ARNIADB manager server and the application client, through which a web-based application client can access the ARNIADB manager server. The ARNIADB manager server delivers the request received from an application client to the ARNIADB, and transfers the execution result to the client.
 
 ## System Architecture
 
-CMS is a manager tools for CUBRID including database configure, monitor, SQL query. As the component of the CUBRID Database Management System, CMS provides a web-based tool that allows users to remotely manage the database and the Broker.
+CMS is a manager tools for ARNIADB including database configure, monitor, SQL query. As the component of the ARNIADB Database Management System, CMS provides a web-based tool that allows users to remotely manage the database and the Broker.
 
 ![CMS Architecture](images/architecture.png?raw=true "CMS Architecture")
 CMS Architecture
@@ -56,13 +56,13 @@ There are seven permissions. These permissions can indicate which authorities ar
 | BRK | Broker Authority - Can only modify brokers (include shard broker |
 | MON | Monitoring - R/W Configuration |
 | JOB | Automation Authority - Can only use automations |
-| VAR | Show Variable Authority - Can only read cubrid.conf, cubrid_broker.conf, ... etc. |
+| VAR | Show Variable Authority - Can only read arniadb.conf, arniadb_broker.conf, ... etc. |
 | ADMIN | Indicate the authority of admin |
 | ALL_AUTHORITY | This value is equal to "DBC | DBO | BRK | MON | JOB | VAR" |
 
 ## CMS Interfaces
 
-CMs Interfaces are conposed by Json and is used for communication between CMS and Cubrid Manager.
+CMs Interfaces are conposed by Json and is used for communication between CMS and Arniadb Manager.
 
 ### Broker
 

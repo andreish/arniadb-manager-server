@@ -4,7 +4,7 @@ dbname:demodb
 username:yifan
 _STAMP:31
 _SVRTYPE:fsvr
-_PROGNAME:cub_js
+_PROGNAME:arn_js
 _CLIENTIP:127.0.0.1
 _CLIENTPORT:60119
 _ID:admin

@@ -47,10 +47,10 @@
 #endif
 
 #define new_servstat_result()        (T_SERVER_STATUS_RESULT*) new_cmd_result()
-#define new_csql_result()            (T_CSQL_RESULT*) new_cmd_result()
+#define new_asql_result()            (T_ASQL_RESULT*) new_cmd_result()
 
 static T_CMD_RESULT *new_cmd_result (void);
-static const char *get_cubrid_mode_opt (T_CUBRID_MODE mode);
+static const char *get_arniadb_mode_opt (T_ARNIADB_MODE mode);
 static void read_server_status_output (T_SERVER_STATUS_RESULT *res,
                                        char *out_file);
 static void read_spacedb_output (GeneralSpacedbResult *res, char *out_file);
@@ -62,56 +62,56 @@ static int read_start_server_output (char *stdout_log_file,
 static int _size_to_byte_by_unit (double orgin_num, char unit);
 
 char *
-cubrid_cmd_name (char *buf)
+arniadb_cmd_name (char *buf)
 {
   buf[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (buf, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (buf, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (buf, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (buf, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
   return buf;
 }
 
-T_CSQL_RESULT *
-cmd_csql (char *dbname, char *uid, char *passwd, T_CUBRID_MODE mode,
+T_ASQL_RESULT *
+cmd_asql (char *dbname, char *uid, char *passwd, T_ARNIADB_MODE mode,
           char *infile, char *command, char *error_continue)
 {
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   char out_file[512];
-  T_CSQL_RESULT *res;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  T_ASQL_RESULT *res;
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[15];
   int argc = 0;
 
   cmd_name[0] = '\0';
-  cubrid_err_file[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CSQL_NAME);
+  arniadb_err_file[0] = '\0';
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ASQL_NAME);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CSQL_NAME);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ASQL_NAME);
 #endif
   argv[argc++] = cmd_name;
-  argv[argc++] = get_cubrid_mode_opt (mode);
+  argv[argc++] = get_arniadb_mode_opt (mode);
   if (uid)
     {
-      argv[argc++] = "--" CSQL_USER_L;
+      argv[argc++] = "--" ASQL_USER_L;
       argv[argc++] = uid;
 
       if (passwd)
         {
-          argv[argc++] = "--" CSQL_PASSWORD_L;
+          argv[argc++] = "--" ASQL_PASSWORD_L;
           argv[argc++] = passwd;
         }
     }
   if (infile)
     {
-      argv[argc++] = "--" CSQL_INPUT_FILE_L;
+      argv[argc++] = "--" ASQL_INPUT_FILE_L;
       argv[argc++] = infile;
     }
   else if (command)
     {
-      argv[argc++] = "--" CSQL_COMMAND_L;
+      argv[argc++] = "--" ASQL_COMMAND_L;
       argv[argc++] = command;
     }
   else
@@ -121,25 +121,25 @@ cmd_csql (char *dbname, char *uid, char *passwd, T_CUBRID_MODE mode,
 
   if (uStringEqualIgnoreCase (error_continue, "y"))
     {
-      argv[argc++] = "--" CSQL_ERROR_CONTINUE_L;
+      argv[argc++] = "--" ASQL_ERROR_CONTINUE_L;
     }
 
   argv[argc++] = dbname;
   argv[argc++] = NULL;
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (out_file, "%s/tmp/DBMT_util_003.%d", sco.szCubrid,
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (out_file, "%s/tmp/DBMT_util_003.%d", sco.szArniadb,
            (int) getpid ());
 #else
-  sprintf (out_file, "%s/DBMT_util_003.%d", CUBRID_TMPDIR, (int) getpid ());
+  sprintf (out_file, "%s/DBMT_util_003.%d", ARNIADB_TMPDIR, (int) getpid ());
 #endif
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
-            sco.dbmt_tmp_dir, "cmd_csql", getpid ());
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+            sco.dbmt_tmp_dir, "cmd_asql", getpid ());
   SET_TRANSACTION_NO_WAIT_MODE_ENV ();
 
-  run_child (argv, 1, NULL, NULL, out_file, NULL);    /* csql */
+  run_child (argv, 1, NULL, NULL, out_file, NULL);    /* asql */
 
-  res = new_csql_result ();
+  res = new_asql_result ();
   if (res == NULL)
     {
       return NULL;
@@ -151,15 +151,15 @@ cmd_csql (char *dbname, char *uid, char *passwd, T_CUBRID_MODE mode,
   return res;
 }
 
-void find_and_parse_cub_admin_version (int &major_version, int &minor_version)
+void find_and_parse_arn_admin_version (int &major_version, int &minor_version)
 {
   const char *argv[3];
   char tmpfile[PATH_MAX], strbuf[BUFFER_MAX_LEN];
   FILE *infile;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
 
-  cubrid_cmd_name (cmd_name);
-  snprintf (tmpfile, PATH_MAX - 1, "%s/cub_admin_version", sco.dbmt_tmp_dir);
+  arniadb_cmd_name (cmd_name);
+  snprintf (tmpfile, PATH_MAX - 1, "%s/arn_admin_version", sco.dbmt_tmp_dir);
   argv[0] = cmd_name;
   argv[1] = "--version";
   argv[2] = NULL;
@@ -191,27 +191,27 @@ void find_and_parse_cub_admin_version (int &major_version, int &minor_version)
 }
 
 GeneralSpacedbResult *
-cmd_spacedb (const char *dbname, T_CUBRID_MODE mode)
+cmd_spacedb (const char *dbname, T_ARNIADB_MODE mode)
 {
   GeneralSpacedbResult *res = NULL;
   int minor_version, major_version;
   char out_file[PATH_MAX];
-  char cubrid_err_file[PATH_MAX];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char arniadb_err_file[PATH_MAX];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char err_message[ERR_MSG_SIZE];
   const char *argv[10];
   int argc = 0;
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
-  if (IS_INVALID_CUBRID_VERS_MAJOR (cubrid_version_major))
+  if (IS_INVALID_ARNIADB_VERS_MAJOR (arniadb_version_major))
     {
-      LOG_ERROR ("Invalid CUBRID Engine Version: %d.%d", cubrid_version_major, cubrid_version_minor);
-      find_and_parse_cub_admin_version (major_version, minor_version);
-      cubrid_version_major = major_version;
-      cubrid_version_minor = minor_version;
+      LOG_ERROR ("Invalid ARNIADB Engine Version: %d.%d", arniadb_version_major, arniadb_version_minor);
+      find_and_parse_arn_admin_version (major_version, minor_version);
+      arniadb_version_major = major_version;
+      arniadb_version_minor = minor_version;
     }
 
-  if (cubrid_version_major < 10 || (cubrid_version_minor == 10 && cubrid_version_minor == 0))
+  if (arniadb_version_major < 10 || (arniadb_version_minor == 10 && arniadb_version_minor == 0))
     {
       res = new SpaceDbResultOldFormat();
     }
@@ -222,10 +222,10 @@ cmd_spacedb (const char *dbname, T_CUBRID_MODE mode)
 
   sprintf (out_file, "%s/DBMT_util_002.%d", sco.dbmt_tmp_dir,
            (int) getpid ());
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_SPACEDB;
-  argv[argc++] = get_cubrid_mode_opt (mode);
+  argv[argc++] = get_arniadb_mode_opt (mode);
   argv[argc++] = "--" SPACE_SIZE_UNIT_L;
   argv[argc++] = "PAGE";
   argv[argc++] = "--" SPACE_OUTPUT_FILE_L;
@@ -234,15 +234,15 @@ cmd_spacedb (const char *dbname, T_CUBRID_MODE mode)
   argv[argc++] = "-p";
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
             sco.dbmt_tmp_dir, "cmd_spacedb", getpid ());
-  run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL);    /* spacedb */
-  read_error_file (cubrid_err_file, err_message, ERR_MSG_SIZE);
+  run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL);    /* spacedb */
+  read_error_file (arniadb_err_file, err_message, ERR_MSG_SIZE);
   res->set_err_msg (err_message);
   read_spacedb_output (res, out_file);
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   unlink (out_file);
   return res;
@@ -256,7 +256,7 @@ cmd_start_server (char *dbname, char *err_buf, int err_buf_size)
   char stderr_log_file[512];
   int pid;
   int ret_val;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
 
 #ifdef HPUX
@@ -270,18 +270,18 @@ cmd_start_server (char *dbname, char *err_buf, int err_buf_size)
            (int) getpid ());
 
 
-  /* unset CUBRID_ERROR_LOG environment variable, using default value */
+  /* unset ARNIADB_ERROR_LOG environment variable, using default value */
 #if defined(WINDOWS)
-  _putenv ("CUBRID_ERROR_LOG=");
+  _putenv ("ARNIADB_ERROR_LOG=");
 #else
-  unsetenv ("CUBRID_ERROR_LOG");
+  unsetenv ("ARNIADB_ERROR_LOG");
 #endif
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[0] = cmd_name;
@@ -329,7 +329,7 @@ cmd_stop_server (char *dbname, char *err_buf, int err_buf_size)
 {
   char strbuf[1024];
   int t, timeout = 30, interval = 3;    /* sec */
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[5];
 
   if (err_buf)
@@ -338,10 +338,10 @@ cmd_stop_server (char *dbname, char *err_buf, int err_buf_size)
     }
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CUBRID);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ARNIADB);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CUBRID);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ARNIADB);
 #endif
 
   argv[0] = cmd_name;
@@ -381,26 +381,26 @@ void
 cmd_start_master (void)
 {
   int pid;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[2];
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid,
-           CUBRID_DIR_BIN, UTIL_MASTER_NAME);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb,
+           ARNIADB_DIR_BIN, UTIL_MASTER_NAME);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_MASTER_NAME);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_MASTER_NAME);
 #endif
   argv[0] = cmd_name;
   argv[1] = NULL;
 
-  pid = run_child (argv, 0, NULL, NULL, NULL, NULL);    /* cub_master */
+  pid = run_child (argv, 0, NULL, NULL, NULL, NULL);    /* arn_master */
   SLEEP_MILISEC (0, 500);
 }
 
 
 int
-read_csql_error_file (char *err_file, char *err_buf, int err_buf_size)
+read_asql_error_file (char *err_file, char *err_buf, int err_buf_size)
 {
   FILE *fp;
   char buf[1024];
@@ -671,14 +671,14 @@ new_cmd_result (void)
 }
 
 static const char *
-get_cubrid_mode_opt (T_CUBRID_MODE mode)
+get_arniadb_mode_opt (T_ARNIADB_MODE mode)
 {
-  if (mode == CUBRID_MODE_SA)
+  if (mode == ARNIADB_MODE_SA)
     {
-      return ("--" CSQL_SA_MODE_L);
+      return ("--" ASQL_SA_MODE_L);
     }
 
-  return ("--" CSQL_CS_MODE_L);
+  return ("--" ASQL_CS_MODE_L);
 }
 
 static bool is_valid_database_description (char *str)

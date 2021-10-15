@@ -159,7 +159,7 @@ cmd_listdb (int argc, const char *in_argv[])
   FILE *fp = NULL;
 
   snprintf (db_txt_path, sizeof (db_txt_path) - 1, "%s/%s",
-            sco.szCubrid_databases, CUBRID_DATABASE_TXT);
+            sco.szArniadb_databases, ARNIADB_DATABASE_TXT);
 
   if ((fp = fopen (db_txt_path, "r")) == NULL)
     {

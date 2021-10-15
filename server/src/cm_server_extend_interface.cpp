@@ -279,7 +279,7 @@ bool write_json_to_file (string filepath, Json::Value &root)
   return FALSE;
 }
 
-int ext_cub_broker_start (Json::Value &request, Json::Value &response)
+int ext_arn_broker_start (Json::Value &request, Json::Value &response)
 {
   string task =  request["task"].asString();
   nvplist *cli_request, *cli_response;
@@ -515,7 +515,7 @@ ext_autojobs_log (const char *service, const char *serv_name, const char *errmsg
 
   tt = time (&tt);
 
-  snprintf (logfile, MAX_PATH, "%s/%s/autojobs.log", sco.szCubrid, DBMT_LOG_DIR);
+  snprintf (logfile, MAX_PATH, "%s/%s/autojobs.log", sco.szArniadb, DBMT_LOG_DIR);
 
   outfile = fopen (logfile, "a");
   if (outfile == NULL)
@@ -601,7 +601,7 @@ int ext_exec_brokers_auto_start (const Json::Value &autobrokers,  Json::Value &r
   if (activebrokers["brokerstatus"].asString() == "OFF")
     {
       request["task"] = "startbroker";
-      ext_cub_broker_start (request, response);
+      ext_arn_broker_start (request, response);
 
       if (response["status"] != "success")
         {
@@ -625,7 +625,7 @@ int ext_exec_brokers_auto_start (const Json::Value &autobrokers,  Json::Value &r
             {
               request["task"] = "broker_start";
               request["bname"] = bname;
-              ext_cub_broker_start (request, response);
+              ext_arn_broker_start (request, response);
 
               if (response["status"] != "success")
                 {
@@ -748,7 +748,7 @@ string build_report_log (Json::Value &report)
     default:
       break;
     }
-  report_log += "<br>See More Detail Log: <a href=\"" + url_prefix + "\">CUBRID Web Manager</a>";
+  report_log += "<br>See More Detail Log: <a href=\"" + url_prefix + "\">ARNIADB Web Manager</a>";
   return report_log;
 }
 
@@ -823,7 +823,7 @@ int ext_exec_mail_report (Json::Value &mailreport,  Json::Value &response)
       log_request["start_time"] = prev_exec;
       log_request["end_time"] = format_time;
 
-      mailhead = "Log Report for CUBRID";
+      mailhead = "Log Report for ARNIADB";
 
       log_response["dbname"] = mailreport[i]["dbname"].asString();
       log_response["url_prefix"] = mailreport[i]["url_prefix"].asString();
@@ -951,7 +951,7 @@ int ext_get_db_err_log (Json::Value &request, Json::Value &response)
       return build_server_header (response, ERR_DBDIRNAME_NULL, "Can not find the directory!");
     }
 
-  snprintf (find_file, PATH_MAX - 1, "%s/%s", sco.szCubrid, CUBRID_ERROR_LOG_DIR);
+  snprintf (find_file, PATH_MAX - 1, "%s/%s", sco.szArniadb, ARNIADB_ERROR_LOG_DIR);
 #if defined(WINDOWS)
   snprintf (&find_file[strlen (find_file)], PATH_MAX - strlen (find_file) - 1, "/*");
   if ((handle = FindFirstFile (find_file, &data)) == INVALID_HANDLE_VALUE)
@@ -982,7 +982,7 @@ int ext_get_db_err_log (Json::Value &request, Json::Value &response)
         {
           continue;
         }
-      snprintf (buf, sizeof (buf) - 1, "%s/%s/%s", sco.szCubrid,    CUBRID_ERROR_LOG_DIR, fname);
+      snprintf (buf, sizeof (buf) - 1, "%s/%s/%s", sco.szArniadb,    ARNIADB_ERROR_LOG_DIR, fname);
       if (stat (buf, &statbuf) == 0)
         {
           time_to_str (statbuf.st_mtime, "%4d/%02d/%02d %02d:%02d:%02d", format_time, TIME_STR_FMT_DATE_TIME);
@@ -1040,11 +1040,11 @@ int ext_get_broker_start_log (Json::Value &request, Json::Value &response)
   string format_time, strlog;
   int logsize = 0;
 
-  snprintf (log_file, PATH_MAX - 1, "%s/%s/cubrid_broker.log", sco.szCubrid, CUBRID_BROKER_LOG_DIR);
+  snprintf (log_file, PATH_MAX - 1, "%s/%s/arniadb_broker.log", sco.szArniadb, ARNIADB_BROKER_LOG_DIR);
   fd = fopen (log_file, "r");
   if (fd == NULL)
     {
-      return build_server_header (response, ERR_WITH_MSG, "Can't find cubrid_broker.log");
+      return build_server_header (response, ERR_WITH_MSG, "Can't find arniadb_broker.log");
     }
 
   if (request["start_time"] != Json::Value::null)
@@ -1159,7 +1159,7 @@ int ext_write_private_data (Json::Value &request, Json::Value &response)
                build_server_header (response, ERR_PARAM_MISSING, "Parameter(confname) missing in the request"));
 
   confname= request["confname"].asString();
-  snprintf (conf_path, PATH_MAX, "%s/%s/%s", sco.szCubrid, DBMT_LOG_DIR, confname.c_str());
+  snprintf (conf_path, PATH_MAX, "%s/%s/%s", sco.szArniadb, DBMT_LOG_DIR, confname.c_str());
 
   outfile = fopen (conf_path, "w");
   if (outfile == NULL)
@@ -1186,7 +1186,7 @@ int ext_read_private_data (Json::Value &request, Json::Value &response)
                build_server_header (response, ERR_PARAM_MISSING, "Parameter(confname) missing in the request"));
 
   confname= request["confname"].asString();
-  snprintf (conf_path, PATH_MAX, "%s/%s/%s", sco.szCubrid, DBMT_LOG_DIR, confname.c_str());
+  snprintf (conf_path, PATH_MAX, "%s/%s/%s", sco.szArniadb, DBMT_LOG_DIR, confname.c_str());
 
   infile = fopen (conf_path, "r");
   if (infile == NULL)
@@ -1517,7 +1517,7 @@ int ext_get_ha_apply_info (Json::Value &request, Json::Value &response)
   string dbname;
   string str_result[8];
 
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[9];
   char stdout_log_file[512];
   char stderr_log_file[512];
@@ -1540,7 +1540,7 @@ int ext_get_ha_apply_info (Json::Value &request, Json::Value &response)
   remote_host_name = request["remotehostname"].asString();
   dbname = request["dbname"].asString();
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
 
   argv[0] = cmd_name;
   argv[1] = opt_applyinfo.c_str();
@@ -1632,7 +1632,7 @@ int ext_add_dbmt_user_new (Json::Value &request, Json::Value &response)
       if (strcmp (dbmt_user.user_info[i].user_name, user_id.c_str()) == 0)
         {
           dbmt_user_free (&dbmt_user);
-          sprintf (dbmt_error, "CUBRID Manager user(%s) already exist.", user_id.c_str());
+          sprintf (dbmt_error, "ARNIADB Manager user(%s) already exist.", user_id.c_str());
           return build_server_header (response, ERR_DBMTUSER_EXIST, dbmt_error);
         }
     }
@@ -2205,7 +2205,7 @@ int ext_ut_add_dblist_to_response (Json::Value &response, bool is_add_dbpath)
   Json::Value dblist;
   Json::Value dbs;
 
-  snprintf (dbtxt_file, PATH_MAX-1, "%s/%s", sco.szCubrid_databases, CUBRID_DATABASE_TXT);
+  snprintf (dbtxt_file, PATH_MAX-1, "%s/%s", sco.szArniadb_databases, ARNIADB_DATABASE_TXT);
   if (access (dbtxt_file, F_OK) == 0)
     {
       in_file.open (dbtxt_file, ios::in);

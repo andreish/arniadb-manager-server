@@ -1,6 +1,6 @@
 # getcmsenv
 
-Get databases' information in cubrid.
+Get databases' information in arniadb.
 
 ## Request Json Syntax
 

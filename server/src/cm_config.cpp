@@ -108,7 +108,7 @@ static T_DBMT_FILE_INFO dbmt_file[NUM_DBMT_FILE] =
 {
   {FID_DBMT_CONF, DBMT_CONF_DIR, "cm.conf"},
   {FID_DBMT_PASS, DBMT_CONF_DIR, "cm.pass"},
-  {FID_DBMT_CUBRID_PASS, DBMT_CONF_DIR, "cmdb.pass"},
+  {FID_DBMT_ARNIADB_PASS, DBMT_CONF_DIR, "cmdb.pass"},
   {FID_CONN_LIST, DBMT_LOG_DIR, "conlist"},
   {FID_AUTO_ADDVOLDB_CONF, DBMT_CONF_DIR, "autoaddvoldb.conf"},
   {FID_AUTO_ADDVOLDB_LOG, DBMT_LOG_DIR, "autoaddvoldb.log"},
@@ -124,9 +124,9 @@ static T_DBMT_FILE_INFO dbmt_file[NUM_DBMT_FILE] =
   {FID_DIAG_STATUS_TEMPLATE, DBMT_CONF_DIR, "diagstatustemplate.conf"},
   {FID_DIAG_ACTIVITY_TEMPLATE, DBMT_CONF_DIR, "diagactivitytemplate.conf"},
   {FID_DIAG_SERVER_PID, DBMT_LOG_DIR, "diag.pid"},
-  {FID_CMSERVER_PID, DBMT_PID_DIR, DBMT_CUB_CMS_PID},
-  {FID_CMS_LOG, DBMT_LOG_DIR, "cub_manager.log"},
-  {FID_CMS_ERROR_LOG, DBMT_LOG_DIR, "cub_manager.err"},
+  {FID_CMSERVER_PID, DBMT_PID_DIR, DBMT_ARN_CMS_PID},
+  {FID_CMS_LOG, DBMT_LOG_DIR, "arn_manager.log"},
+  {FID_CMS_ERROR_LOG, DBMT_LOG_DIR, "arn_manager.err"},
   {FID_AUTO_JOBS_CONF, DBMT_CONF_DIR, "autojobs.conf"},
   {FID_SHARD_CONF, DBMT_CONF_DIR, "shard.conf"},
 };
@@ -148,62 +148,62 @@ uReadEnvVariables (char *progname)
   char tmpstrbuf[DBMT_ERROR_MSG_SIZE];
   tmpstrbuf[0] = '\0';
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sco.szCubrid = getenv ("CUBRID");
-  sco.szCubrid_databases = getenv ("CUBRID_DATABASES");
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sco.szArniadb = getenv ("ARNIADB");
+  sco.szArniadb_databases = getenv ("ARNIADB_DATABASES");
 #else
-  sco.szCubrid = CUBRID_PREFIXDIR;
-  sco.szCubrid_databases = CUBRID_VARDIR;
+  sco.szArniadb = ARNIADB_PREFIXDIR;
+  sco.szArniadb_databases = ARNIADB_VARDIR;
 #endif
   sco.szProgname = strdup (progname);    /* not an env variable */
-  if (sco.szCubrid == NULL)
+  if (sco.szArniadb == NULL)
     {
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : Environment variable CUBRID not set. - %s\n",
+                "ARNIADB Manager Server : Environment variable ARNIADB not set. - %s\n",
                 sco.szProgname);
 #else
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : CUBRID prefix directory was not set. - %s\n",
+                "ARNIADB Manager Server : ARNIADB prefix directory was not set. - %s\n",
                 sco.szProgname);
 #endif
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return -1;
     }
-  if (sco.szCubrid_databases == NULL)
+  if (sco.szArniadb_databases == NULL)
     {
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : Environment variable CUBRID_DATABASES not set. - %s\n",
+                "ARNIADB Manager Server : Environment variable ARNIADB_DATABASES not set. - %s\n",
                 sco.szProgname);
 #else
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : CUBRID databases directory was not set. - %s\n",
+                "ARNIADB Manager Server : ARNIADB databases directory was not set. - %s\n",
                 sco.szProgname);
 #endif
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return -1;
     }
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
   sco.dbmt_tmp_dir =
-    (char *) malloc (strlen (sco.szCubrid) + strlen (DBMT_TMP_DIR) + 2);
+    (char *) malloc (strlen (sco.szArniadb) + strlen (DBMT_TMP_DIR) + 2);
 #else
-  sco.dbmt_tmp_dir = (char *) malloc (strlen (CUBRID_TMPDIR) + 1);
+  sco.dbmt_tmp_dir = (char *) malloc (strlen (ARNIADB_TMPDIR) + 1);
 #endif
   if (sco.dbmt_tmp_dir == NULL)
     {
       perror ("malloc");
       return -1;
     }
-#if !defined (DO_NOT_USE_CUBRIDENV)
+#if !defined (DO_NOT_USE_ARNIADBENV)
 #ifdef WINDOWS
-  sprintf (sco.dbmt_tmp_dir, "%s\\%s", sco.szCubrid, DBMT_TMP_DIR);
+  sprintf (sco.dbmt_tmp_dir, "%s\\%s", sco.szArniadb, DBMT_TMP_DIR);
 #else
-  sprintf (sco.dbmt_tmp_dir, "%s/%s", sco.szCubrid, DBMT_TMP_DIR);
+  sprintf (sco.dbmt_tmp_dir, "%s/%s", sco.szArniadb, DBMT_TMP_DIR);
 #endif
 #else
-  sprintf (sco.dbmt_tmp_dir, "%s", CUBRID_TMPDIR);
+  sprintf (sco.dbmt_tmp_dir, "%s", ARNIADB_TMPDIR);
 #endif
 
   return 1;
@@ -242,7 +242,7 @@ uReadSystemConfig (void)
   strcpy (sco.szAutoUpdateURL, "");
   strcpy (sco.szCMSVersion, "");
   strncpy (sco.szTokenActiveTime, "7200", PATH_MAX);
-  snprintf (sco.szCWMPath, PATH_MAX, "%s%s", sco.szCubrid,
+  snprintf (sco.szCWMPath, PATH_MAX, "%s%s", sco.szArniadb,
             DEFAULT_CWM_PATH_SHORT);
 
   conf_get_dbmt_file (FID_CMS_LOG, access_log_buf);
@@ -395,8 +395,8 @@ uReadSystemConfig (void)
         {
           snprintf (sco.szAutoUpdateURL, PATH_MAX, "%s", ent_val);
         }
-      else if (strcasecmp (ent_name, "cubrid_server_ver") == 0 ||
-               strcasecmp (ent_name, "CubridServerVer") == 0)
+      else if (strcasecmp (ent_name, "arniadb_server_ver") == 0 ||
+               strcasecmp (ent_name, "ArniadbServerVer") == 0)
         {
           snprintf (sco.szCMSVersion, PATH_MAX, "%s", ent_val);
         }
@@ -451,8 +451,8 @@ uCheckSystemConfig (char *progname)
       mkdir (sco.dbmt_tmp_dir, 0755);
     }
 
-  /* CUBRID databases.txt file check */
-  sprintf (filepath, "%s/%s", sco.szCubrid_databases, CUBRID_DATABASE_TXT);
+  /* ARNIADB databases.txt file check */
+  sprintf (filepath, "%s/%s", sco.szArniadb_databases, ARNIADB_DATABASE_TXT);
   if (access (filepath, F_OK) < 0)
     {
       FILE *fp;
@@ -472,26 +472,26 @@ uCheckSystemConfig (char *progname)
     {
       return -1;
     }
-  if (check_file (conf_get_dbmt_file (FID_DBMT_CUBRID_PASS, filepath), progname) < 0)
+  if (check_file (conf_get_dbmt_file (FID_DBMT_ARNIADB_PASS, filepath), progname) < 0)
     {
       return -1;
     }
-  /* cubrid manager only support https connections,
+  /* arniadb manager only support https connections,
   * Thus private key and certificate must be checked before process starting.
   */
-  snprintf (sco.szSSLKey, PATH_MAX, "%s/conf/%s", sco.szCubrid, DEFAULT_SSL_PRIVATEKEY);
+  snprintf (sco.szSSLKey, PATH_MAX, "%s/conf/%s", sco.szArniadb, DEFAULT_SSL_PRIVATEKEY);
   if (check_file (sco.szSSLKey, progname) < 0)
     {
       return -1;
     }
-  snprintf (sco.szSSLCertificate, PATH_MAX, "%s/conf/%s", sco.szCubrid, DEFAULT_SSL_CERTIFICATE);
+  snprintf (sco.szSSLCertificate, PATH_MAX, "%s/conf/%s", sco.szArniadb, DEFAULT_SSL_CERTIFICATE);
   if (check_file (sco.szSSLCertificate, progname) < 0)
     {
       return -1;
     }
 
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (filepath, "%s/%s", sco.szCubrid, DBMT_LOG_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (filepath, "%s/%s", sco.szArniadb, DBMT_LOG_DIR);
 #else
   sprintf (filepath, "%s", DBMT_LOG_DIR);
 #endif
@@ -499,8 +499,8 @@ uCheckSystemConfig (char *progname)
     {
       return -1;
     }
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (filepath, "%s/%s", sco.szCubrid, DBMT_CONF_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (filepath, "%s/%s", sco.szArniadb, DBMT_CONF_DIR);
 #else
   sprintf (filepath, "%s", DBMT_CONF_DIR);
 #endif
@@ -508,8 +508,8 @@ uCheckSystemConfig (char *progname)
     {
       return -1;
     }
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (filepath, "%s/%s", sco.szCubrid, DBMT_TMP_DIR);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (filepath, "%s/%s", sco.szArniadb, DBMT_TMP_DIR);
 #else
   sprintf (filepath, "%s", DBMT_TMP_DIR);
 #endif
@@ -531,8 +531,8 @@ conf_get_dbmt_file (T_DBMT_FILE_ID dbmt_fid, char *buf)
     {
       if (dbmt_fid == dbmt_file[i].fid)
         {
-#if !defined (DO_NOT_USE_CUBRIDENV)
-          sprintf (buf, "%s/%s/%s", sco.szCubrid, dbmt_file[i].dir_name,
+#if !defined (DO_NOT_USE_ARNIADBENV)
+          sprintf (buf, "%s/%s/%s", sco.szArniadb, dbmt_file[i].dir_name,
                    dbmt_file[i].file_name);
 #else
           sprintf (buf, "%s/%s", dbmt_file[i].dir_name, dbmt_file[i].file_name);
@@ -783,8 +783,8 @@ check_file (char *fname, char *pname)
   if (access (fname, F_OK | R_OK | W_OK) < 0)
     {
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : %s - %s. - %s\n", fname, strerror (errno), pname);
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+                "ARNIADB Manager Server : %s - %s. - %s\n", fname, strerror (errno), pname);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return -1;
     }
   return 1;
@@ -801,8 +801,8 @@ check_path (char *dirname, char *pname)
   if (access (dirname, F_OK | W_OK | R_OK | X_OK) < 0)
     {
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server :  %s - %s. - %s\n", dirname, strerror (errno), pname);
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+                "ARNIADB Manager Server :  %s - %s. - %s\n", dirname, strerror (errno), pname);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return -1;
     }
   return 1;

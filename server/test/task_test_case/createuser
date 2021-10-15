@@ -10,7 +10,7 @@ open:authorization
 close:authorization
 _STAMP:30
 _SVRTYPE:fsvr
-_PROGNAME:cub_js
+_PROGNAME:arn_js
 _CLIENTIP:127.0.0.1
 _CLIENTPORT:59863
 _ID:admin

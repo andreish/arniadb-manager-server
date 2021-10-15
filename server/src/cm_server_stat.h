@@ -93,7 +93,7 @@ typedef struct
 } userdata;
 
 void record_system_info (sys_stat *sstat);
-void record_cubrid_proc_info (userdata *ud);
+void record_arniadb_proc_info (userdata *ud);
 void record_unicas_proc_info (int casv[], cas_stat casb[]);
 
 #endif /* _CM_SERVER_STAT_H_ */

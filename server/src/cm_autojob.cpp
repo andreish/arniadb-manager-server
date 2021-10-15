@@ -260,7 +260,7 @@ aj_add_volume (char *dbname, const char *type, int increase,
   time_t mytime;
   int retval;
   char log_file_name[512];
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char inc_str[128];
   const char *argv[16];
   int argc = 0;
@@ -294,7 +294,7 @@ aj_add_volume (char *dbname, const char *type, int increase,
   nt_style_path (dbloca, dbloca);
 #endif
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   argv[argc++] = cmd_name;
   argv[argc++] = UTIL_OPTION_ADDVOLDB;
   argv[argc++] = "--" ADDVOL_FILE_PATH_L;
@@ -324,7 +324,7 @@ aj_add_volume (char *dbname, const char *type, int increase,
 
   mytime = 0;
 
-  all_volumes = cmd_spacedb (dbname, CUBRID_MODE_CS);
+  all_volumes = cmd_spacedb (dbname, ARNIADB_MODE_CS);
   if (all_volumes == NULL)
     {
       return;
@@ -399,10 +399,10 @@ aj_autohistory_handler (void *ajp, time_t prev_check_time, time_t cur_time)
         {
           time_to_str (mytime, "%04d%02d%02d.%02d%02d%02d", timestr,
                        TIME_STR_FMT_DATE_TIME);
-#if !defined (DO_NOT_USE_CUBRIDENV)
-          sprintf (strbuf, "%s/logs/_dbmt_history.%s", sco.szCubrid, timestr);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+          sprintf (strbuf, "%s/logs/_dbmt_history.%s", sco.szArniadb, timestr);
 #else
-          sprintf (strbuf, "%s/_dbmt_history.%s", CUBRID_LOGDIR, timestr);
+          sprintf (strbuf, "%s/_dbmt_history.%s", ARNIADB_LOGDIR, timestr);
 #endif
           hsp->hfile = fopen (strbuf, "w");
         }
@@ -511,11 +511,11 @@ aj_autoaddvoldb_handler (void *hd, time_t prev_check_time, time_t cur_time)
         {
           append_host_to_dbname (dbname_at_hostname, curr->dbname,
                                  sizeof (dbname_at_hostname));
-          spacedb_res = cmd_spacedb (dbname_at_hostname, CUBRID_MODE_CS);
+          spacedb_res = cmd_spacedb (dbname_at_hostname, ARNIADB_MODE_CS);
         }
       else
         {
-          spacedb_res = cmd_spacedb (curr->dbname, CUBRID_MODE_CS);
+          spacedb_res = cmd_spacedb (curr->dbname, ARNIADB_MODE_CS);
         }
 
       if (spacedb_res == NULL)
@@ -1218,28 +1218,28 @@ aj_execquery (autoexecquery_node *c)
   int retval;
   int argc = 0;
   const char *argv[11];
-  char cmd_name[CUBRID_CMD_NAME_LEN + 1];
+  char cmd_name[ARNIADB_CMD_NAME_LEN + 1];
   int ha_mode;
   T_DB_SERVICE_MODE db_mode;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   char dbpasswd[PASSWD_LENGTH + 1];
   int error_code;
   char error_buffer[1024];
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   char input_filename[256];
   FILE *input_file;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   _aj_autoexecquery_error_log (c, 0, PRINT_CMD_START);
 
   memset (error_buffer, '\0', sizeof (error_buffer));
 
   cmd_name[0] = '\0';
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (cmd_name, "%s/%s%s", sco.szCubrid, CUBRID_DIR_BIN, UTIL_CSQL_NAME);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (cmd_name, "%s/%s%s", sco.szArniadb, ARNIADB_DIR_BIN, UTIL_ASQL_NAME);
 #else
-  sprintf (cmd_name, "%s/%s", CUBRID_BINDIR, UTIL_CSQL_NAME);
+  sprintf (cmd_name, "%s/%s", ARNIADB_BINDIR, UTIL_ASQL_NAME);
 #endif
   argv[argc++] = cmd_name;
 
@@ -1263,26 +1263,26 @@ aj_execquery (autoexecquery_node *c)
       _aj_autoexecquery_error_log (c, ERR_GENERAL_ERROR, error_buffer);
       return;
     case DB_SERVICE_MODE_CS:
-      argv[argc++] = "--" CSQL_CS_MODE_L;
+      argv[argc++] = "--" ASQL_CS_MODE_L;
       break;
     case DB_SERVICE_MODE_NONE:
-      argv[argc++] = "--" CSQL_SA_MODE_L;
+      argv[argc++] = "--" ASQL_SA_MODE_L;
       break;
     }
 
   sprintf (input_filename, "%s/dbmt_auto_execquery_%d", sco.dbmt_tmp_dir,
            (int) getpid ());
-  argv[argc++] = "--" CSQL_INPUT_FILE_L;
+  argv[argc++] = "--" ASQL_INPUT_FILE_L;
   argv[argc++] = input_filename;
 
-  argv[argc++] = "--" CSQL_USER_L;
+  argv[argc++] = "--" ASQL_USER_L;
   argv[argc++] = c->db_uid;
 
   uDecrypt (PASSWD_LENGTH, c->db_passwd, dbpasswd);
-  argv[argc++] = "--" CSQL_PASSWORD_L;
+  argv[argc++] = "--" ASQL_PASSWORD_L;
   argv[argc++] = dbpasswd;
 
-  argv[argc++] = "--" CSQL_NO_AUTO_COMMIT_L;
+  argv[argc++] = "--" ASQL_NO_AUTO_COMMIT_L;
 
   for (; argc < 11; argc++)
     {
@@ -1303,41 +1303,41 @@ aj_execquery (autoexecquery_node *c)
       return;
     }
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
             sco.dbmt_tmp_dir, "aj_execquery", getpid ());
-  retval = run_child (argv, 1, NULL, NULL, cubrid_err_file, NULL);    /* csql auto-execute */
+  retval = run_child (argv, 1, NULL, NULL, arniadb_err_file, NULL);    /* asql auto-execute */
   unlink (input_filename);
   if (retval != 0)
     {
       sprintf (error_buffer, "Failed to execute Query with");
       _aj_autoexecquery_error_log (c, ERR_SYSTEM_CALL, error_buffer);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
         {
-          unlink (cubrid_err_file);
+          unlink (arniadb_err_file);
         }
       return;
     }
   else
     {
-      if (read_error_file2 (cubrid_err_file, error_buffer, DBMT_ERROR_MSG_SIZE, &error_code) < 0)
+      if (read_error_file2 (arniadb_err_file, error_buffer, DBMT_ERROR_MSG_SIZE, &error_code) < 0)
         {
           if (error_code == 0)
             {
               error_code = ERR_GENERAL_ERROR;
             }
           _aj_autoexecquery_error_log (c, error_code, error_buffer);
-          if (access (cubrid_err_file, F_OK) == 0)
+          if (access (arniadb_err_file, F_OK) == 0)
             {
-              unlink (cubrid_err_file);
+              unlink (arniadb_err_file);
             }
           return;
         }
       else
         {
           _aj_autoexecquery_error_log (c, 0, "success");
-          if (access (cubrid_err_file, F_OK) == 0)
+          if (access (arniadb_err_file, F_OK) == 0)
             {
-              unlink (cubrid_err_file);
+              unlink (arniadb_err_file);
             }
         }
     }
@@ -1354,10 +1354,10 @@ _aj_autoexecquery_error_log (autoexecquery_node *node, int error_code,
   char strbuf[128];
 
   tt = time (&tt);
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (logfile, "%s/log/manager/auto_execquery.log", sco.szCubrid);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (logfile, "%s/log/manager/auto_execquery.log", sco.szArniadb);
 #else
-  sprintf (logfile, "%s/manager/auto_execquery.log", CUBRID_LOGDIR);
+  sprintf (logfile, "%s/manager/auto_execquery.log", ARNIADB_LOGDIR);
 #endif
 
   outfile = fopen (logfile, "a");
@@ -1471,10 +1471,10 @@ _aj_autobackupdb_error_log (autobackupdb_node *n, char *errmsg)
   char strbuf[128];
 
   tt = time (&tt);
-#if !defined (DO_NOT_USE_CUBRIDENV)
-  sprintf (logfile, "%s/log/manager/auto_backupdb.log", sco.szCubrid);
+#if !defined (DO_NOT_USE_ARNIADBENV)
+  sprintf (logfile, "%s/log/manager/auto_backupdb.log", sco.szArniadb);
 #else
-  sprintf (logfile, "%s/manager/auto_backupdb.log", CUBRID_LOGDIR);
+  sprintf (logfile, "%s/manager/auto_backupdb.log", ARNIADB_LOGDIR);
 #endif
 
   outfile = fopen (logfile, "a");
@@ -1502,9 +1502,9 @@ aj_backupdb (autobackupdb_node *n)
   char backup_vol_name[128];
   const char *opt_mode;
   char db_start_flag = 0;
-  char cubrid_err_file[PATH_MAX];
+  char arniadb_err_file[PATH_MAX];
   int retval;
-  char cmd_name[CUBRID_CMD_NAME_LEN];
+  char cmd_name[ARNIADB_CMD_NAME_LEN];
   char level_str[32];
   char strtime[32];
   char thread_num_str[16];
@@ -1513,7 +1513,7 @@ aj_backupdb (autobackupdb_node *n)
   FILE *inputfile;
   T_DB_SERVICE_MODE db_mode;
 
-  cubrid_err_file[0] = '\0';
+  arniadb_err_file[0] = '\0';
 
   sprintf (buf, "backupdb(%s): auto job start", n->dbname);
   _aj_autobackupdb_error_log (n, buf);
@@ -1578,9 +1578,9 @@ aj_backupdb (autobackupdb_node *n)
       db_start_flag = 1;
     }
 
-  opt_mode = (n->onoff == 0) ? "--" CSQL_SA_MODE_L : "--" CSQL_CS_MODE_L;
+  opt_mode = (n->onoff == 0) ? "--" ASQL_SA_MODE_L : "--" ASQL_CS_MODE_L;
 
-  cubrid_cmd_name (cmd_name);
+  arniadb_cmd_name (cmd_name);
   sprintf (thread_num_str, "%d", n->mt);
   sprintf (level_str, "%d", n->level);
   argc = 0;
@@ -1624,7 +1624,7 @@ aj_backupdb (autobackupdb_node *n)
     }
   argv[argc++] = NULL;
 
-  snprintf (cubrid_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
+  snprintf (arniadb_err_file, PATH_MAX, "%s/%s.%u.err.tmp",
             sco.dbmt_tmp_dir, "aj_backupdb", getpid ());
 
   sprintf (inputfilepath, "%s/DBMT_task_%d.%d", sco.dbmt_tmp_dir, TS_BACKUPDB,
@@ -1642,21 +1642,21 @@ aj_backupdb (autobackupdb_node *n)
       return;
     }
 
-  retval = run_child (argv, 1, inputfilepath, NULL, cubrid_err_file, NULL);    /* backupdb */
+  retval = run_child (argv, 1, inputfilepath, NULL, arniadb_err_file, NULL);    /* backupdb */
   unlink (inputfilepath);
 
-  if (read_error_file (cubrid_err_file, buf, sizeof (buf)) < 0)
+  if (read_error_file (arniadb_err_file, buf, sizeof (buf)) < 0)
     {
       _aj_autobackupdb_error_log (n, buf);
-      if (access (cubrid_err_file, F_OK) == 0)
+      if (access (arniadb_err_file, F_OK) == 0)
         {
-          unlink (cubrid_err_file);
+          unlink (arniadb_err_file);
         }
       return;
     }
-  if (access (cubrid_err_file, F_OK) == 0)
+  if (access (arniadb_err_file, F_OK) == 0)
     {
-      unlink (cubrid_err_file);
+      unlink (arniadb_err_file);
     }
   if (retval < 0)
     {
@@ -1667,12 +1667,12 @@ aj_backupdb (autobackupdb_node *n)
     }
 
   sprintf (buf, "backupdb(%s): success", n->dbname);
-  _aj_autobackupdb_error_log (n, buf);    /* log success info to notify cubrid manager user */
+  _aj_autobackupdb_error_log (n, buf);    /* log success info to notify arniadb manager user */
 
   /* update statistics */
   if (n->onoff == 0 && n->updatestatus)
     {
-      cubrid_cmd_name (cmd_name);
+      arniadb_cmd_name (cmd_name);
       argv[0] = cmd_name;
       argv[1] = UTIL_OPTION_OPTIMIZEDB;
       argv[2] = n->dbname;

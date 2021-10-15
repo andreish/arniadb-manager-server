@@ -1,6 +1,6 @@
 # ha_reload
 
-Runs `cubrid heartbeat reload` command.
+Runs `arniadb heartbeat reload` command.
 
 ## Request Json Syntax
 

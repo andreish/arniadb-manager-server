@@ -1,6 +1,6 @@
 # getaddbrokerinfo
 
-Get borker configurations from a cubrid_broker.conf file.
+Get borker configurations from a arniadb_broker.conf file.
 
 ## Request Json Syntax
 

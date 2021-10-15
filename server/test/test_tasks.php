@@ -13,10 +13,10 @@ if($argc != 2){
     echo "usage: php test_tasks.php <output_file_path>\n";
     exit;
 }
-$cubrid_env = getenv('CUBRID');
-$cubrid_database_env = getenv('CUBRID_DATABASES');
-if(!$cubrid_env || !$cubrid_database_env){
-    echo "cubrid related environment variable not set.\n";
+$arniadb_env = getenv('ARNIADB');
+$arniadb_database_env = getenv('ARNIADB_DATABASES');
+if(!$arniadb_env || !$arniadb_database_env){
+    echo "arniadb related environment variable not set.\n";
     exit;
 }
 
@@ -28,9 +28,9 @@ if(!$outfp){
 }
 
 $task_seq = array(
-    "cmd,cub_js",
-    "cmd,cub_auto",    
-    "cmd,cub_auto --version",        
+    "cmd,arn_js",
+    "cmd,arn_auto",    
+    "cmd,arn_auto --version",        
     "login_nullid,failure",
     "login_notask,failure",
     "login_nouser,failure",
@@ -236,7 +236,7 @@ $task_seq = array(
     
     // tasks set conf files
     //"setsysparam_cmconf,success",
-    //"setsysparam_cubridconf,success",
+    //"setsysparam_arniadbconf,success",
     //"broker_setparam,success",
 
     "createftprocess,success",
@@ -253,7 +253,7 @@ $ntask_total = 0;
 $ntask_failed = 0;
 $ntask_success = 0;
 
-/* connect cub_auto process to get valid token */
+/* connect arn_auto process to get valid token */
 
 $sock_auto = socket_create (AF_INET, SOCK_STREAM, SOL_TCP);
 if ($sock_auto < 0)
@@ -264,7 +264,7 @@ if ($sock_auto < 0)
 $token = get_token($sock_auto);
 #echo "token = ".$token."\n";
 
-/* connect cub_js process to execute tasks */
+/* connect arn_js process to execute tasks */
 exec_tasks($token);
 
 echo "tasks executed:\t\t".$ntask_total."\n";
@@ -314,25 +314,25 @@ function exec_tasks($token)
 
 function build_env()
 {
-    global $cubrid_env, $cubrid_database_env;
+    global $arniadb_env, $arniadb_database_env;
     @system("rm -rf ".TEST_RESULT_DIR);  //remove old result dir
     system("mkdir ".TEST_RESULT_DIR);  //create an empty result dir
-    system("mkdir ".$cubrid_database_env."/copylogdb");  //create an empty dir for copylogdb
-    system("mkdir ".$cubrid_database_env."/applylogdb");  //create an empty dir for applylogdb
-    system("mkdir ".$cubrid_database_env."/destinationdb1");  //create an empty dir for destinationdb1
-    system("cp ".TEST_CONFIG_DIR."tmp_file_for_test/* ".$cubrid_env."/tmp/");  //create an empty dir for applylogdb
-    system("echo task:class > ".$cubrid_env."/tmp/DBMT_comm_test.req");
-    system("echo dbname:testclass >> ".$cubrid_env."/tmp/DBMT_comm_test.req");
+    system("mkdir ".$arniadb_database_env."/copylogdb");  //create an empty dir for copylogdb
+    system("mkdir ".$arniadb_database_env."/applylogdb");  //create an empty dir for applylogdb
+    system("mkdir ".$arniadb_database_env."/destinationdb1");  //create an empty dir for destinationdb1
+    system("cp ".TEST_CONFIG_DIR."tmp_file_for_test/* ".$arniadb_env."/tmp/");  //create an empty dir for applylogdb
+    system("echo task:class > ".$arniadb_env."/tmp/DBMT_comm_test.req");
+    system("echo dbname:testclass >> ".$arniadb_env."/tmp/DBMT_comm_test.req");
 }
 
 function clean_env()
 {
-    global $cubrid_database_env;
-    @system("rm -rf ".$cubrid_database_env."/copylogdb");  //remove copylogdb dir
-    @system("rm -rf ".$cubrid_database_env."/applylogdb");  //remove applylogdb dir
-    system("rm -rf ".$cubrid_database_env."/destinationdb1");  //remove an empty dir for destinationdb1
-    system("rm -rf ".$cubrid_database_env."/destinationdb");  //remove an empty dir for destinationdb1
-    system("rm -rf ".$cubrid_database_env."/copydb");  //remove an empty dir for destinationdb1
+    global $arniadb_database_env;
+    @system("rm -rf ".$arniadb_database_env."/copylogdb");  //remove copylogdb dir
+    @system("rm -rf ".$arniadb_database_env."/applylogdb");  //remove applylogdb dir
+    system("rm -rf ".$arniadb_database_env."/destinationdb1");  //remove an empty dir for destinationdb1
+    system("rm -rf ".$arniadb_database_env."/destinationdb");  //remove an empty dir for destinationdb1
+    system("rm -rf ".$arniadb_database_env."/copydb");  //remove an empty dir for destinationdb1
 }
 
 function exec_task($req_file, $token, $test_result)
@@ -359,7 +359,7 @@ function exec_task($req_file, $token, $test_result)
     }
 
     $contents = file_get_contents(TEST_CASE_DIR . $req_file);
-    $contents = replace_env_vars($contents);     /* replace cubrid relate env var to actual path */
+    $contents = replace_env_vars($contents);     /* replace arniadb relate env var to actual path */
     #$kv_arr = string_to_kv_arr($contents);
     #$kv_arr["token"] = $token;
     $contents = setval_with_key($contents,"token", $token);
@@ -474,9 +474,9 @@ function setval_with_key($string, $key_in, $val_in, $line_delim="\n", $kv_delim=
     return $out_str;
 }
 
-function replace_env_vars($contents)     /* replace cubrid relate env var to actual path */
+function replace_env_vars($contents)     /* replace arniadb relate env var to actual path */
 {
-    global $cubrid_env, $cubrid_database_env;
+    global $arniadb_env, $arniadb_database_env;
     
     $tmp_time = get_time_next_miniute("Y-m-d:Hi");
     $time_elem = explode (":", $tmp_time);
@@ -487,8 +487,8 @@ function replace_env_vars($contents)     /* replace cubrid relate env var to act
     echo $query_time;
     $contents = str_replace('$AUTO_QUERY_TIME', $query_time, $contents);
 
-    $contents = str_replace('$CUBRID_DATABASES', $cubrid_database_env, $contents);
-    $contents = str_replace('$CUBRID', $cubrid_env, $contents);
+    $contents = str_replace('$ARNIADB_DATABASES', $arniadb_database_env, $contents);
+    $contents = str_replace('$ARNIADB', $arniadb_env, $contents);
 
     return $contents;
 }

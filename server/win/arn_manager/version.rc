@@ -71,12 +71,12 @@ BEGIN
         BLOCK "041204b0"
         BEGIN
             VALUE "CompanyName", "Search Solution Corporation"
-            VALUE "FileDescription", "CUBRID Management Server"
+            VALUE "FileDescription", "ARNIADB Management Server"
             VALUE "FileVersion", VERSION_STRING
-            VALUE "InternalName", "CUBRID Management Server"
+            VALUE "InternalName", "ARNIADB Management Server"
             VALUE "LegalCopyright", "Copyright (C) 2008 Search Solution Corporation. All rights reserved by Search Solution."
-            VALUE "OriginalFilename", "cub_manager.exe"
-            VALUE "ProductName", "CUBRID Management Server"
+            VALUE "OriginalFilename", "arn_manager.exe"
+            VALUE "ProductName", "ARNIADB Management Server"
             VALUE "ProductVersion", VERSION_STRING
         END
     END

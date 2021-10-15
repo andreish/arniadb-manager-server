@@ -14,7 +14,7 @@ dbname = "demodb"
 volname = "demodb"
 
 # globe
-dpath = "/home/liuhj/CUBRID/var/manager/mon_data/"
+dpath = "/home/liuhj/ARNIADB/var/manager/mon_data/"
 
 
 def dump_mod_data(filename, pos, size):

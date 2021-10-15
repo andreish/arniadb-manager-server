@@ -48,9 +48,9 @@ using namespace std;
 
 static T_HTTP_TASK_INFO http_task_info[] =
 {
-  {"exportdb", 0, http_cubrid_exportdb},
-  {"importdb", 0, http_cubrid_importdb},
-  {"sql", 0, http_cubrid_sql},
+  {"exportdb", 0, http_arniadb_exportdb},
+  {"importdb", 0, http_arniadb_importdb},
+  {"sql", 0, http_arniadb_sql},
   {NULL, 0, NULL}
 };
 
@@ -94,7 +94,7 @@ _get_col_info (int req, T_CCI_SQLX_CMD &cmd_type, Json::Value &response)
   Json::Value attribute, col;
 
   res_col_info = cci_get_result_info (req, &cmd_type, &col_count);
-  if (cmd_type == CUBRID_STMT_SELECT && !res_col_info)
+  if (cmd_type == ARNIADB_STMT_SELECT && !res_col_info)
     {
       return -1;
     }
@@ -192,7 +192,7 @@ _execute_async_stmt (int con_id, const char *stmt, int fetch_size,
     }
   response["exec_retval"] = res;
 
-  if (dump_plan && cmd_type == CUBRID_STMT_SELECT)
+  if (dump_plan && cmd_type == ARNIADB_STMT_SELECT)
     {
       if (cci_get_query_plan (req, &plan) >= 0)
         {
@@ -1213,7 +1213,7 @@ _get_export_path (string &export_path, string &export_filename,
 }
 
 int
-http_cubrid_exportdb (Json::Value &request, Json::Value &response)
+http_arniadb_exportdb (Json::Value &request, Json::Value &response)
 {
   int con_handle, port, export_size, export_type, export_flag, res;
   unsigned int i;
@@ -1294,8 +1294,8 @@ _import_class_sql (Json::Value &request, Json::Value &response)
   string import_filename;
   string import_path;
   string error_continue_option = "y";
-  T_CSQL_RESULT *csql_result;
-  T_CUBRID_MODE mode;
+  T_ASQL_RESULT *asql_result;
+  T_ARNIADB_MODE mode;
 
   JSON_FIND_V (request, "dbname",
                build_common_header (response, ERR_PARAM_MISSING, "dbname"));
@@ -1317,23 +1317,23 @@ _import_class_sql (Json::Value &request, Json::Value &response)
   import_path = string (sco.dbmt_tmp_dir) + "/" + import_filename;
 
   mode = (uDatabaseMode ((char *) db_name.c_str (), NULL) ==
-          DB_SERVICE_MODE_NONE ? CUBRID_MODE_SA : CUBRID_MODE_CS);
-  csql_result =
-    cmd_csql ((char *) db_name.c_str (), (char *) db_user.c_str (),
+          DB_SERVICE_MODE_NONE ? ARNIADB_MODE_SA : ARNIADB_MODE_CS);
+  asql_result =
+    cmd_asql ((char *) db_name.c_str (), (char *) db_user.c_str (),
               (char *) dbpasswd.c_str (), mode, (char *) import_path.c_str (),
               NULL, (char *) error_continue_option.c_str ());
-  if (csql_result == NULL)
+  if (asql_result == NULL)
     {
       return build_common_header (response, ERR_WITH_MSG,
-                                  "Error occur when execurating csql.");
+                                  "Error occur when execurating asql.");
     }
-  else if (strlen (csql_result->err_msg) != 0)
+  else if (strlen (asql_result->err_msg) != 0)
     {
-      build_common_header (response, ERR_WITH_MSG, csql_result->err_msg);
-      free (csql_result);
+      build_common_header (response, ERR_WITH_MSG, asql_result->err_msg);
+      free (asql_result);
       return ERR_WITH_MSG;
     }
-  free (csql_result);
+  free (asql_result);
   return build_common_header (response, ERR_NO_ERROR, "none");
 }
 
@@ -1518,7 +1518,7 @@ _import_class_csv (Json::Value &request, Json::Value &response)
 }
 
 int
-http_cubrid_importdb (Json::Value &request, Json::Value &response)
+http_arniadb_importdb (Json::Value &request, Json::Value &response)
 {
   int import_type, result = ERR_NO_ERROR;
   string ip, db_name, db_user, dbpasswd;
@@ -1540,7 +1540,7 @@ http_cubrid_importdb (Json::Value &request, Json::Value &response)
 }
 
 int
-http_cubrid_sql (Json::Value &request, Json::Value &response)
+http_arniadb_sql (Json::Value &request, Json::Value &response)
 {
   int con_handle, port, fetch_size, fetch_offset, dump_plan, time_out;
   unsigned int i;
@@ -1612,7 +1612,7 @@ http_cubrid_sql (Json::Value &request, Json::Value &response)
 }
 
 int
-cub_cci_request_handler (Json::Value &request, Json::Value &response)
+arn_cci_request_handler (Json::Value &request, Json::Value &response)
 {
   int res;
   int elapsed_msec = 0;
@@ -1624,7 +1624,7 @@ cub_cci_request_handler (Json::Value &request, Json::Value &response)
                build_common_header (response, ERR_PARAM_MISSING, "task"));
   task_name = request["task"].asString ();
 
-  /* record the start time of running cub_manager task. */
+  /* record the start time of running arn_manager task. */
   gettimeofday (&task_begin, NULL);
 
   get_cci_task_info (task_name.c_str (), &task_func);
@@ -1644,10 +1644,10 @@ cub_cci_request_handler (Json::Value &request, Json::Value &response)
       res = build_common_header (response, ERR_UNDEFINED_TASK, task_name.c_str ());
     }
 
-  /* record the end time of running cub_manager task. */
+  /* record the end time of running arn_manager task. */
   gettimeofday (&task_end, NULL);
 
-  /* caculate the running time of cub_manager task. */
+  /* caculate the running time of arn_manager task. */
   _ut_timeval_diff (&task_begin, &task_end, &elapsed_msec);
   response["__EXEC_TIME"] = elapsed_msec;
 

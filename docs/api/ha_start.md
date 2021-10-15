@@ -1,6 +1,6 @@
 # ha_start
 
-Runs `cubrid heartbeat start` command.
+Runs `arniadb heartbeat start` command.
 
 ## Request Json Syntax
 

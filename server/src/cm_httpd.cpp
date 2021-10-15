@@ -116,8 +116,8 @@ struct worker_context
 #endif
 };
 
-int cubrid_version_major = -1;
-int cubrid_version_minor = -1;
+int arniadb_version_major = -1;
+int arniadb_version_minor = -1;
 
 int
 bind_socket (int port)
@@ -193,7 +193,7 @@ dispatch_thread (void *arg)
 }
 
 void
-cub_add_private_param (struct evhttp_request *req, Json::Value &root)
+arn_add_private_param (struct evhttp_request *req, Json::Value &root)
 {
   root["_CLIENTIP"] = req->remote_host;
   root["_CLIENTPORT"] = req->remote_port;
@@ -202,7 +202,7 @@ cub_add_private_param (struct evhttp_request *req, Json::Value &root)
 }
 
 void
-cub_generic_request_handler (struct evhttp_request *req, void *arg)
+arn_generic_request_handler (struct evhttp_request *req, void *arg)
 {
   struct evbuffer *input;
   struct evkeyvalq *headers;
@@ -263,15 +263,15 @@ cub_generic_request_handler (struct evhttp_request *req, void *arg)
       return;
     }
 
-  cub_add_private_param (req, root);
+  arn_add_private_param (req, root);
 
   if (!strcmp ((char *) arg, "cci"))
     {
-      cub_cci_request_handler (root, response);
+      arn_cci_request_handler (root, response);
     }
   else if (!strcmp ((char *) arg, "cm_api"))
     {
-      cub_cm_request_handler (root, response);
+      arn_cm_request_handler (root, response);
     }
 
   //outustr = utf8_encode(writer.write(response).c_str());
@@ -301,18 +301,18 @@ cub_generic_request_handler (struct evhttp_request *req, void *arg)
   return;
 }
 
-static int cub_loop_flag = 1;
+static int arn_loop_flag = 1;
 
 void
-cub_ctrl_request_handler (struct evhttp_request *req, void *arg)
+arn_ctrl_request_handler (struct evhttp_request *req, void *arg)
 {
   evhttp_send_reply (req, HTTP_OK, "", NULL);
-  cub_loop_flag = 0;
+  arn_loop_flag = 0;
   return;
 }
 
 void
-cub_post_request_handler (struct evhttp_request *req, void *arg)
+arn_post_request_handler (struct evhttp_request *req, void *arg)
 {
   string post_msg = "{ \"success\" : true }";
   string req_uri (req->uri);
@@ -396,10 +396,10 @@ send_reply:
 }
 
 void
-cub_timeout_cb (evutil_socket_t fd, short event, void *arg)
+arn_timeout_cb (evutil_socket_t fd, short event, void *arg)
 {
   struct worker_context *work_ctx = (struct worker_context *) arg;
-  if (!cub_loop_flag)
+  if (!arn_loop_flag)
     {
       event_base_loopexit (work_ctx->base, NULL);
     }
@@ -415,13 +415,13 @@ start_monitor_stat_cb (evutil_socket_t fd, short event, void *arg)
   struct timeval stat_tv = { STAT_MONITOR_INTERVAL, 0 };
 
   struct worker_context *work_ctx = (struct worker_context *) arg;
-  if (!cub_loop_flag)
+  if (!arn_loop_flag)
     {
       event_base_loopexit (work_ctx->base, NULL);
       return;
     }
 
-  // [CUBRIDSUS-11917]sleep the thread for a while when the CUBRID is starting
+  // [CUBRIDSUS-11917]sleep the thread for a while when the ARNIADB is starting
   if (work_ctx->first)
     {
       SLEEP_SEC (MIN_INTERVAL - 1);
@@ -441,7 +441,7 @@ start_monitor_auto_jobs_cb (evutil_socket_t fd, short event, void *arg)
 {
   struct timeval auto_task_tv = { sco.iMonitorInterval, 0 };
   struct worker_context *work_ctx = (struct worker_context *) arg;
-  if (!cub_loop_flag)
+  if (!arn_loop_flag)
     {
       event_base_loopexit (work_ctx->base, NULL);
       return;
@@ -495,9 +495,9 @@ start_service ()
   if (nfd < 0)
     {
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : The port %d is still used by other process.\n",
+                "ARNIADB Manager Server : The port %d is still used by other process.\n",
                 sco.iCMS_port);
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return -1;
     }
 
@@ -522,7 +522,7 @@ start_service ()
 
       if (i > 1)        /* DEFAULT_THRD_NUM - 1 for request handler */
         {
-          start_ctx[i]->timer = event_new (start_ctx[i]->base, -1, EV_PERSIST, cub_timeout_cb, (void *) start_ctx[i]);
+          start_ctx[i]->timer = event_new (start_ctx[i]->base, -1, EV_PERSIST, arn_timeout_cb, (void *) start_ctx[i]);
           if (start_ctx[i]->timer == NULL)
             {
               continue;
@@ -544,10 +544,10 @@ start_service ()
           /* This is the magic that lets evhttp use SSL. */
           evhttp_set_bevcb (start_ctx[i]->httpd, create_sslconn_cb, ctx);
           evhttp_set_cb (start_ctx[i]->httpd, "/cci",
-                         cub_generic_request_handler, (void *) "cci");
-          evhttp_set_cb (start_ctx[i]->httpd, "/cm_api", cub_generic_request_handler, (void *) "cm_api");
-          evhttp_set_cb (start_ctx[i]->httpd, "/ctrl", cub_ctrl_request_handler, NULL);
-          evhttp_set_cb (start_ctx[i]->httpd, "/upload", cub_post_request_handler, NULL);
+                         arn_generic_request_handler, (void *) "cci");
+          evhttp_set_cb (start_ctx[i]->httpd, "/cm_api", arn_generic_request_handler, (void *) "cm_api");
+          evhttp_set_cb (start_ctx[i]->httpd, "/ctrl", arn_ctrl_request_handler, NULL);
+          evhttp_set_cb (start_ctx[i]->httpd, "/upload", arn_post_request_handler, NULL);
           /* Start web server*/
           evhttp_set_gencb (start_ctx[i]->httpd, load_webfiles_cb, (void *) sco.szCWMPath);
         }
@@ -558,7 +558,7 @@ start_service ()
                                            (void *) start_ctx[i]);
           if (start_ctx[i]->timer == NULL)
             {
-              ut_record_cubrid_utility_log_stderr ("CUBRID Manager Server : Failed to start monitor of auto job.\n");
+              ut_record_arniadb_utility_log_stderr ("ARNIADB Manager Server : Failed to start monitor of auto job.\n");
               return -1;
             }
           start_ctx[i]->httpd = NULL;
@@ -570,8 +570,8 @@ start_service ()
                                            (void *) start_ctx[i]);
           if (start_ctx[i]->timer == NULL)
             {
-              ut_record_cubrid_utility_log_stderr (
-                "CUBRID Manager Server : Failed to start monitoring state job.\n");
+              ut_record_arniadb_utility_log_stderr (
+                "ARNIADB Manager Server : Failed to start monitoring state job.\n");
               return -1; /* Start monitor status job failed */
             }
           start_ctx[i]->httpd = NULL;
@@ -632,20 +632,20 @@ stop_service ()
 {
   FILE *pidfile = NULL;
   int pidnum = -1;
-  char cub_manager_pid_file[PATH_MAX];
+  char arn_manager_pid_file[PATH_MAX];
   char connect_list_file[PATH_MAX];
 
-  cub_manager_pid_file[0] = '\0';
+  arn_manager_pid_file[0] = '\0';
   connect_list_file[0] = '\0';
 
-  conf_get_dbmt_file (FID_CMSERVER_PID, cub_manager_pid_file);
-  if (access (cub_manager_pid_file, F_OK) < 0)
+  conf_get_dbmt_file (FID_CMSERVER_PID, arn_manager_pid_file);
+  if (access (arn_manager_pid_file, F_OK) < 0)
     {
-      ut_record_cubrid_utility_log_stderr ("CUBRID Manager Server : The server is not running.\n");
+      ut_record_arniadb_utility_log_stderr ("ARNIADB Manager Server : The server is not running.\n");
     }
   else
     {
-      pidfile = fopen (cub_manager_pid_file, "rt");
+      pidfile = fopen (arn_manager_pid_file, "rt");
       if (pidfile != NULL)
         {
           fscanf (pidfile, "%d", &pidnum);
@@ -654,11 +654,11 @@ stop_service ()
 
       if ((pidfile == NULL) || ((kill (pidnum, SIGTERM)) < 0))
         {
-          ut_record_cubrid_utility_log_stderr ("CUBRID Manager Server : Failed to stop the server.\n");
+          ut_record_arniadb_utility_log_stderr ("ARNIADB Manager Server : Failed to stop the server.\n");
         }
       else
         {
-          unlink (conf_get_dbmt_file (FID_CMSERVER_PID, cub_manager_pid_file));
+          unlink (conf_get_dbmt_file (FID_CMSERVER_PID, arn_manager_pid_file));
           unlink (conf_get_dbmt_file (FID_CONN_LIST, connect_list_file));
         }
     }
@@ -854,7 +854,7 @@ main (int argc, char **argv)
 
   tmpstrbuf[0] = '\0';
 
-  cub_cm_init_env ();
+  arn_cm_init_env ();
   if (argc >= 2)
     {
       if (strcmp (argv[1], "stop") == 0)
@@ -864,7 +864,7 @@ main (int argc, char **argv)
         }
       else if (strcmp (argv[1], "--version") == 0)
         {
-          fprintf (stdout, "CUBRID Manager Server ver : %s\n",
+          fprintf (stdout, "ARNIADB Manager Server ver : %s\n",
                    makestring (BUILD_NUMBER));
           exit (0);
         }
@@ -879,8 +879,8 @@ main (int argc, char **argv)
         }
       else if (strcmp (argv[1], PRINT_CMD_START) != 0)
         {
-          snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE, "CUBRID Manager Server : Invalid command - %s\n", argv[1]);
-          ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+          snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE, "ARNIADB Manager Server : Invalid command - %s\n", argv[1]);
+          ut_record_arniadb_utility_log_stderr (tmpstrbuf);
           print_usage (argv[0]);
           exit (1);
         }
@@ -889,8 +889,8 @@ main (int argc, char **argv)
   if ((pidnum = get_processid ()) > 0)
     {
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : The [pid=%d] process has been running.\n", pidnum);
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+                "ARNIADB Manager Server : The [pid=%d] process has been running.\n", pidnum);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       return 0;
     }
 
@@ -905,15 +905,15 @@ main (int argc, char **argv)
   if (ut_write_pid (conf_get_dbmt_file (FID_CMSERVER_PID, dbmt_file)) < 0)
     {
       snprintf (tmpstrbuf, DBMT_ERROR_MSG_SIZE,
-                "CUBRID Manager Server : Fail to store the pid file in (%s).\n", dbmt_file);
-      ut_record_cubrid_utility_log_stderr (tmpstrbuf);
+                "ARNIADB Manager Server : Fail to store the pid file in (%s).\n", dbmt_file);
+      ut_record_arniadb_utility_log_stderr (tmpstrbuf);
       exit (1);
     }
 
   start_auto_thread ();
 
-  find_and_parse_cub_admin_version (cubrid_version_major, cubrid_version_minor);
-  LOG_INFO ("started '%s' with Engine Version: %d.%d", argv[0], cubrid_version_major, cubrid_version_minor);
+  find_and_parse_arn_admin_version (arniadb_version_major, arniadb_version_minor);
+  LOG_INFO ("started '%s' with Engine Version: %d.%d", argv[0], arniadb_version_major, arniadb_version_minor);
 
   start_service ();
 

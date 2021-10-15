@@ -6,7 +6,7 @@ dbuser:dba
 dbpasswd:
 _STAMP:34
 _SVRTYPE:fsvr
-_PROGNAME:cub_js
+_PROGNAME:arn_js
 _CLIENTIP:127.0.0.1
 _CLIENTPORT:60887
 _ID:admin

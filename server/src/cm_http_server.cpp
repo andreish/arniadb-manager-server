@@ -615,7 +615,7 @@ static void http_error_404 (struct evhttp_request *req, int fd)
             "<center><h1>404 Not Found</h1></center>" \
             "<center><p>Request: %s not found</p></center>"\
             "<hr>"\
-            "<center><address>Cubrid Manager Server</address></center>"\
+            "<center><address>Arniadb Manager Server</address></center>"\
             "</body></html>\n"
 
   struct evbuffer *buf = evbuffer_new ();
@@ -652,7 +652,7 @@ static void web_error_404 (struct evhttp_request *req)
             "<center><h1>404 Not Found</h1></center>" \
             "<center><p>Web Manager was not started, please configure it rightly</p></center>"\
             "<hr>"\
-            "<center><address>Cubrid Manager Server</address></center>"\
+            "<center><address>Arniadb Manager Server</address></center>"\
             "</body></html>\n"
 
   struct evbuffer *buf = evbuffer_new ();

@@ -1,6 +1,6 @@
 # userinfo
 
-Get Databases' user information in cubrid.
+Get Databases' user information in arniadb.
 
 ## Request Json Syntax
 

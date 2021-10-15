@@ -35,7 +35,7 @@ Update broker.conf file.
     "#",
     "[broker]",
     "MASTER_SHM_ID=30001",
-    "ADMIN_LOG_FILE=log/broker/cubrid_broker.log",
+    "ADMIN_LOG_FILE=log/broker/arniadb_broker.log",
     "",
     "",
     "[%broker1]",

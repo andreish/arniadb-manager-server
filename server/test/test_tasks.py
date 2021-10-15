@@ -5,12 +5,12 @@ import struct
 import os, sys
 
 def findport():
-    cubrid = os.environ.get("CUBRID")
-    conf = cubrid + "/conf/cm_httpd.conf"
+    arniadb = os.environ.get("ARNIADB")
+    conf = arniadb + "/conf/cm_httpd.conf"
     cwm_find = False;
     cf = open(conf, "r")
     for line in cf:
-        idx = line.find("cwm.cubrid.org")
+        idx = line.find("cwm.arniadb.org")
         if idx > 0:
             cwm_find = True
         if cwm_find:
@@ -29,8 +29,8 @@ url="/cm_api"
 testdir="task_test_case_json/"
 
 token=""
-CUBRID=""
-CUBRID_DATABASES=""
+ARNIADB=""
+ARNIADB_DATABASES=""
 
 def exec_task(ip, port, url, body):
     conn = httplib.HTTPConnection(ip, port)
@@ -42,8 +42,8 @@ def exec_task(ip, port, url, body):
 def load_task(taskfile):
     task=open(taskfile, "r")
     filebuf=task.read()
-    filebuf=filebuf.replace("$CUBRID_DATABASES", str(CUBRID_DATABASES))
-    filebuf=filebuf.replace("$CUBRID", str(CUBRID))
+    filebuf=filebuf.replace("$ARNIADB_DATABASES", str(ARNIADB_DATABASES))
+    filebuf=filebuf.replace("$ARNIADB", str(ARNIADB))
     data = json.loads(filebuf)
     return data
 
@@ -99,12 +99,12 @@ def init_env():
         response = data
     token = response["token"]
     response = do_one_job(testdir+"/getenv.txt", token)  
-    bindir = response["CUBRID"]
-    datadir = response["CUBRID_DATABASES"]
+    bindir = response["ARNIADB"]
+    datadir = response["ARNIADB_DATABASES"]
     return token, bindir, datadir
 
-token, CUBRID, CUBRID_DATABASES = init_env()
-#print (token, CUBRID, CUBRID_DATABASES)
+token, ARNIADB, ARNIADB_DATABASES = init_env()
+#print (token, ARNIADB, ARNIADB_DATABASES)
 #do_one_job("task_json/renamedb.txt", token)
 do_all_jobs(token)
 

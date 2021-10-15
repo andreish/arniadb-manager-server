@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\win;..\..\src;$(cubrid_includedir);"
+				AdditionalIncludeDirectories="..\..\win;..\..\src;$(arniadb_includedir);"
 				PreprocessorDefinitions="WIN;WINDOWS;WIN32;_DEBUG;_CRT_SECURE_NO_WARNINGS;DIAG_DEVEL;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,7 +65,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib cmstat.lib cmdep.lib psapi.lib"
-				AdditionalLibraryDirectories="$(cubrid_libdir)"
+				AdditionalLibraryDirectories="$(arniadb_libdir)"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\win;..\..\src;$(cubrid_includedir)"
+				AdditionalIncludeDirectories="..\..\win;..\..\src;$(arniadb_includedir)"
 				PreprocessorDefinitions="WIN;WINDOWS;_WIN64;_DEBUG;_CRT_SECURE_NO_WARNINGS;DIAG_DEVEL"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib cmstat.lib cmdep.lib psapi.lib"
-				AdditionalLibraryDirectories="$(cubrid_lib64dir)"
+				AdditionalLibraryDirectories="$(arniadb_lib64dir)"
 				GenerateDebugInformation="true"
 				TargetMachine="17"
 			/>
@@ -193,7 +193,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\win;..\..\src;$(cubrid_includedir);$(libevent_include)"
+				AdditionalIncludeDirectories="..\..\win;..\..\src;$(arniadb_includedir);$(libevent_include)"
 				PreprocessorDefinitions="WIN;WINDOWS;WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;DIAG_DEVEL;_USE_32BIT_TIME_T"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -213,7 +213,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib cmstat.lib cmdep.lib psapi.lib"
-				AdditionalLibraryDirectories="$(cubrid_libdir);$(libevent_lib)"
+				AdditionalLibraryDirectories="$(arniadb_libdir);$(libevent_lib)"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -270,7 +270,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\win;..\..\src;$(cubrid_includedir)"
+				AdditionalIncludeDirectories="..\..\win;..\..\src;$(arniadb_includedir)"
 				PreprocessorDefinitions="WIN;WINDOWS;_WIN64;NDEBUG;_CRT_SECURE_NO_WARNINGS;DIAG_DEVEL"
 				RuntimeLibrary="2"
 				BufferSecurityCheck="true"
@@ -291,7 +291,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="ws2_32.lib cmstat.lib cmdep.lib psapi.lib"
-				AdditionalLibraryDirectories="$(cubrid_libdir)"
+				AdditionalLibraryDirectories="$(arniadb_libdir)"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

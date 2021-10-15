@@ -25,18 +25,18 @@ fi
 ######### run test #############
 case  x$1 in 
 xtest)
-cp $CUBRID/conf/cubrid.conf $CRT_PATH/test/task_test_config/orign/
-#cp $CRT_PATH/test/task_test_config/ha_conf/cubrid.conf $CUBRID/conf/
-cp -f $CRT_PATH/test/task_test_config/cm_conf/*.conf $CUBRID/conf/
+cp $ARNIADB/conf/arniadb.conf $CRT_PATH/test/task_test_config/orign/
+#cp $CRT_PATH/test/task_test_config/ha_conf/arniadb.conf $ARNIADB/conf/
+cp -f $CRT_PATH/test/task_test_config/cm_conf/*.conf $ARNIADB/conf/
 
-cubrid service restart
-cubrid server start demodb
+arniadb service restart
+arniadb server start demodb
 
 cd test/
 ./hudsonbuild.sh
-cubrid service stop
+arniadb service stop
 
-#cp  $CRT_PATH/test/task_test_config/orign/cubrid.conf $CUBRID/conf/
+#cp  $CRT_PATH/test/task_test_config/orign/arniadb.conf $ARNIADB/conf/
 echo "test done!"
 
 ;;

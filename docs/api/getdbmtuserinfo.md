@@ -1,6 +1,6 @@
 # getdbmtuserinfo
 
-The getdbmtuserinfo interface will fetch cubrid manager information.
+The getdbmtuserinfo interface will fetch arniadb manager information.
 
 ## Request Json Syntax
 

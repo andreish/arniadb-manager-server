@@ -4,7 +4,7 @@ dbname:alatestdb
 classname:
 _STAMP:21
 _SVRTYPE:fsvr
-_PROGNAME:cub_js
+_PROGNAME:arn_js
 _CLIENTIP:192.168.0.1
 _CLIENTPORT:2575
 _ID:admin

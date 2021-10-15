@@ -1,6 +1,6 @@
 # ha_stop
 
-Runs `cubrid heartbeat stop` command.
+Runs `arniadb heartbeat stop` command.
 
 ## Request Json Syntax
 

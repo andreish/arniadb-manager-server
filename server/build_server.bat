@@ -7,8 +7,8 @@ call "%VS90COMNTOOLS%vsvars32.bat"
 echo Start build cm_server ...
 cd win
 
-set cubrid_libdir=%cubrid_libdir%
-set cubrid_includedir=%cubrid_includedir%
+set arniadb_libdir=%arniadb_libdir%
+set arniadb_includedir=%arniadb_includedir%
 
 cmd /c devenv cmserver.sln /project install /rebuild "%mode%|%platform%"
 set exitcode=%errorlevel%

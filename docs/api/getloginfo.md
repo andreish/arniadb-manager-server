@@ -45,67 +45,67 @@ Get database log file information.
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.07",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130107_1419.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130107_1419.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.31",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130131_1823.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130131_1823.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.07",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130107_1453.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130107_1453.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.15",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130115_1028.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130115_1028.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.10",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130110_1528.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130110_1528.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.05",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130105_1628.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130105_1628.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.05",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130105_1140.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130105_1140.err",
                "size" : "9629"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.10",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130110_1526.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130110_1526.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.05",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130105_1525.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130105_1525.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.07",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130107_1350.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130107_1350.err",
                "size" : "0"
             },
             {
                "@owner" : "huangqiyu",
                "lastupdate" : "2013.01.11",
-               "path" : "/home/huangqiyu/cubrid_8.4.3/log/server/testdb_20130111_1453.err",
+               "path" : "/home/huangqiyu/arniadb_8.4.3/log/server/testdb_20130111_1453.err",
                "size" : "0"
             }
       }

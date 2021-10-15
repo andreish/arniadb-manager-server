@@ -1,6 +1,6 @@
 # ha_status
 
-Runs `cubrid heartbeat status` command.
+Runs `arniadb heartbeat status` command.
 
 ## Request Json Syntax
 
