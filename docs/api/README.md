@@ -2,20 +2,20 @@
 
 ## Overview
 
-The ARNIADB Manager Server (CMS) HTTP Interface is an interface that exists between the ARNIADB manager server and the application client, through which a web-based application client can access the ARNIADB manager server. The ARNIADB manager server delivers the request received from an application client to the ARNIADB, and transfers the execution result to the client.
+The ARNIADB Manager Server (AMS) HTTP Interface is an interface that exists between the ARNIADB manager server and the application client, through which a web-based application client can access the ARNIADB manager server. The ARNIADB manager server delivers the request received from an application client to the ARNIADB, and transfers the execution result to the client.
 
 ## System Architecture
 
-CMS is a manager tools for ARNIADB including database configure, monitor, SQL query. As the component of the ARNIADB Database Management System, CMS provides a web-based tool that allows users to remotely manage the database and the Broker.
+AMS is a manager tools for ARNIADB including database configure, monitor, SQL query. As the component of the ARNIADB Database Management System, AMS provides a web-based tool that allows users to remotely manage the database and the Broker.
 
-![CMS Architecture](images/architecture.png?raw=true "CMS Architecture")
-CMS Architecture
+![AMS Architecture](images/architecture.png?raw=true "AMS Architecture")
+AMS Architecture
 
 ## Writing HTTP Application Program
 
-CMS http interface is REST-like interface, client can POST JSON-format request to url `http://cms_ip:cms_port/cm_api`, and receive the execution result.
+AMS http interface is REST-like interface, client can POST JSON-format request to url `http://ams_ip:ams_port/cm_api`, and receive the execution result.
 
-The basic steps used for writing programs are as follows. First client must log in CMS with DBMT user name and password. If client login success, CMS will return a token which will be used in following request. The steps are implemented in example codes.
+The basic steps used for writing programs are as follows. First client must log in AMS with DBMT user name and password. If client login success, AMS will return a token which will be used in following request. The steps are implemented in example codes.
 
 Example in Python Request:
 
@@ -60,9 +60,9 @@ There are seven permissions. These permissions can indicate which authorities ar
 | ADMIN | Indicate the authority of admin |
 | ALL_AUTHORITY | This value is equal to "DBC | DBO | BRK | MON | JOB | VAR" |
 
-## CMS Interfaces
+## AMS Interfaces
 
-CMs Interfaces are conposed by Json and is used for communication between CMS and Arniadb Manager.
+AMS Interfaces are conposed by Json and is used for communication between AMS and Arniadb Manager.
 
 ### Broker
 
@@ -226,6 +226,6 @@ CMs Interfaces are conposed by Json and is used for communication between CMS an
 | [getstandbyserverstat](getstandbyserverstat.md) | socket, http | ALL_AUTHORITY |
 | [login](login.md) | socket, http | ALL_AUTHORITY |
 | [logout](logout.md) | socket, http | ALL_AUTHORITY |
-| [getcmsenv](getcmsenv.md) | socket, http | ALL_AUTHORITY |
+| [getamsenv](getamsenv.md) | socket, http | ALL_AUTHORITY |
 | [shard_start](shard_start.md) | socket, http | DBC, DBO, BRK |
 | [shard_stop](shard_stop.md) | socket, http | DBC, DBO, BRK |

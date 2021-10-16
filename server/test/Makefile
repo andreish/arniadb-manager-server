@@ -1,9 +1,9 @@
 CUR_PATH=$(shell /bin/pwd)
-COVERAGE_PATH=../cmserver/
+COVERAGE_PATH=../amserver/
 
 test:
 	python test_cci.py
-	/usr/bin/php -q test_tasks.php ./log/test_cmserver.xml
+	/usr/bin/php -q test_tasks.php ./log/test_amserver.xml
 	g++ -o sendfile sendfile.cpp
 	./sendfile task_test_case/jobfile task_test_case/jobfile.zip	
 	python test_tasks.py

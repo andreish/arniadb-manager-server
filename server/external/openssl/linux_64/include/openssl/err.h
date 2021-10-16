@@ -87,7 +87,7 @@ typedef struct err_state_st {
 # define ERR_LIB_ECDH            43
 # define ERR_LIB_OSSL_STORE      44
 # define ERR_LIB_FIPS            45
-# define ERR_LIB_CMS             46
+# define ERR_LIB_AMS             46
 # define ERR_LIB_TS              47
 # define ERR_LIB_HMAC            48
 /* # define ERR_LIB_JPAKE       49 */
@@ -127,7 +127,7 @@ typedef struct err_state_st {
 # define ECDHerr(f,r)  ERR_PUT_error(ERR_LIB_ECDH,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
 # define OSSL_STOREerr(f,r) ERR_PUT_error(ERR_LIB_OSSL_STORE,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
 # define FIPSerr(f,r) ERR_PUT_error(ERR_LIB_FIPS,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
-# define CMSerr(f,r) ERR_PUT_error(ERR_LIB_CMS,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
+# define AMSerr(f,r) ERR_PUT_error(ERR_LIB_AMS,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
 # define TSerr(f,r) ERR_PUT_error(ERR_LIB_TS,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
 # define HMACerr(f,r) ERR_PUT_error(ERR_LIB_HMAC,(f),(r),OPENSSL_FILE,OPENSSL_LINE)
 # define CTerr(f,r) ERR_PUT_error(ERR_LIB_CT,(f),(r),OPENSSL_FILE,OPENSSL_LINE)

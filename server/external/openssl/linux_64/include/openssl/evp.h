@@ -1135,9 +1135,9 @@ int EVP_PBE_get(int *ptype, int *ppbe_nid, size_t num);
 # define ASN1_PKEY_CTRL_PKCS7_SIGN       0x1
 # define ASN1_PKEY_CTRL_PKCS7_ENCRYPT    0x2
 # define ASN1_PKEY_CTRL_DEFAULT_MD_NID   0x3
-# define ASN1_PKEY_CTRL_CMS_SIGN         0x5
-# define ASN1_PKEY_CTRL_CMS_ENVELOPE     0x7
-# define ASN1_PKEY_CTRL_CMS_RI_TYPE      0x8
+# define ASN1_PKEY_CTRL_AMS_SIGN         0x5
+# define ASN1_PKEY_CTRL_AMS_ENVELOPE     0x7
+# define ASN1_PKEY_CTRL_AMS_RI_TYPE      0x8
 
 # define ASN1_PKEY_CTRL_SET1_TLS_ENCPT   0x9
 # define ASN1_PKEY_CTRL_GET1_TLS_ENCPT   0xa
@@ -1306,9 +1306,9 @@ void EVP_PKEY_asn1_set_security_bits(EVP_PKEY_ASN1_METHOD *ameth,
 /* Used by GOST key encryption in TLS */
 # define EVP_PKEY_CTRL_SET_IV            8
 
-# define EVP_PKEY_CTRL_CMS_ENCRYPT       9
-# define EVP_PKEY_CTRL_CMS_DECRYPT       10
-# define EVP_PKEY_CTRL_CMS_SIGN          11
+# define EVP_PKEY_CTRL_AMS_ENCRYPT       9
+# define EVP_PKEY_CTRL_AMS_DECRYPT       10
+# define EVP_PKEY_CTRL_AMS_SIGN          11
 
 # define EVP_PKEY_CTRL_CIPHER            12
 

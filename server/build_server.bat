@@ -10,13 +10,13 @@ cd win
 set arniadb_libdir=%arniadb_libdir%
 set arniadb_includedir=%arniadb_includedir%
 
-cmd /c devenv cmserver.sln /project install /rebuild "%mode%|%platform%"
+cmd /c devenv amserver.sln /project install /rebuild "%mode%|%platform%"
 set exitcode=%errorlevel%
 cd ..
 if not "%exitcode%" == "0" exit /b %exitcode%
 
 cd win/install
-cd CMServer_%mode%_%platform%
+cd AMServer_%mode%_%platform%
 
 robocopy . %prefix%\ /e
 if errorlevel 1 (

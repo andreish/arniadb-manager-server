@@ -5,14 +5,14 @@ mkdir -p log
 arn_js stop
 arn_auto stop
 
-valgrind  --leak-check=full --log-file=./log/cmserver_auto.valgrind.log arn_auto start
-valgrind  --leak-check=full --log-file=./log/cmserver_js.valgrind.log arn_js start
+valgrind  --leak-check=full --log-file=./log/amserver_auto.valgrind.log arn_auto start
+valgrind  --leak-check=full --log-file=./log/amserver_js.valgrind.log arn_js start
 
-arn_cmserver stop
+arn_amserver stop
 sleep 3
-valgrind  --leak-check=full --log-file=./log/cmserver_cmserver.valgrind.log arn_cmserver start
+valgrind  --leak-check=full --log-file=./log/amserver_amserver.valgrind.log arn_amserver start
 
-sed -i -e '/invalid file descriptor .* in syscall close/d' -e '/to select an alternative log fd/d' ./log/cmserver_*.valgrind.log*
+sed -i -e '/invalid file descriptor .* in syscall close/d' -e '/to select an alternative log fd/d' ./log/amserver_*.valgrind.log*
 
 arniadb deletedb anotherdb   #remove legacy test database
 arniadb deletedb alatestdb #remove legacy test database

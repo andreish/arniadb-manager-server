@@ -1,6 +1,6 @@
 # monitorprocess
 
-Monitor CMS process status.
+Monitor AMS process status.
 
 ## Request Json Syntax
 

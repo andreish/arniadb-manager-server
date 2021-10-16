@@ -1,6 +1,6 @@
 ARNIADB Manager Server System
 =============================
-ARNIADB Manager Server(CMS) use some 3rd software, like openssl, libevent and json.
+ARNIADB Manager Server(AMS) use some 3rd software, like openssl, libevent and json.
 The following is steps to compile them by yourself.
 
 ==============
@@ -74,4 +74,4 @@ nmake OPENSSL_DIR=F:\openssl /f Makefile.nmake
 
 
 Sincerely,
-Your CMS Development Team.
+Your AMS Development Team.

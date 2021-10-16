@@ -4,7 +4,7 @@ setdbmtpasswd_admin
 
 login_errver
 setloglevel
-getcmsenv
+getamsenv
 getprocstat
 getsysdiskinfo
 startinfo

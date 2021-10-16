@@ -169,7 +169,7 @@ DH *DH_get_2048_256(void);
 DH *DH_new_by_nid(int nid);
 int DH_get_nid(const DH *dh);
 
-# ifndef OPENSSL_NO_CMS
+# ifndef OPENSSL_NO_AMS
 /* RFC2631 KDF */
 int DH_KDF_X9_42(unsigned char *out, size_t outlen,
                  const unsigned char *Z, size_t Zlen,
@@ -328,7 +328,7 @@ int DH_meth_set_generate_params(DH_METHOD *dhm,
 
 /* KDF types */
 # define EVP_PKEY_DH_KDF_NONE                            1
-# ifndef OPENSSL_NO_CMS
+# ifndef OPENSSL_NO_AMS
 # define EVP_PKEY_DH_KDF_X9_42                           2
 # endif
 

@@ -52,7 +52,7 @@ export SYSTEM_TYPE MACHINE_TYPE
 case $SYSTEM_TYPE in
     *linux*) SYS_DEFS="-DGCC -DLINUX -D_GNU_SOURCE -DI386"
          SYS_LIBS="" 
-         CMSTAT_LIB=""
+         AMSTAT_LIB=""
         if test "$bit_model" = "yes"
         then
             BIT_MODEL="-m64"
@@ -65,7 +65,7 @@ case $SYSTEM_TYPE in
     *aix*)  
         SYS_DEFS="-DGCC -DAIX -D_GNU_SOURCE -DPPC -fsigned-char -D_THREAD_SAFE"
         SYS_LIBS="-Wl,-bmaxdata:0x800000000 -Wl,-bnoipath"
-        CMSTAT_LIB="-lperfstat"
+        AMSTAT_LIB="-lperfstat"
         CC="$CC -pthread"
         CXX="$CXX -pthread"
         if test "$enable_64bit" = "yes"
@@ -248,7 +248,7 @@ else
     fi
     ARNCS_LIB="-larniadbcs"
     CMDEP_LIB="-L$ARNIADB_LIBDIR -lcmdep $ARNCS_LIB"
-    CMSTAT_LIB="-L$ARNIADB_LIBDIR -lcmstat $CMSTAT_LIB"
+    AMSTAT_LIB="-L$ARNIADB_LIBDIR -lamstat $AMSTAT_LIB"
     SRC_INC="-I$ARNIADB_INCLUDEDIR"
 fi
 
@@ -303,7 +303,7 @@ AC_SUBST([SYS_LIBS])
 AC_SUBST([COMMON_DEFS])
 AC_SUBST([VERSION_DEFS])
 AC_SUBST([SRC_INC])
-AC_SUBST([CMSTAT_LIB])
+AC_SUBST([AMSTAT_LIB])
 AC_SUBST([CMDEP_LIB])
 AC_SUBST([EXTERNAL_LIB])
 AC_SUBST([EXTERNAL_INC])
@@ -323,6 +323,6 @@ AH_BOTTOM([
 
 AC_CONFIG_FILES([Makefile
                  external/Makefile
-                 cmserver/Makefile
-                 cmserver/conf/Makefile])
+                 amserver/Makefile
+                 amserver/conf/Makefile])
 AC_OUTPUT

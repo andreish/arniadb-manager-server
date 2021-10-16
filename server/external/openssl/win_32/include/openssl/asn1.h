@@ -224,7 +224,7 @@ typedef struct asn1_object_st
  */
 #define ASN1_STRING_FLAG_NDEF 0x010 
 
-/* This flag is used by the CMS code to indicate that a string is not
+/* This flag is used by the AMS code to indicate that a string is not
  * complete and is a place holder for content when it had all been 
  * accessed. The flag will be reset when content has been written to it.
  */

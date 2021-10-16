@@ -3,7 +3,7 @@ import httplib,urllib
 import json
 import struct
 
-cmsip="localhost"
+amsip="localhost"
 port=8003
 url="/cci"
 
@@ -41,7 +41,7 @@ def exec_task(ip, port, url, body):
 
 def do_task(task):
     json_cci["task"] = task
-    response = exec_task(cmsip, port, url, str(json.dumps(json_cci)))
+    response = exec_task(amsip, port, url, str(json.dumps(json_cci)))
     return response
 
 do_task("unknowntask")

@@ -22,8 +22,8 @@ def findport():
                     continue
                 return line[idx:][idx1+1:idx2]
 
-#cmsip="192.168.0.1"
-cmsip="localhost"
+#amsip="192.168.0.1"
+amsip="localhost"
 port=int(findport())
 url="/cm_api"
 testdir="task_test_case_json/"
@@ -52,7 +52,7 @@ def do_one_job(taskfile, token):
     if list == type(request):
         for req in request:
             req["token"] = token
-            response = exec_task(cmsip, port, url, json.dumps(req))
+            response = exec_task(amsip, port, url, json.dumps(req))
             data=json.loads(response.decode())
             if data["status"] == "failure":
                 print (data["task"] + " : " + '\033[31m{0}\033[0m'.format(data["note"]))
@@ -61,7 +61,7 @@ def do_one_job(taskfile, token):
     else:
         req = request
         req["token"] = token
-        response = exec_task(cmsip, port, url, json.dumps(req))
+        response = exec_task(amsip, port, url, json.dumps(req))
         data=json.loads(response.decode())
         if data["status"] == "failure":
             print (data["task"] + " : " + '\033[31m{0}\033[0m'.format(data["note"]))
@@ -90,7 +90,7 @@ def init_env():
         request = load_task(testdir+"/login.txt")
         passwd = raw_input("Please input the passwd for %s: " %(request["id"]))
         request["password"] = passwd
-        response = exec_task(cmsip, port, url, json.dumps(request))
+        response = exec_task(amsip, port, url, json.dumps(request))
         data=json.loads(response.decode())
         if data["status"] == "failure":
             print (data["task"] + " : " + '\033[31m{0}\033[0m'.format(data["note"]))
@@ -108,4 +108,4 @@ token, ARNIADB, ARNIADB_DATABASES = init_env()
 #do_one_job("task_json/renamedb.txt", token)
 do_all_jobs(token)
 
-exec_task(cmsip, port, "/upload", "")
+exec_task(amsip, port, "/upload", "")

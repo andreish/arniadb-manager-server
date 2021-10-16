@@ -497,7 +497,7 @@ function print_test_suites($ntests, $ntests_failed, $time_elapsed, $result_arr)
 {
     global $outfp;
 
-    $classname = "CMSERVER_TEST";
+    $classname = "AMSERVER_TEST";
 
 
     fwrite($outfp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>");

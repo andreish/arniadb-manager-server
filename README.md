@@ -1,8 +1,8 @@
 # ARNIADB Manager Server System
 
-ARNIADB Manager Server(CMS) is a part of ARNIADB Tools.
+ARNIADB Manager Server(AMS) is a part of ARNIADB Tools.
 
-CMS provides both HTTP or Socket interfaces for ARNIADB Manager
+AMS provides both HTTP or Socket interfaces for ARNIADB Manager
 to managing ARNIADB system, and also provides monitoring information about ARNIADB system.
 
 ## MAJOR REFERENCES
@@ -10,16 +10,16 @@ to managing ARNIADB system, and also provides monitoring information about ARNIA
 - ARNIADB Official Site: http://www.arniadb.org and http://www.arniadb.com
 
 ## DOWNLOADS and FILE REPOSITORIES
-CMS is distributed within ARNIADB distribution which can be found here:
+AMS is distributed within ARNIADB distribution which can be found here:
 
 - http://www.arniadb.org/downloads
 - http://ftp.arniadb.org
 
-## HOW TO BUILD/INSTALL CMS
+## HOW TO BUILD/INSTALL AMS
 
 ### build and install on Linux
 
-Unzip the package of ARNIADB and you can find the source code of CMS here: arniadb-{version}/arniadbmanager/server.
+Unzip the package of ARNIADB and you can find the source code of AMS here: arniadb-{version}/arniadbmanager/server.
 
 1. Move to the directory where the source is stored.
 
@@ -57,7 +57,7 @@ Unzip the package of ARNIADB and you can find the source code of CMS here: arnia
 
 ### build and install on windows
 
-If you want to build CMS on windows, VS2008 must be installed.
+If you want to build AMS on windows, VS2008 must be installed.
 
 1. Open a commander "cmd.exe" and Move to the directory where the source is stored.
 
@@ -78,7 +78,7 @@ If you want to build CMS on windows, VS2008 must be installed.
 
 ## PROGRAMMING APIs
 
-- [CMS APIs](docs/api/README.md)
+- [AMS APIs](docs/api/README.md)
 
 
 ## GETTING HELP
@@ -88,4 +88,4 @@ questions, or find bugs, or have some suggestions, we kindly ask you to
 post your thoughts on our subreddit at https://www.reddit.com/r/ARNIADB/.
 
 Sincerely,
-Your CMS Development Team.
+Your AMS Development Team.
