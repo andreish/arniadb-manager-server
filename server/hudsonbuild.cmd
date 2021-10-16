@@ -27,7 +27,7 @@ case  x$1 in
 xtest)
 cp $ARNIADB/conf/arniadb.conf $CRT_PATH/test/task_test_config/orign/
 #cp $CRT_PATH/test/task_test_config/ha_conf/arniadb.conf $ARNIADB/conf/
-cp -f $CRT_PATH/test/task_test_config/cm_conf/*.conf $ARNIADB/conf/
+cp -f $CRT_PATH/test/task_test_config/am_conf/*.conf $ARNIADB/conf/
 
 arniadb service restart
 arniadb server start demodb

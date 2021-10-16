@@ -41,11 +41,11 @@
 #include <kstat.h>
 #endif
 
-#include "cm_porting.h"
-#include "cm_server_stat.h"
-#include "cm_dep.h"
-#include "cm_server_util.h"
-#include "cm_config.h"
+#include "am_porting.h"
+#include "am_server_stat.h"
+#include "am_dep.h"
+#include "am_server_util.h"
+#include "am_config.h"
 
 #define MAX_CPU	16
 

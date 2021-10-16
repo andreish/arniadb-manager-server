@@ -120,7 +120,7 @@ extern "C" {
 # define SSL_TXT_AES             "AES"
 # define SSL_TXT_AES_GCM         "AESGCM"
 # define SSL_TXT_AES_CCM         "AESCCM"
-# define SSL_TXT_AES_CCM_8       "AESCCM8"
+# define SSL_TXT_AES_CAM_8       "AESCCM8"
 # define SSL_TXT_CAMELLIA128     "CAMELLIA128"
 # define SSL_TXT_CAMELLIA256     "CAMELLIA256"
 # define SSL_TXT_CAMELLIA        "CAMELLIA"
@@ -173,12 +173,12 @@ extern "C" {
 # define SSL_DEFAULT_CIPHER_LIST "ALL:!COMPLEMENTOFDEFAULT:!eNULL"
 /* This is the default set of TLSv1.3 ciphersuites */
 # if !defined(OPENSSL_NO_CHACHA) && !defined(OPENSSL_NO_POLY1305)
-#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GCM_SHA384:" \
+#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GAM_SHA384:" \
                                    "TLS_CHACHA20_POLY1305_SHA256:" \
-                                   "TLS_AES_128_GCM_SHA256"
+                                   "TLS_AES_128_GAM_SHA256"
 # else
-#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GCM_SHA384:" \
-                                   "TLS_AES_128_GCM_SHA256"
+#  define TLS_DEFAULT_CIPHERSUITES "TLS_AES_256_GAM_SHA384:" \
+                                   "TLS_AES_128_GAM_SHA256"
 #endif
 /*
  * As of OpenSSL 1.0.0, ssl_create_cipher_list() in ssl/ssl_ciph.c always

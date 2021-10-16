@@ -36,10 +36,10 @@
 #include <sys/time.h>
 #endif
 
-#include "cm_server_interface.h"
-#include "cm_server_extend_interface.h"
-#include "cm_log.h"
-#include "cm_mon_stat.h"
+#include "am_server_interface.h"
+#include "am_server_extend_interface.h"
+#include "am_log.h"
+#include "am_mon_stat.h"
 
 using namespace std;
 
@@ -56,7 +56,7 @@ typedef struct
   char arniadb_err_log[MAX_PATH];      /*arniadb err log, use for save cmd log */
   // char arniadb_charset[MAX_PATH];
 } arniadb_env_t;
-mutex_t cm_mutex;
+mutex_t am_mutex;
 /*global arniadb env*/
 arniadb_env_t arn_httpd_env;
 
@@ -84,7 +84,7 @@ mon_stat_init (void)
         }
     }
 
-  if (!cm_mon_stat::get_instance ()->initial ())
+  if (!am_mon_stat::get_instance ()->initial ())
     {
       fprintf (stderr, "Error while loading monitoring data information\n");
       return -1;
@@ -93,7 +93,7 @@ mon_stat_init (void)
 }
 
 void
-arn_cm_init_env ()
+arn_am_init_env ()
 {
   char conf_name[256];
   char tmpstrbuf[DBMT_ERROR_MSG_SIZE];
@@ -161,14 +161,14 @@ arn_cm_init_env ()
       putenv (arn_httpd_env.arniadb_charset);
   }
   */
-  mutex_init (cm_mutex);
+  mutex_init (am_mutex);
   return;
 }
 
 void
-arn_cm_destory_env ()
+arn_am_destory_env ()
 {
-  mutex_destory (cm_mutex);
+  mutex_destory (am_mutex);
 }
 
 int
@@ -198,7 +198,7 @@ is_no_token_cmd (int task_code)
 }
 
 /*
-inherit for cm_job, find the task function, and exec;
+inherit for am_job, find the task function, and exec;
 */
 int
 ch_process_request (nvplist *req, nvplist *res)
@@ -432,7 +432,7 @@ dump_nvplist (nvplist *root, char *dumpfile)
 
 
 int
-arn_cm_extend_request (Json::Value &request, Json::Value &response)
+arn_am_extend_request (Json::Value &request, Json::Value &response)
 {
   T_EXT_TASK_FUNC task_func = NULL;
   string task;
@@ -472,10 +472,10 @@ list < async_request * >request_list;
 
 #ifdef WINDOWS
 DWORD WINAPI
-cm_async_request_handler (LPVOID lpArg)
+am_async_request_handler (LPVOID lpArg)
 #else
 void *
-cm_async_request_handler (void *lpArg)
+am_async_request_handler (void *lpArg)
 #endif
 {
   int index = 0;
@@ -514,7 +514,7 @@ cm_async_request_handler (void *lpArg)
 
 #ifdef WINDOWS
 int
-cm_execute_request_async (Json::Value &request, Json::Value &response,
+am_execute_request_async (Json::Value &request, Json::Value &response,
                           unsigned long time_out = 600)
 {
   HANDLE hHandles;
@@ -532,7 +532,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   pstmt->uuid = req_id++;
 
   hHandles =
-    CreateThread (NULL, 0, cm_async_request_handler, pstmt, 0, &ThreadID);
+    CreateThread (NULL, 0, am_async_request_handler, pstmt, 0, &ThreadID);
   if (hHandles == NULL)
     {
       delete (pstmt);
@@ -559,7 +559,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
 }
 #else
 int
-cm_execute_request_async (Json::Value &request, Json::Value &response,
+am_execute_request_async (Json::Value &request, Json::Value &response,
                           unsigned long time_out = 600)
 {
   int err = 0;
@@ -580,7 +580,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_mutex_init (&mutex, NULL);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread mutex.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread mutex.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -588,7 +588,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_cond_init (&cond, NULL);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread condition.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread condition.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -605,7 +605,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_attr_init (&thread_attr);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread attribute.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread attribute.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -613,7 +613,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread detach state.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread detach state.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -624,7 +624,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_attr_setscope (&thread_attr, PTHREAD_SCOPE_PROCESS);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread scope.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread scope.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -632,14 +632,14 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
   err = pthread_attr_setstacksize (&thread_attr, AIX_STACKSIZE_PER_THREAD);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread stack size.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread stack size.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
 
-  err = pthread_create (&async_thrd, &thread_attr, cm_async_request_handler, pstmt);
+  err = pthread_create (&async_thrd, &thread_attr, am_async_request_handler, pstmt);
 #else /* except AIX */
-  err = pthread_create (&async_thrd, NULL, cm_async_request_handler, pstmt);
+  err = pthread_create (&async_thrd, NULL, am_async_request_handler, pstmt);
 #endif
 
   if (err != 0)
@@ -647,7 +647,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
       delete (pstmt);
       pthread_mutex_destroy (&mutex);
       pthread_cond_destroy (&cond);
-      LOG_ERROR ("cm_execute_request_async : fail to create thread.");
+      LOG_ERROR ("am_execute_request_async : fail to create thread.");
       return build_server_header (response, ERR_WITH_MSG,
                                   "failed to run task.");
     }
@@ -661,7 +661,7 @@ cm_execute_request_async (Json::Value &request, Json::Value &response,
     {
       request_list.push_back (pstmt);
       response["uuid"] = pstmt->uuid;
-      LOG_ERROR ("cm_execute_request_async : Timeout for running task.");
+      LOG_ERROR ("am_execute_request_async : Timeout for running task.");
       return build_server_header (response, ERR_WITH_MSG, "timeout");
     }
 
@@ -715,17 +715,17 @@ arn_check_async_status (Json::Value &request, Json::Value &response)
 }
 
 int
-arn_cm_request_handler (Json::Value &request, Json::Value &response)
+arn_am_request_handler (Json::Value &request, Json::Value &response)
 {
 
-  mutex_lock (cm_mutex);
+  mutex_lock (am_mutex);
 
 
   // leave a back door for testing...
   if (ext_ut_validate_token (request, response) != ERR_NO_ERROR && request["token"].asString() != "test")
     {
       response["task"] = request["task"].asString();
-      mutex_unlock (cm_mutex);
+      mutex_unlock (am_mutex);
       return 1;
     }
 
@@ -736,22 +736,22 @@ arn_cm_request_handler (Json::Value &request, Json::Value &response)
       response["note"] = "The user don't have authority to execute the task: " + request["task"].asString();
       response["task"] = request["task"].asString();
 
-      mutex_unlock (cm_mutex);
+      mutex_unlock (am_mutex);
       return 1;
     }
 
   if (arn_check_async_status (request, response))
     {
-      mutex_unlock (cm_mutex);
+      mutex_unlock (am_mutex);
       return 1;
     }
-  if (arn_cm_extend_request (request, response))
+  if (arn_am_extend_request (request, response))
     {
-      mutex_unlock (cm_mutex);
+      mutex_unlock (am_mutex);
       return 1;
     }
-  cm_execute_request_async (request, response, sco.iHttpTimeout);
+  am_execute_request_async (request, response, sco.iHttpTimeout);
 
-  mutex_unlock (cm_mutex);
+  mutex_unlock (am_mutex);
   return 1;
 }

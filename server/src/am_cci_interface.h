@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __CM_CCI_H__
-#define __CM_CII_H__
+#ifndef __AM_CCI_H__
+#define __AM_CII_H__
 #include <json/json.h>
 
 typedef int (*T_HTTP_TASK_FUNC) (Json::Value &request,

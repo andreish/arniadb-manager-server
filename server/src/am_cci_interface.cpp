@@ -18,7 +18,7 @@
  */
 
 /*
-*  cm_cci_interface.cpp
+*  am_cci_interface.cpp
 */
 
 #include <stdio.h>
@@ -33,13 +33,13 @@
 #endif
 
 #include <cas_cci.h>
-#include <cm_dep.h>
+#include <am_dep.h>
 
-#include "cm_log.h"
-#include "cm_cci_interface.h"
-#include "cm_server_util.h"
-#include "cm_cmd_exec.h"
-#include "cm_config.h"
+#include "am_log.h"
+#include "am_cci_interface.h"
+#include "am_server_util.h"
+#include "am_cmd_exec.h"
+#include "am_config.h"
 
 #define SQL_FILE_SUFFIX ".sql"
 #define CSV_FILE_SUFFIX ".csv"
@@ -401,7 +401,7 @@ _execute_stmt (int con_id, const char *stmt, int fetch_size, int fetch_offset,
   err = pthread_attr_setscope (&thread_attr, PTHREAD_SCOPE_PROCESS);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread scope.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread scope.");
       return build_common_header (response, CCI_ER_DBMS,
                                   "failed to execute stmt");
     }
@@ -409,7 +409,7 @@ _execute_stmt (int con_id, const char *stmt, int fetch_size, int fetch_offset,
   err = pthread_attr_setstacksize (&thread_attr, AIX_STACKSIZE_PER_THREAD);
   if (err != 0)
     {
-      LOG_ERROR ("cm_execute_request_async : fail to set thread stack size.");
+      LOG_ERROR ("am_execute_request_async : fail to set thread stack size.");
       return build_common_header (response, CCI_ER_DBMS,
                                   "failed to execute stmt");
     }

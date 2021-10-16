@@ -19,11 +19,11 @@
 
 
 /*
- * cm_cmd_util.h -
+ * am_cmd_util.h -
  */
 
-#ifndef _CM_CMD_UTIL_H_
-#define _CM_CMD_UTIL_H_
+#ifndef _AM_CMD_UTIL_H_
+#define _AM_CMD_UTIL_H_
 
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
@@ -35,10 +35,10 @@
 /* typedef struct option GETOPT_LONG; */
 
 /*
- * CM_ADMIN COMMON MACRO.
+ * AM_ADMIN COMMON MACRO.
  */
-#define CM_ADMIN_NAME           "cm_admin"
-#define CM_ADMIN_VERSION        "0.1"
+#define AM_ADMIN_NAME           "am_admin"
+#define AM_ADMIN_VERSION        "0.1"
 
 #define OPT_STR_LEN             128
 #define DBNAME_LEN              128
@@ -62,7 +62,7 @@
 
 
 /*
- * CM_ADMIN ARG NAME DEFINITION.
+ * AM_ADMIN ARG NAME DEFINITION.
  */
 
 #define ARG_DBMT_USER_NAME      "dbmtuser-name"
@@ -86,7 +86,7 @@
 
 
 /*
- * CM_ADMIN ERROR ID DEFINITION.
+ * AM_ADMIN ERROR ID DEFINITION.
  */
 #define E_SUCCESS               2000
 #define E_FAILURE               2001
@@ -120,4 +120,4 @@ int run_task (const char *task_name, int argc, const char *argv[]);
 int get_cmdname_by_id (int cmd_id, char *cmd_name, int buf_size);
 const char *get_msg_by_id (int ptn_id);
 char *utility_make_getopt_optstring (struct option *opt_array, char *buf);
-#endif /* !_CM_CMD_UTIL_H_ */
+#endif /* !_AM_CMD_UTIL_H_ */

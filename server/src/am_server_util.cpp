@@ -19,7 +19,7 @@
 
 
 /*
- * cm_server_util.cpp -
+ * am_server_util.cpp -
  */
 
 #include <stdio.h>
@@ -62,17 +62,17 @@
 #include <libperfstat.h>
 #endif
 
-#include "cm_log.h"
-#include "cm_connect_info.h"
-#include "cm_porting.h"
-#include "cm_server_util.h"
-#include "cm_dep.h"
-#include "cm_config.h"
-#include "cm_job_task.h"
-#include "cm_cmd_exec.h"
-#include "cm_text_encryption.h"
-#include "cm_stat.h"
-#include "cm_user.h"
+#include "am_log.h"
+#include "am_connect_info.h"
+#include "am_porting.h"
+#include "am_server_util.h"
+#include "am_dep.h"
+#include "am_config.h"
+#include "am_job_task.h"
+#include "am_cmd_exec.h"
+#include "am_text_encryption.h"
+#include "am_stat.h"
+#include "am_user.h"
 
 #include <assert.h>
 
@@ -3769,7 +3769,7 @@ ut_record_arniadb_utility_log_stderr (const char *msg)
 #if !defined(WINDOWS)
   fprintf (stderr, msg);
 #endif
-  cm_util_log_write_errstr (msg);
+  am_util_log_write_errstr (msg);
 
   return 0;
 }
@@ -3784,7 +3784,7 @@ ut_record_arniadb_utility_log_stdout (const char *msg)
 #if !defined(WINDOWS)
   fprintf (stdout, msg);
 #endif
-  cm_util_log_write_errstr (msg);
+  am_util_log_write_errstr (msg);
 
   return 0;
 }

@@ -6,7 +6,7 @@ import os, sys
 
 def findport():
     arniadb = os.environ.get("ARNIADB")
-    conf = arniadb + "/conf/cm_httpd.conf"
+    conf = arniadb + "/conf/am_httpd.conf"
     cwm_find = False;
     cf = open(conf, "r")
     for line in cf:
@@ -25,7 +25,7 @@ def findport():
 #amsip="192.168.0.1"
 amsip="localhost"
 port=int(findport())
-url="/cm_api"
+url="/am_api"
 testdir="task_test_case_json/"
 
 token=""

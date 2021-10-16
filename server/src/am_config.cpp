@@ -19,7 +19,7 @@
 
 
 /*
- * cm_config.cpp -
+ * am_config.cpp -
  */
 
 #include <stdio.h>
@@ -36,10 +36,10 @@
 #include <unistd.h>
 #endif
 
-#include "cm_porting.h"
-#include "cm_config.h"
-#include "cm_dep.h"
-#include "cm_server_util.h"
+#include "am_porting.h"
+#include "am_config.h"
+#include "am_dep.h"
+#include "am_server_util.h"
 
 #define DEFAULT_MONITOR_INTERVAL 5
 #define DEFAULT_THREAD_NUM       8
@@ -56,8 +56,8 @@
 #define NUM_DBMT_FILE            23
 
 #define DEFAULT_CWM_PATH_SHORT            "/share/webmanager"
-#define DEFAULT_SSL_CERTIFICATE           "cm_ssl_cert.crt"
-#define DEFAULT_SSL_PRIVATEKEY            "cm_ssl_cert.key"
+#define DEFAULT_SSL_CERTIFICATE           "am_ssl_cert.crt"
+#define DEFAULT_SSL_PRIVATEKEY            "am_ssl_cert.key"
 
 #define DEFAULT_LOG_FILE_COUNT            10
 #define DEFAULT_LOG_FILE_SIZE             (4 * 1024 * 1024)
@@ -219,7 +219,7 @@ uReadSystemConfig (void)
   char ent_name[128], ent_val[128];
   const char *separator = " \t=";
   char *token;
-  int cm_port = 0;
+  int am_port = 0;
   int str_len = 0;
   char access_log_buf[PATH_MAX];
   char error_log_buf[PATH_MAX];
@@ -297,13 +297,13 @@ uReadSystemConfig (void)
         }
       strcpy_limit (ent_val, token, sizeof (ent_val));
 
-      if (strcasecmp (ent_name, "cm_port") == 0)
+      if (strcasecmp (ent_name, "am_port") == 0)
         {
-          cm_port = atoi (ent_val);
-          sco.iAMS_port = cm_port;
+          am_port = atoi (ent_val);
+          sco.iAMS_port = am_port;
         }
       else if (strcasecmp (ent_name, "MonitorInterval") == 0 ||
-               strcasecmp (ent_name, "cm_process_monitor_interval") == 0)
+               strcasecmp (ent_name, "am_process_monitor_interval") == 0)
         {
           sco.iMonitorInterval = atoi (ent_val);
 

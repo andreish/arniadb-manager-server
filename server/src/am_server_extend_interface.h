@@ -17,10 +17,10 @@
  *
  */
 
-#ifndef __CM_SERVER_EXTEND_INFERFACE_H_
-#define __CM_SERVER_EXTEND_INFERFACE_H_
+#ifndef __AM_SERVER_EXTEND_INFERFACE_H_
+#define __AM_SERVER_EXTEND_INFERFACE_H_
 
-#include "cm_user.h"
+#include "am_user.h"
 
 #include <time.h>
 #include <string.h>

@@ -18,8 +18,8 @@
  */
 
 
-#ifndef __CM_LOG__H__
-#define __CM_LOG__H__
+#ifndef __AM_LOG__H__
+#define __AM_LOG__H__
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,7 +42,7 @@
 #include <dirent.h>        /* opendir() ...   */
 #endif
 
-#include "cm_config.h"
+#include "am_config.h"
 
 using namespace std;
 

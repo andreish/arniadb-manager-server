@@ -19,19 +19,19 @@
 
 
 /*
- * cm_auto_task.cpp -
+ * am_auto_task.cpp -
  */
 
 #include <stdio.h>
 #include <string.h>
 
-#include "cm_auto_task.h"
-#include "cm_porting.h"
-#include "cm_dep.h"
-#include "cm_server_util.h"
-#include "cm_config.h"
-#include "cm_user.h"
-#include "cm_text_encryption.h"
+#include "am_auto_task.h"
+#include "am_porting.h"
+#include "am_dep.h"
+#include "am_server_util.h"
+#include "am_config.h"
+#include "am_user.h"
+#include "am_text_encryption.h"
 #include "string.h"
 #include "stdlib.h"
 

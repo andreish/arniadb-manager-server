@@ -19,7 +19,7 @@
 
 
 /*
- * cm_connect_info.cpp -
+ * am_connect_info.cpp -
  */
 
 #include <stdio.h>
@@ -33,10 +33,10 @@
 #include <unistd.h>
 #endif
 
-#include "cm_porting.h"
-#include "cm_server_util.h"
-#include "cm_config.h"
-#include "cm_connect_info.h"
+#include "am_porting.h"
+#include "am_server_util.h"
+#include "am_config.h"
+#include "am_connect_info.h"
 
 int
 dbmt_con_search (const char *ip, const char *port, char *cli_ver)

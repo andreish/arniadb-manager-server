@@ -19,7 +19,7 @@
 
 
 /*
- * cm_user.cpp -
+ * am_user.cpp -
  */
 
 #include <stdio.h>
@@ -32,10 +32,10 @@
 #include <unistd.h>
 #endif
 
-#include "cm_porting.h"
-#include "cm_config.h"
-#include "cm_server_util.h"
-#include "cm_user.h"
+#include "am_porting.h"
+#include "am_config.h"
+#include "am_server_util.h"
+#include "am_user.h"
 
 #define ARNIADB_PASS_OPEN_TAG         "<<<:"
 #define ARNIADB_PASS_OPEN_TAG_LEN     strlen(ARNIADB_PASS_OPEN_TAG)

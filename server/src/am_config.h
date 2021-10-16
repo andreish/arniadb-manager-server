@@ -19,15 +19,15 @@
 
 
 /*
- * cm_config.h -
+ * am_config.h -
  */
 
-#ifndef _CM_CONFIG_H_
-#define _CM_CONFIG_H_
+#ifndef _AM_CONFIG_H_
+#define _AM_CONFIG_H_
 
 #include <stdio.h>
 #include <limits.h>
-#include "cm_porting.h"
+#include "am_porting.h"
 
 #define MAX_INSTALLED_DB                256
 #define MAX_UNICAS_PROC                 40
@@ -416,7 +416,7 @@
 #define UTIL_ARNIADB_REL_NAME    "arniadb_rel" UTIL_EXE_EXT
 #define UTIL_OLD_COMMDB_NAME    "commdb" UTIL_EXE_EXT
 #define UTIL_ARNIADB             "arniadb" UTIL_EXE_EXT
-#define UTIL_CM_SERVER          AMS_NAME UTIL_EXE_EXT
+#define UTIL_AM_SERVER          AMS_NAME UTIL_EXE_EXT
 #define UTIL_BROKER_CHANGER     "broker_changer" UTIL_EXE_EXT
 
 #define COMMDB_SERVER_STOP      "-S"
@@ -626,4 +626,4 @@ extern int auto_conf_execquery_update_dbuser (const char *src_db_uid,
     const char *dest_db_passwd);
 extern int auto_conf_execquery_delete_by_dbuser (const char *db_uid);
 
-#endif                /* _CM_CONFIG_H_ */
+#endif                /* _AM_CONFIG_H_ */

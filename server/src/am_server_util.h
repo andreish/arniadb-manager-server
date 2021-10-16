@@ -19,16 +19,16 @@
 
 
 /*
- * cm_server_util.h -
+ * am_server_util.h -
  */
 
-#ifndef _CM_SERVER_UTIL_H_
-#define _CM_SERVER_UTIL_H_
+#ifndef _AM_SERVER_UTIL_H_
+#define _AM_SERVER_UTIL_H_
 
-#include "cm_porting.h"
-#include "cm_dep.h"
-#include "cm_cmd_exec.h"
-#include "cm_job_task.h"
+#include "am_porting.h"
+#include "am_dep.h"
+#include "am_cmd_exec.h"
+#include "am_job_task.h"
 
 #ifndef WINDOWS
 #include <sys/select.h>
@@ -216,4 +216,4 @@ int run_child_linux (const char *pname, const char *const argv[], int wait_flag,
 void write_manager_access_log (const char *protocol_str, const char *msg);
 void write_manager_error_log (const char *protocol_str, const char *msg);
 
-#endif                /* _CM_SERVER_UTIL_H_ */
+#endif                /* _AM_SERVER_UTIL_H_ */

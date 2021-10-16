@@ -14,7 +14,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "arn_manager", "arn_manager\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jsoncpp", "..\external\jsoncpp\vs\jsoncpp.vcproj", "{FB6ECD68-F1C6-42A7-8EB7-5BCBF151D718}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cm_admin", "cm_admin\cm_admin.vcproj", "{9A6A101D-4569-4BC7-9010-9E4554D7E945}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "am_admin", "am_admin\am_admin.vcproj", "{9A6A101D-4569-4BC7-9010-9E4554D7E945}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

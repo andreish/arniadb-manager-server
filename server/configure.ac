@@ -6,7 +6,7 @@ AC_INIT([ARNIADB 2008], RELEASE, , arniadb)
 
 AC_PREFIX_DEFAULT("${ARNIADB}")
 
-AC_CONFIG_SRCDIR([src/cm_autojob.cpp])
+AC_CONFIG_SRCDIR([src/am_autojob.cpp])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_HEADERS([config.h])
 

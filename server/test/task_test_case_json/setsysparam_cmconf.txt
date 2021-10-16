@@ -20,5 +20,5 @@
 "#",
 "allow_user_multi_connection YES",
 "monitor_interval 5",
-"cm_port 8001",
+"am_port 8001",
 "server_long_query_time 10"]}

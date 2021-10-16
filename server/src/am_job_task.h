@@ -19,17 +19,17 @@
 
 
 /*
- * cm_job_task.h -
+ * am_job_task.h -
  */
 
-#ifndef _CM_JOB_TASK_H_
-#define _CM_JOB_TASK_H_
+#ifndef _AM_JOB_TASK_H_
+#define _AM_JOB_TASK_H_
 
 #if defined(WINDOWS)
 #include <io.h>
 #endif
 
-#include "cm_dep.h"
+#include "am_dep.h"
 
 #define DBMT_ERROR_MSG_SIZE    5000
 
@@ -436,4 +436,4 @@ ts_add_nvp_time (nvplist *ref, const char *name, time_t t, const char *fmt,
 int ts_start_statdump (nvplist *req, nvplist *res, char *_dbmt_error);
 int ts_stop_statdump (nvplist *req, nvplist *res, char *_dbmt_error);
 
-#endif /* _CM_JOB_TASK_H_ */
+#endif /* _AM_JOB_TASK_H_ */

@@ -19,11 +19,11 @@
 
 
 /*
- * cm_porting.h -
+ * am_porting.h -
  */
 
-#ifndef    _CM_PORTING_H_
-#define    _CM_PORTING_H_
+#ifndef    _AM_PORTING_H_
+#define    _AM_PORTING_H_
 
 /*
  * IMPORTED SYSTEM HEADER FILES
@@ -336,4 +336,4 @@ typedef long INT64;
 #define COND_DESTROY(condvar)        pthread_cond_destroy(&(condvar))
 #endif
 
-#endif /* _CM_PORTING_H_ */
+#endif /* _AM_PORTING_H_ */

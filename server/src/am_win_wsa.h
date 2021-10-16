@@ -19,11 +19,11 @@
 
 
 /*
- * cm_wsa_init.h -
+ * am_wsa_init.h -
  */
 
-#ifndef _CM_WSA_INIT_H_
-#define _CM_WSA_INIT_H_
+#ifndef _AM_WSA_INIT_H_
+#define _AM_WSA_INIT_H_
 
 #ident "$Id$"
 
@@ -60,4 +60,4 @@ int wsa_initialize ();
  * EXPORTED VARIABLES
  */
 
-#endif				/* _CM_WSA_INIT_H_ */
+#endif				/* _AM_WSA_INIT_H_ */

@@ -19,11 +19,11 @@
 
 
 /*
- * cm_text_encryption.h -
+ * am_text_encryption.h -
  */
 
-#ifndef _CM_TEXT_ENCRYPTION_H_
-#define _CM_TEXT_ENCRYPTION_H_
+#ifndef _AM_TEXT_ENCRYPTION_H_
+#define _AM_TEXT_ENCRYPTION_H_
 #ifdef __cplusplus
 extern "C"
 {
@@ -35,4 +35,4 @@ void uDecrypt (int len, const char *src, char *trg);
 #ifdef __cplusplus
 }
 #endif
-#endif				/* _CM_TEXT_ENCRYPTION_H_ */
+#endif				/* _AM_TEXT_ENCRYPTION_H_ */

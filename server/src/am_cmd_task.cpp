@@ -19,7 +19,7 @@
 
 
 /*
- * cm_cmd_task.cpp -
+ * am_cmd_task.cpp -
  */
 
 #include <stdio.h>
@@ -32,7 +32,7 @@
 #include <io.h>
 #include <process.h>
 #include <winsock2.h>
-#include "cm_win_wsa.h"
+#include "am_win_wsa.h"
 #else
 #include <unistd.h>
 #include <dirent.h>
@@ -43,13 +43,13 @@
 #include <netdb.h>
 #endif
 
-#include "cm_dep.h"
-#include "cm_text_encryption.h"
-#include "cm_server_util.h"
-#include "cm_user.h"
-#include "cm_cmd_task.h"
-#include "cm_cmd_util.h"
-#include "cm_config.h"
+#include "am_dep.h"
+#include "am_text_encryption.h"
+#include "am_server_util.h"
+#include "am_user.h"
+#include "am_cmd_task.h"
+#include "am_cmd_util.h"
+#include "am_config.h"
 
 static struct option adddbinfo_opt[] =
 {

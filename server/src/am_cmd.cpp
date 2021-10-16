@@ -19,7 +19,7 @@
 
 
 /*
- * cm_cmd.cpp -
+ * am_cmd.cpp -
  */
 
 #include <stdio.h>
@@ -33,9 +33,9 @@
 #include <dirent.h>
 #endif
 
-#include "cm_config.h"
-#include "cm_cmd_task.h"
-#include "cm_cmd_util.h"
+#include "am_config.h"
+#include "am_cmd_task.h"
+#include "am_cmd_util.h"
 
 static void _print_help (void);
 
@@ -76,7 +76,7 @@ _print_help (void)
 {
   const char *title_pattern =
     "amserver utility, version R%s\nusage: %s <utility-name> [args]\n";
-  printf (title_pattern, CM_ADMIN_VERSION, CM_ADMIN_NAME);
+  printf (title_pattern, AM_ADMIN_VERSION, AM_ADMIN_NAME);
   print_cmd ();
 
   return;

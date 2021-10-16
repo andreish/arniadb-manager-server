@@ -18,13 +18,13 @@
  */
 
 /*
-*  cm_server.autoupdate.cpp
+*  am_server.autoupdate.cpp
 */
 
-#include "cm_server_autoupdate.h"
-#include "cm_compress.h"
-#include "cm_config.h"
-#include "cm_dep.h"
+#include "am_server_autoupdate.h"
+#include "am_compress.h"
+#include "am_config.h"
+#include "am_dep.h"
 
 #ifdef WINDOWS
 #include <windows.h>
@@ -199,7 +199,7 @@ generate_update_script (char *patch_name, char *url, char *path,
            "if exist %s\\bin\\arn_manager.exe copy /y %s\\bin\\arn_manager.exe %sbackup\\.\n",
            sco.szArniadb, sco.szArniadb, path);
   fprintf (fout,
-           "if exist %s\\bin\\cm_admin.exe copy /y %s\\bin\\cm_admin.exe %sbackup\\.\n",
+           "if exist %s\\bin\\am_admin.exe copy /y %s\\bin\\am_admin.exe %sbackup\\.\n",
            sco.szArniadb, sco.szArniadb, path);
 
   fprintf (fout, "arniadb service stop\n");
@@ -209,7 +209,7 @@ generate_update_script (char *patch_name, char *url, char *path,
   fprintf (fout, "if exist %s\\arn_* copy /y %s\\arn_* %s\\bin\\.\n",
            zip_folder, zip_folder, sco.szArniadb);
   fprintf (fout,
-           "if exist %s\\cm_admin copy /y %s\\cm_admin.exe %s\\bin\\.\n",
+           "if exist %s\\am_admin copy /y %s\\am_admin.exe %s\\bin\\.\n",
            zip_folder, zip_folder, sco.szArniadb);
   fprintf (fout,
            "for /f %%%%c in ('dir /b %s\\conf\\') do type %s\\conf\\%%%%c >> %s\\conf\\%%%%c\n",
@@ -260,14 +260,14 @@ generate_update_script (char *patch_name, char *url, char *path,
 
   fprintf (fout, "mkdir %sbackup\n", path);
   fprintf (fout,
-           "cp %s/bin/cm_admin %s/bin/arn_manager %sbackup/.\n",
+           "cp %s/bin/am_admin %s/bin/arn_manager %sbackup/.\n",
            sco.szArniadb, sco.szArniadb, path);
   fprintf (fout,
            "if [ -e %spatch/arn_manager ]; then\n", path);
   fprintf (fout, "\tcp %spatch/arn_* %s/bin/. -f\nfi\n", path, sco.szArniadb);
 
-  fprintf (fout, "if [ -e %spatch/cm_admin ]; then\n", path);
-  fprintf (fout, "\tcp %spatch/cm_admin %s/bin/. -f\nfi\n", path,
+  fprintf (fout, "if [ -e %spatch/am_admin ]; then\n", path);
+  fprintf (fout, "\tcp %spatch/am_admin %s/bin/. -f\nfi\n", path,
            sco.szArniadb);
 
 

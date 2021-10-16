@@ -21,6 +21,6 @@ confdata:#  This program is distributed in the hope that it will be useful,
 confdata:#
 confdata:allow_user_multi_connection YES
 confdata:monitor_interval 5
-confdata:cm_port 8001
+confdata:am_port 8001
 confdata:server_long_query_time 10
 

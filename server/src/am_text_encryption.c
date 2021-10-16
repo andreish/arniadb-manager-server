@@ -29,8 +29,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "cm_porting.h"
-#include "cm_text_encryption.h"
+#include "am_porting.h"
+#include "am_text_encryption.h"
 
 #if (defined(SOLARIS) && !defined(SOLARIS_X86)) || defined(HPUX) || defined(AIX)
 #define BYTE_ORDER_BIG_ENDIAN

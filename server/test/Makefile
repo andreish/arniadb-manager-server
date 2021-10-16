@@ -10,10 +10,10 @@ test:
 
 	
 lcov:	
-	rm -f $(CUR_PATH)/log/CM_SERVER.CoverageResult.info
-	lcov -q -d $(COVERAGE_PATH) --no-recursion -b . -c -t CM_SERVER -o log/tmp.CM_SERVER.CoverageResult.info --ignore-errors source	
-	lcov --remove log/tmp.CM_SERVER.CoverageResult.info stat.h sysmacros.h *.h -o log/CM_SERVER.CoverageResult.info
-	rm log/tmp.CM_SERVER.CoverageResult.info
+	rm -f $(CUR_PATH)/log/AM_SERVER.CoverageResult.info
+	lcov -q -d $(COVERAGE_PATH) --no-recursion -b . -c -t AM_SERVER -o log/tmp.AM_SERVER.CoverageResult.info --ignore-errors source	
+	lcov --remove log/tmp.AM_SERVER.CoverageResult.info stat.h sysmacros.h *.h -o log/AM_SERVER.CoverageResult.info
+	rm log/tmp.AM_SERVER.CoverageResult.info
 
 clean:
 	rm -rf log

@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileVersion", VERSION_STRING
             VALUE "InternalName", "ARNIADB Management Server"
             VALUE "LegalCopyright", "Copyright (C) 2008 Search Solution Corporation. All rights reserved by Search Solution."
-            VALUE "OriginalFilename", "cm_admin.exe"
+            VALUE "OriginalFilename", "am_admin.exe"
             VALUE "ProductName", "ARNIADB Management Server"
             VALUE "ProductVersion", VERSION_STRING
         END

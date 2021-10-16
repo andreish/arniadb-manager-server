@@ -19,7 +19,7 @@
 
 
 /*
- * cm_cmd_util.cpp -
+ * am_cmd_util.cpp -
  */
 
 #include <stdio.h>
@@ -27,10 +27,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "cm_porting.h"
-#include "cm_dep.h"
-#include "cm_cmd_util.h"
-#include "cm_cmd_task.h"
+#include "am_porting.h"
+#include "am_dep.h"
+#include "am_cmd_util.h"
+#include "am_cmd_task.h"
 
 typedef int (*CMD_FUNC) (int argc, const char *argv[]);
 
@@ -181,7 +181,7 @@ print_help_msg (int cmd_id)
   const char *pattern = "  %s, %-30s%s\n";
   const char *pattern2 = "%-36s%s\n";
   const char *pattern_long_only = "      %-30s%s\n";
-  const char *pattern_usage = "usage: " CM_ADMIN_NAME " %s\n\n";
+  const char *pattern_usage = "usage: " AM_ADMIN_NAME " %s\n\n";
 
   switch (cmd_id)
     {

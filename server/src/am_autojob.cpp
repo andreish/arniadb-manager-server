@@ -19,7 +19,7 @@
 
 
 /*
- * cm_autojob.cpp -
+ * am_autojob.cpp -
  */
 
 #include <fcntl.h>
@@ -40,15 +40,15 @@
 #include <dirent.h>
 #endif
 
-#include "cm_porting.h"
-#include "cm_server_util.h"
-#include "cm_autojob.h"
-#include "cm_dep.h"
-#include "cm_server_stat.h"
-#include "cm_config.h"
-#include "cm_cmd_exec.h"
-#include "cm_text_encryption.h"
-#include "cm_stat.h"
+#include "am_porting.h"
+#include "am_server_util.h"
+#include "am_autojob.h"
+#include "am_dep.h"
+#include "am_server_stat.h"
+#include "am_config.h"
+#include "am_cmd_exec.h"
+#include "am_text_encryption.h"
+#include "am_stat.h"
 
 #ifdef _DEBUG_
 #include "deb.h"

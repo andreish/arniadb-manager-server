@@ -19,14 +19,14 @@
 
 
 /*
- * cm_autojob.h -
+ * am_autojob.h -
  */
 
-#ifndef _CM_AUTOJOB_H_
-#define _CM_AUTOJOB_H_
+#ifndef _AM_AUTOJOB_H_
+#define _AM_AUTOJOB_H_
 
 #include <time.h>
-#include "cm_cmd_exec.h"
+#include "am_cmd_exec.h"
 
 #define AUTOJOB_SIZE 4
 #define MIN_AUTO_ADDVOL_PAGE_SIZE      1000
@@ -79,4 +79,4 @@ void aj_add_volume (char *dbname, const char *type,
 double
 ajFreeSpace (GeneralSpacedbResult *cmd_res, const char *type);
 
-#endif /* _CM_AUTOJOB_H_ */
+#endif /* _AM_AUTOJOB_H_ */

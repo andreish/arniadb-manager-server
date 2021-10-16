@@ -27,36 +27,36 @@ INCLUDES = @SRC_INC@
 DEFS += @SYS_DEFS@ @VERSION_DEFS@ @COMMON_DEFS@
 LIBS += @SYS_LIBS@
 
-bin_PROGRAMS = cm_admin arn_manager
+bin_PROGRAMS = am_admin arn_manager
 
-cm_admin_SOURCES = \
-	$(DBMT_DIR)/cm_text_encryption.c \
-	$(DBMT_DIR)/cm_config.cpp \
-	$(DBMT_DIR)/cm_server_util.cpp \
-	$(DBMT_DIR)/cm_user.cpp \
-	$(DBMT_DIR)/cm_cmd.cpp \
-	$(DBMT_DIR)/cm_cmd_util.cpp \
-	$(DBMT_DIR)/cm_connect_info.cpp \
-	$(DBMT_DIR)/cm_cmd_task.cpp
-cm_admin_CFLAGS = -D_FILE_OFFSET_BITS=64
-cm_admin_LDFLAGS =  @CMDEP_LIB@ -D_FILE_OFFSET_BITS=64
+am_admin_SOURCES = \
+	$(DBMT_DIR)/am_text_encryption.c \
+	$(DBMT_DIR)/am_config.cpp \
+	$(DBMT_DIR)/am_server_util.cpp \
+	$(DBMT_DIR)/am_user.cpp \
+	$(DBMT_DIR)/am_cmd.cpp \
+	$(DBMT_DIR)/am_cmd_util.cpp \
+	$(DBMT_DIR)/am_connect_info.cpp \
+	$(DBMT_DIR)/am_cmd_task.cpp
+am_admin_CFLAGS = -D_FILE_OFFSET_BITS=64
+am_admin_LDFLAGS =  @CMDEP_LIB@ -D_FILE_OFFSET_BITS=64
 
 arn_manager_SOURCES = \
-        $(DBMT_DIR)/cm_server_util.cpp \
-        $(DBMT_DIR)/cm_autojob.cpp \
-        $(DBMT_DIR)/cm_text_encryption.c \
-        $(DBMT_DIR)/cm_config.cpp \
-        $(DBMT_DIR)/cm_job_task.cpp \
-        $(DBMT_DIR)/cm_cmd_exec.cpp \
-        $(DBMT_DIR)/cm_connect_info.cpp \
-        $(DBMT_DIR)/cm_auto_task.cpp \
-        $(DBMT_DIR)/cm_httpd.cpp \
-        $(DBMT_DIR)/cm_mon_stat.cpp \
-        $(DBMT_DIR)/cm_user.cpp \
-        $(DBMT_DIR)/cm_http_server.cpp \
-        $(DBMT_DIR)/cm_server_extend_interface.cpp \
-        $(DBMT_DIR)/cm_server_interface.cpp \
-        $(DBMT_DIR)/cm_cci_interface.cpp \
-		$(DBMT_DIR)/cm_server_autoupdate.cpp
+        $(DBMT_DIR)/am_server_util.cpp \
+        $(DBMT_DIR)/am_autojob.cpp \
+        $(DBMT_DIR)/am_text_encryption.c \
+        $(DBMT_DIR)/am_config.cpp \
+        $(DBMT_DIR)/am_job_task.cpp \
+        $(DBMT_DIR)/am_cmd_exec.cpp \
+        $(DBMT_DIR)/am_connect_info.cpp \
+        $(DBMT_DIR)/am_auto_task.cpp \
+        $(DBMT_DIR)/am_httpd.cpp \
+        $(DBMT_DIR)/am_mon_stat.cpp \
+        $(DBMT_DIR)/am_user.cpp \
+        $(DBMT_DIR)/am_http_server.cpp \
+        $(DBMT_DIR)/am_server_extend_interface.cpp \
+        $(DBMT_DIR)/am_server_interface.cpp \
+        $(DBMT_DIR)/am_cci_interface.cpp \
+		$(DBMT_DIR)/am_server_autoupdate.cpp
 arn_manager_CPPFLAGS = $(AM_CFLAGS) -DFSERVER_SLAVE -DJSON_SUPPORT -DEVENT__HAVE_OPENSSL -D_FILE_OFFSET_BITS=64 @EXTERNAL_INC@
 arn_manager_LDFLAGS = -larniadbcs @AMSTAT_LIB@ @CMDEP_LIB@ @EXTERNAL_LIB@ -lrt -lcascci

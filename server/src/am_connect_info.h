@@ -19,11 +19,11 @@
 
 
 /*
- * cm_connect_info.h -
+ * am_connect_info.h -
  */
 
-#ifndef _CM_CONNECT_INFO_H_
-#define _CM_CONNECT_INFO_H_
+#ifndef _AM_CONNECT_INFO_H_
+#define _AM_CONNECT_INFO_H_
 
 #define DBMT_USER_NAME_LEN 64
 
@@ -59,4 +59,4 @@ int dbmt_con_write_dbinfo (T_DBMT_CON_DBINFO *dbinfo, const char *ip,
 void dbmt_con_set_dbinfo (T_DBMT_CON_DBINFO *dbinfo, const char *dbname,
                           const char *uid, const char *passwd);
 
-#endif /* _CM_CONNECT_INFO_H_ */
+#endif /* _AM_CONNECT_INFO_H_ */

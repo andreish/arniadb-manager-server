@@ -19,7 +19,7 @@
 
 
 /*
- * cm_job_task.cpp -
+ * am_job_task.cpp -
  */
 
 #include <stdio.h>
@@ -56,19 +56,19 @@
 #endif
 #endif
 
-#include "cm_log.h"
-#include "cm_stat.h"
-#include "cm_porting.h"
-#include "cm_server_util.h"
-#include "cm_job_task.h"
-#include "cm_auto_task.h"
-#include "cm_dep.h"
-#include "cm_config.h"
-#include "cm_cmd_exec.h"
-#include "cm_user.h"
-#include "cm_text_encryption.h"
-#include "cm_connect_info.h"
-#include "cm_server_autoupdate.h"
+#include "am_log.h"
+#include "am_stat.h"
+#include "am_porting.h"
+#include "am_server_util.h"
+#include "am_job_task.h"
+#include "am_auto_task.h"
+#include "am_dep.h"
+#include "am_config.h"
+#include "am_cmd_exec.h"
+#include "am_user.h"
+#include "am_text_encryption.h"
+#include "am_connect_info.h"
+#include "am_server_autoupdate.h"
 
 #include "openssl/pem.h"
 #include "openssl/conf.h"
@@ -230,10 +230,10 @@ static void replace_colon (char *path);
 
 static char *to_upper_str (char *str, char *buf);
 static char *to_lower_str (char *str, char *buf);
-static int uca_conf_write (T_CM_BROKER_CONF *uc_conf, char *del_broekr,
+static int uca_conf_write (T_AM_BROKER_CONF *uc_conf, char *del_broekr,
 			   char *_dbmt_error);
 static char *get_user_name (int uid, char *name_buf);
-static const char *_op_get_port_from_config (T_CM_BROKER_CONF *uc_conf,
+static const char *_op_get_port_from_config (T_AM_BROKER_CONF *uc_conf,
     char *broker_name);
 
 static int _tsParseSpacedb (nvplist *req, nvplist *res, char *dbname,
@@ -258,14 +258,14 @@ static int op_make_triggerinput_file_alter (nvplist *req, char *input_filename);
 static int get_broker_info_from_filename (char *path, char *br_name, int *as_id);
 static char *_ts_get_error_log_param (char *dbname);
 
-static char *cm_get_abs_file_path (const char *filename, char *buf);
+static char *am_get_abs_file_path (const char *filename, char *buf);
 static int check_dbpath (char *dir, char *_dbmt_error);
 
 static int file_to_nvpairs (char *filepath, nvplist *res);
 static int file_to_nvp_by_separator (FILE *fp, nvplist *res, char separator);
 static int obsolete_version_autoexecquery_conf (const char *conf_line);
 static int alter_dblocation (const char *dbname, const char *new_dbpath);
-static void print_db_stat_to_res (T_CM_DB_PROC_STAT *db_stat, nvplist *res);
+static void print_db_stat_to_res (T_AM_DB_PROC_STAT *db_stat, nvplist *res);
 static int record_ha_topology_to_struct (FILE *infile, int get_all_dbmode,
     char *dblist, char *_dbmt_error, T_HA_SERVER_INFO_ALL **all_info_out);
 static char *get_mode_from_output_file (char *mode, int buf_len,
@@ -305,7 +305,7 @@ static int run_asql_statement (const char *sql_stat, char *dbname,
 static void set_copylogdb_mode (T_HA_LOG_PROC_INFO *copylogdb);
 
 static int _op_get_session_from_broker (char *broker_list,
-					T_CM_CAS_INFO_ALL *cas_info_all);
+					T_AM_CAS_INFO_ALL *cas_info_all);
 static void _op_print_br_diagdata_to_res (nvplist *res,
     T_BROKER_DIAGDATA br_diagdata);
 static int _write_conf_to_file (nvplist *req, char *conf_path);
@@ -498,10 +498,10 @@ ts_get_broker_diagdata (nvplist *cli_request, nvplist *cli_response,
 {
   int i;
   char *broker_list = NULL;
-  T_CM_BROKER_INFO_ALL uc_info;
-  T_CM_BROKER_INFO *br_info = NULL;
+  T_AM_BROKER_INFO_ALL uc_info;
+  T_AM_BROKER_INFO *br_info = NULL;
   T_BROKER_DIAGDATA br_diagdata;
-  T_CM_ERROR error;
+  T_AM_ERROR error;
   int get_all_diagdata = 0;
 
   memset (&br_diagdata, 0, sizeof (T_BROKER_DIAGDATA));
@@ -515,7 +515,7 @@ ts_get_broker_diagdata (nvplist *cli_request, nvplist *cli_response,
       get_all_diagdata = 1;
     }
 
-  if (cm_get_broker_info (&uc_info, &error) < 0)
+  if (am_get_broker_info (&uc_info, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_NO_ERROR;
@@ -536,7 +536,7 @@ ts_get_broker_diagdata (nvplist *cli_request, nvplist *cli_response,
       if (get_all_diagdata || is_name_in_list (br_info->name, broker_list))
 	{
 	  int session = 0;
-	  T_CM_CAS_INFO_ALL cas_info_all;
+	  T_AM_CAS_INFO_ALL cas_info_all;
 
 	  session = _op_get_session_from_broker (br_info->name, &cas_info_all);
 
@@ -567,13 +567,13 @@ ts_get_broker_diagdata (nvplist *cli_request, nvplist *cli_response,
 	      memset (&br_diagdata, 0, sizeof (T_BROKER_DIAGDATA));
 	    }
 
-	  /* free spaces that malloced in cm_cas_info_free */
-	  cm_cas_info_free (&cas_info_all, NULL);
+	  /* free spaces that malloced in am_cas_info_free */
+	  am_cas_info_free (&cas_info_all, NULL);
 	}
     }
 
-  /* free spaces that malloced in cm_broker_info_free */
-  cm_broker_info_free (&uc_info);
+  /* free spaces that malloced in am_broker_info_free */
+  am_broker_info_free (&uc_info);
 
   /* return the sum of the diagdata to res, when bname token is NULL. */
   if (get_all_diagdata)
@@ -586,14 +586,14 @@ ts_get_broker_diagdata (nvplist *cli_request, nvplist *cli_response,
 
 static int
 _op_get_session_from_broker (char *broker_list,
-			     T_CM_CAS_INFO_ALL *cas_info_all)
+			     T_AM_CAS_INFO_ALL *cas_info_all)
 {
   int i;
   int session_t = 0;
-  T_CM_CAS_INFO *as_info = NULL;
-  T_CM_ERROR error;
+  T_AM_CAS_INFO *as_info = NULL;
+  T_AM_ERROR error;
 
-  if (cm_get_cas_info (broker_list, cas_info_all, NULL, &error) < 0)
+  if (am_get_cas_info (broker_list, cas_info_all, NULL, &error) < 0)
     {
       return -1;
     }
@@ -645,22 +645,22 @@ ts_get_diagdata (nvplist *cli_request, nvplist *cli_response,
 		 char *_dbmt_error)
 {
   int i;
-  /*T_CM_DIAG_MONITOR_DB_VALUE server_result; */
+  /*T_AM_DIAG_MONITOR_DB_VALUE server_result; */
   char *db_name, *broker_name;
   char *mon_db, *mon_cas;
-  T_CM_BROKER_INFO_ALL uc_info;
-  T_CM_BROKER_INFO *br_info;
+  T_AM_BROKER_INFO_ALL uc_info;
+  T_AM_BROKER_INFO *br_info;
   int num_busy_count = 0;
   INT64 num_req, num_query, num_tran, num_long_query, num_long_tran,
 	num_error_query;
-  T_CM_ERROR error;
+  T_AM_ERROR error;
 
   db_name = nv_get_val (cli_request, "db_name");
   mon_db = nv_get_val (cli_request, "mon_db");
   mon_cas = nv_get_val (cli_request, "mon_cas");
 
   /*
-  if (cm_get_diag_data (&server_result, db_name, mon_db) == 0)
+  if (am_get_diag_data (&server_result, db_name, mon_db) == 0)
   {
   #ifdef JSON_SUPPORT
       nv_add_nvp (cli_response, "open", "db_mon");
@@ -706,7 +706,7 @@ ts_get_diagdata (nvplist *cli_request, nvplist *cli_response,
 
       broker_name = nv_get_val (cli_request, "broker_name");
 
-      if (cm_get_broker_info (&uc_info, &error) < 0)
+      if (am_get_broker_info (&uc_info, &error) < 0)
 	{
 	  strcpy (_dbmt_error, error.err_msg);
 	  return ERR_NO_ERROR;
@@ -756,7 +756,7 @@ ts_userinfo (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   int retval;
 
-  retval = cm_ts_userinfo (req, res, _dbmt_error);
+  retval = am_ts_userinfo (req, res, _dbmt_error);
 
   if (retval != ERR_NO_ERROR)
     {
@@ -772,7 +772,7 @@ ts_userinfo (nvplist *req, nvplist *res, char *_dbmt_error)
 int
 ts_create_user (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_create_user (req, res, _dbmt_error);
+  return am_ts_create_user (req, res, _dbmt_error);
 }
 
 int
@@ -781,7 +781,7 @@ ts_delete_user (nvplist *req, nvplist *res, char *_dbmt_error)
   int retval;
   char *db_uid = nv_get_val (req, "username");
 
-  if ((retval = cm_ts_delete_user (req, res, _dbmt_error)) == ERR_NO_ERROR)
+  if ((retval = am_ts_delete_user (req, res, _dbmt_error)) == ERR_NO_ERROR)
     {
       auto_conf_execquery_delete_by_dbuser (db_uid);
     }
@@ -812,7 +812,7 @@ ts_update_user (nvplist *req, nvplist *res, char *_dbmt_error)
 	}
     }
 
-  ret = cm_ts_update_user (req, res, _dbmt_error);
+  ret = am_ts_update_user (req, res, _dbmt_error);
   if (ret != ERR_NO_ERROR)
     {
       return ret;
@@ -857,13 +857,13 @@ ts_update_user (nvplist *req, nvplist *res, char *_dbmt_error)
 int
 ts_class_info (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_class_info (req, res, _dbmt_error);
+  return am_ts_class_info (req, res, _dbmt_error);
 }
 
 int
 ts_class (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_class (req, res, _dbmt_error);
+  return am_ts_class (req, res, _dbmt_error);
 }
 
 #if defined(WINDOWS)
@@ -884,26 +884,26 @@ replace_colon (char *path)
 int
 ts_update_attribute (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_update_attribute (req, res, _dbmt_error);
+  return am_ts_update_attribute (req, res, _dbmt_error);
 }
 
 int
 ts2_get_unicas_info (nvplist *in, nvplist *out, char *_dbmt_error)
 {
-  T_CM_BROKER_INFO_ALL uc_info;
+  T_AM_BROKER_INFO_ALL uc_info;
   int i;
-  T_CM_BROKER_CONF uc_conf;
-  T_CM_ERROR error;
+  T_AM_BROKER_CONF uc_conf;
+  T_AM_ERROR error;
   char *broker_name;
 
   broker_name = nv_get_val (in, "bname");
-  memset (&uc_info, 0, sizeof (T_CM_BROKER_INFO_ALL));
-  if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
+  memset (&uc_info, 0, sizeof (T_AM_BROKER_INFO_ALL));
+  if (am_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
     }
-  if (cm_get_broker_info (&uc_info, &error) < 0)
+  if (am_get_broker_info (&uc_info, &error) < 0)
     {
       char *p;
       int tmp_val;
@@ -924,19 +924,19 @@ ts2_get_unicas_info (nvplist *in, nvplist *out, char *_dbmt_error)
 	    }
 	  nv_add_nvp (out, "open", "broker");
 	  nv_add_nvp (out, "name",
-		      cm_br_conf_get_value (& (uc_conf.br_conf[i]), "%"));
+		      am_br_conf_get_value (& (uc_conf.br_conf[i]), "%"));
 	  nv_add_nvp (out, "port",
-		      cm_br_conf_get_value (& (uc_conf.br_conf[i]), "BROKER_PORT"));
+		      am_br_conf_get_value (& (uc_conf.br_conf[i]), "BROKER_PORT"));
 	  nv_add_nvp (out, "appl_server_shm_id",
-		      cm_br_conf_get_value (& (uc_conf.br_conf[i]), "APPL_SERVER_SHM_ID"));
-	  p = cm_br_conf_get_value (& (uc_conf.br_conf[i]), "SOURCE_ENV");
+		      am_br_conf_get_value (& (uc_conf.br_conf[i]), "APPL_SERVER_SHM_ID"));
+	  p = am_br_conf_get_value (& (uc_conf.br_conf[i]), "SOURCE_ENV");
 	  tmp_val = 1;
 	  if (p == NULL || *p == '\0')
 	    {
 	      tmp_val = 0;
 	    }
 	  nv_add_nvp_int (out, "source_env", tmp_val);
-	  p = cm_br_conf_get_value (& (uc_conf.br_conf[i]), "ACCESS_LIST");
+	  p = am_br_conf_get_value (& (uc_conf.br_conf[i]), "ACCESS_LIST");
 	  tmp_val = 1;
 	  if (p == NULL || *p == '\0')
 	    {
@@ -1007,17 +1007,17 @@ ts2_get_unicas_info (nvplist *in, nvplist *out, char *_dbmt_error)
 	  nv_add_nvp_int (out, "access_list",
 			  uc_info.br_info[i].access_list_flag);
 	  shmid =
-		  cm_br_conf_get_value (cm_conf_find_broker (&uc_conf, uc_info.br_info[i].name),
+		  am_br_conf_get_value (am_conf_find_broker (&uc_conf, uc_info.br_info[i].name),
 					"APPL_SERVER_SHM_ID");
 	  nv_add_nvp (out, "appl_server_shm_id", shmid);
 	  nv_add_nvp (out, "close", "broker");
 	}
       nv_add_nvp (out, "close", "brokersinfo");
       nv_add_nvp (out, "brokerstatus", "ON");
-      cm_broker_info_free (&uc_info);
+      am_broker_info_free (&uc_info);
     }
 
-  cm_broker_conf_free (&uc_conf);
+  am_broker_conf_free (&uc_conf);
   return ERR_NO_ERROR;
 }
 
@@ -1025,8 +1025,8 @@ ts2_get_unicas_info (nvplist *in, nvplist *out, char *_dbmt_error)
 int
 ts2_start_unicas (nvplist *in, nvplist *out, char *_dbmt_error)
 {
-  T_CM_ERROR error;
-  if (cm_broker_env_start (&error) < 0)
+  T_AM_ERROR error;
+  if (am_broker_env_start (&error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -1038,8 +1038,8 @@ ts2_start_unicas (nvplist *in, nvplist *out, char *_dbmt_error)
 int
 ts2_stop_unicas (nvplist *in, nvplist *out, char *_dbmt_error)
 {
-  T_CM_ERROR error;
-  if (cm_broker_env_stop (&error) < 0)
+  T_AM_ERROR error;
+  if (am_broker_env_stop (&error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -1054,7 +1054,7 @@ ts2_get_admin_log_info (nvplist *in, nvplist *out, char *_dbmt_error)
   char buf[PATH_MAX];
   struct stat statbuf;
 
-  cm_get_broker_file (UC_FID_ADMIN_LOG, buf);
+  am_get_broker_file (UC_FID_ADMIN_LOG, buf);
 
   if (stat (buf, &statbuf) != 0)
     {
@@ -1083,12 +1083,12 @@ ts2_get_logfile_info (nvplist *in, nvplist *out, char *_dbmt_error)
   struct dirent *dirp;
 #endif
   struct stat statbuf;
-  T_CM_BROKER_CONF uc_conf;
+  T_AM_BROKER_CONF uc_conf;
   char logdir[PATH_MAX], err_logdir[PATH_MAX], access_logdir[PATH_MAX];
   const char *v;
   char *bname, *from, buf[1024], scriptdir[PATH_MAX];
   char *cur_file;
-  T_CM_ERROR error;
+  T_AM_ERROR error;
 
   bname = nv_get_val (in, "broker");
   from = nv_get_val (in, "from");
@@ -1102,28 +1102,28 @@ ts2_get_logfile_info (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_PARAM_MISSING;
     }
   chdir (sco.szArniadb);
-  if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
+  if (am_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
     }
-  v = cm_br_conf_get_value (cm_conf_find_broker (&uc_conf, bname), "ERROR_LOG_DIR");
+  v = am_br_conf_get_value (am_conf_find_broker (&uc_conf, bname), "ERROR_LOG_DIR");
   if (v == NULL)
     {
       v = BROKER_LOG_DIR "/error_log";
     }
-  cm_get_abs_file_path (v, err_logdir);
+  am_get_abs_file_path (v, err_logdir);
 
-  v = cm_br_conf_get_value (cm_conf_find_broker (&uc_conf, bname), "LOG_DIR");
+  v = am_br_conf_get_value (am_conf_find_broker (&uc_conf, bname), "LOG_DIR");
   if (v == NULL)
     {
       v = BROKER_LOG_DIR "/sql_log";
     }
-  cm_get_abs_file_path (v, logdir);
+  am_get_abs_file_path (v, logdir);
 
-  cm_get_abs_file_path (BROKER_LOG_DIR, access_logdir);
+  am_get_abs_file_path (BROKER_LOG_DIR, access_logdir);
 
-  cm_broker_conf_free (&uc_conf);
+  am_broker_conf_free (&uc_conf);
 
 #if defined(WINDOWS)
   snprintf (find_file, PATH_MAX - 1, "%s/*", access_logdir);
@@ -1309,7 +1309,7 @@ ts2_get_add_broker_info (nvplist *in, nvplist *out, char *_dbmt_error)
   FILE *infile;
   char broker_conf_path[PATH_MAX], strbuf[1024];
 
-  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
+  am_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
 
   if (access (broker_conf_path, F_OK) < 0)
     {
@@ -1342,8 +1342,8 @@ ts2_delete_broker (nvplist *in, nvplist *out, char *_dbmt_error)
 {
   char *bname;
   int retval = ERR_NO_ERROR;
-  T_CM_BROKER_CONF uc_conf;
-  T_CM_ERROR error;
+  T_AM_BROKER_CONF uc_conf;
+  T_AM_ERROR error;
 
   if ((bname = nv_get_val (in, "bname")) == NULL)
     {
@@ -1351,7 +1351,7 @@ ts2_delete_broker (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_PARAM_MISSING;
     }
 
-  if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
+  if (am_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -1359,7 +1359,7 @@ ts2_delete_broker (nvplist *in, nvplist *out, char *_dbmt_error)
 
   retval = uca_conf_write (&uc_conf, bname, _dbmt_error);
 
-  cm_broker_conf_free (&uc_conf);
+  am_broker_conf_free (&uc_conf);
 
   return retval;
 }
@@ -1368,9 +1368,9 @@ ts2_delete_broker (nvplist *in, nvplist *out, char *_dbmt_error)
 int
 ts2_get_broker_status (nvplist *in, nvplist *out, char *_dbmt_error)
 {
-  T_CM_CAS_INFO_ALL as_info_set;
-  T_CM_JOB_INFO_ALL job_info_set;
-  T_CM_ERROR error;
+  T_AM_CAS_INFO_ALL as_info_set;
+  T_AM_JOB_INFO_ALL job_info_set;
+  T_AM_ERROR error;
   char *bname, buf[1024];
   char *blist;
   int more_than_one_broker = 0;
@@ -1408,7 +1408,7 @@ ts2_get_broker_status (nvplist *in, nvplist *out, char *_dbmt_error)
       nv_add_nvp (out, "bname", bname);
       ts_add_nvp_time (out, "time", time (NULL),
 		       "%04d/%02d/%02d %02d:%02d:%02d", TIME_STR_FMT_DATE_TIME);
-      if (cm_get_cas_info (bname, &as_info_set, &job_info_set, &error) >= 0)
+      if (am_get_cas_info (bname, &as_info_set, &job_info_set, &error) >= 0)
 	{
 	  for (i = 0; i < as_info_set.num_info; i++)
 	    {
@@ -1431,7 +1431,7 @@ ts2_get_broker_status (nvplist *in, nvplist *out, char *_dbmt_error)
 	      nv_add_nvp_int (out, "as_psize", as_info_set.as_info[i].psize);
 	      nv_add_nvp (out, "as_status", as_info_set.as_info[i].status);
 	      nv_add_nvp_float (out, "as_cpu", as_info_set.as_info[i].pcpu, "%.2f");
-	      cm_cpu_time_str (as_info_set.as_info[i].cpu_time, buf);
+	      am_cpu_time_str (as_info_set.as_info[i].cpu_time, buf);
 	      nv_add_nvp (out, "as_ctime", buf);
 	      ts_add_nvp_time (out, "as_lat",
 			       as_info_set.as_info[i].last_access_time,
@@ -1464,7 +1464,7 @@ ts2_get_broker_status (nvplist *in, nvplist *out, char *_dbmt_error)
 	      nv_add_nvp (out, "job_request", buf);
 	      nv_add_nvp (out, "close", "jobinfo");
 	    }
-	  cm_cas_info_free (&as_info_set, &job_info_set);
+	  am_cas_info_free (&as_info_set, &job_info_set);
 	}
       if (more_than_one_broker != 0)
 	{
@@ -1485,7 +1485,7 @@ ts2_set_broker_conf (nvplist *in, nvplist *out, char *_dbmt_error)
   char *conf, *confdata;
   int nv_len, i;
 
-  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
+  am_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, broker_conf_path);
 
   if ((outfile = fopen (broker_conf_path, "w")) == NULL)
     {
@@ -1519,7 +1519,7 @@ int
 ts2_start_broker (nvplist *in, nvplist *out, char *_dbmt_error)
 {
   char *bname;
-  T_CM_ERROR error;
+  T_AM_ERROR error;
 
   if ((bname = nv_get_val (in, "bname")) == NULL)
     {
@@ -1527,7 +1527,7 @@ ts2_start_broker (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_PARAM_MISSING;
     }
 
-  if (cm_broker_on (bname, &error) < 0)
+  if (am_broker_on (bname, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -1539,7 +1539,7 @@ int
 ts2_stop_broker (nvplist *in, nvplist *out, char *_dbmt_error)
 {
   char *bname;
-  T_CM_ERROR error;
+  T_AM_ERROR error;
 
   if ((bname = nv_get_val (in, "bname")) == NULL)
     {
@@ -1547,7 +1547,7 @@ ts2_stop_broker (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_PARAM_MISSING;
     }
 
-  if (cm_broker_off (bname, &error) < 0)
+  if (am_broker_off (bname, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -1559,8 +1559,8 @@ int
 ts2_restart_broker_as (nvplist *in, nvplist *out, char *_dbmt_error)
 {
   char *bname, *asnum;
-  T_CM_ERROR error;
-  T_CM_BROKER_INFO_ALL uc_info;
+  T_AM_ERROR error;
+  T_AM_BROKER_INFO_ALL uc_info;
 
   int num_as = 0;
 
@@ -1579,7 +1579,7 @@ ts2_restart_broker_as (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_PARAM_MISSING;
     }
 
-  if (cm_get_broker_info (&uc_info, &error) < 0)
+  if (am_get_broker_info (&uc_info, &error) < 0)
     {
       snprintf (_dbmt_error, DBMT_ERROR_MSG_SIZE, "%s", error.err_msg);
       return ERR_WITH_MSG;
@@ -1593,7 +1593,7 @@ ts2_restart_broker_as (nvplist *in, nvplist *out, char *_dbmt_error)
       return ERR_WITH_MSG;
     }
 
-  if (cm_broker_as_restart (bname, num_as, &error) < 0)
+  if (am_broker_as_restart (bname, num_as, &error) < 0)
     {
       strcpy (_dbmt_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -4022,7 +4022,7 @@ rm_tmpfile:
 int
 ts_optimizedb (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_optimizedb (req, res, _dbmt_error);
+  return am_ts_optimizedb (req, res, _dbmt_error);
 }
 
 int
@@ -4110,13 +4110,13 @@ ts_statdump (nvplist *req, nvplist *res, char *_dbmt_error)
   char *dbname;
   char dbname_at_hostname[MAXHOSTNAMELEN + DB_NAME_LEN];
   int ha_mode = 0;
-  T_CM_DB_EXEC_STAT exec_stat;
-  T_CM_ERROR err_buf;
+  T_AM_DB_EXEC_STAT exec_stat;
+  T_AM_ERROR err_buf;
   int retval = -1;
   T_DB_SERVICE_MODE db_mode;
 
-  memset (&exec_stat, 0, sizeof (T_CM_DB_EXEC_STAT));
-  memset (&err_buf, 0, sizeof (T_CM_ERROR));
+  memset (&exec_stat, 0, sizeof (T_AM_DB_EXEC_STAT));
+  memset (&err_buf, 0, sizeof (T_AM_ERROR));
 
   /* check the parameters of input. */
   if ((dbname = nv_get_val (req, "dbname")) == NULL)
@@ -4138,14 +4138,14 @@ ts_statdump (nvplist *req, nvplist *res, char *_dbmt_error)
   if (ha_mode != 0)
     {
       append_host_to_dbname (dbname_at_hostname, dbname, sizeof (dbname_at_hostname));
-      retval = cm_get_db_exec_stat (dbname_at_hostname, &exec_stat, &err_buf);
+      retval = am_get_db_exec_stat (dbname_at_hostname, &exec_stat, &err_buf);
     }
   else
     {
-      retval = cm_get_db_exec_stat (dbname, &exec_stat, &err_buf);
+      retval = am_get_db_exec_stat (dbname, &exec_stat, &err_buf);
     }
 
-  /* call cm_get_db_exec_stat to get stat infomation. */
+  /* call am_get_db_exec_stat to get stat infomation. */
   if (retval < 0)
     {
       /* return error with message if the operation is not success. */
@@ -8077,7 +8077,7 @@ ts_trigger_operation (nvplist *req, nvplist *res, char *_dbmt_error)
 int
 ts_get_triggerinfo (nvplist *req, nvplist *res, char *_dbmt_error)
 {
-  return cm_ts_get_triggerinfo (req, res, _dbmt_error);
+  return am_ts_get_triggerinfo (req, res, _dbmt_error);
 }
 
 int
@@ -9182,9 +9182,9 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
   char log_converter_res[PATH_MAX];
   char cmd_name[ARNIADB_CMD_NAME_LEN];
   const char *argv[25];
-  T_CM_BROKER_CONF uc_conf;
+  T_AM_BROKER_CONF uc_conf;
   char out_msg_file_env[1024];
-  T_CM_ERROR error;
+  T_AM_ERROR error;
 #if defined(WINDOWS)
   DWORD th_id;
 #else
@@ -9233,7 +9233,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
 	    th_id);
 
   /* get right port number with broker name */
-  if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
+  if (am_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       strcpy (diag_error, error.err_msg);
       return ERR_WITH_MSG;
@@ -9242,12 +9242,12 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
   memset (bport, 0x0, sizeof (bport));
   for (i = 0; i < uc_conf.num_broker; i++)
     {
-      char *confvalue = cm_br_conf_get_value (& (uc_conf.br_conf[i]), "%");
+      char *confvalue = am_br_conf_get_value (& (uc_conf.br_conf[i]), "%");
 
       if ((confvalue != NULL) && (strcmp (brokername, confvalue) == 0))
 	{
 	  confvalue =
-		  cm_br_conf_get_value (& (uc_conf.br_conf[i]), "BROKER_PORT");
+		  am_br_conf_get_value (& (uc_conf.br_conf[i]), "BROKER_PORT");
 	  if (confvalue != NULL)
 	    {
 	      snprintf (bport, sizeof (bport) - 1, "%s", confvalue);
@@ -9256,7 +9256,7 @@ ts_executecasrunner (nvplist *cli_request, nvplist *cli_response,
 	}
     }
 
-  cm_broker_conf_free (&uc_conf);
+  am_broker_conf_free (&uc_conf);
 
   if ((casrunnerwithFile != NULL) && (strcmp (casrunnerwithFile, "yes") == 0)
       && (logfilename != NULL))
@@ -9754,7 +9754,7 @@ ts_remove_log (nvplist *req, nvplist *res, char *_dbmt_error)
   char command[PATH_MAX];
   char full_path_buf[PATH_MAX];
   char buf[PATH_MAX];
-  T_CM_ERROR error = { 0, {0} };
+  T_AM_ERROR error = { 0, {0} };
 
   broker_name[0] = '\0';
   command[0] = '\0';
@@ -9796,7 +9796,7 @@ ts_remove_log (nvplist *req, nvplist *res, char *_dbmt_error)
 	      return ERR_WITH_MSG;
 #endif
 	      if (get_broker_info_from_filename (path, broker_name, &as_id) < 0
-		  || cm_del_cas_log (broker_name, as_id, &error) < 0)
+		  || am_del_cas_log (broker_name, as_id, &error) < 0)
 		{
 		  pclose (output);
 		  snprintf (_dbmt_error, DBMT_ERROR_MSG_SIZE, "%s",
@@ -9837,18 +9837,18 @@ int
 ts_get_dbproc_stat (nvplist *req, nvplist *res, char *_dbmt_error)
 {
   char *dbname = NULL;
-  T_CM_DB_PROC_STAT_ALL *db_stat_all = NULL;
-  T_CM_DB_PROC_STAT db_stat;
-  T_CM_ERROR error;
+  T_AM_DB_PROC_STAT_ALL *db_stat_all = NULL;
+  T_AM_DB_PROC_STAT db_stat;
+  T_AM_ERROR error;
   int retval;
   int i = 0;
 
-  memset (&db_stat, 0, sizeof (T_CM_DB_PROC_STAT));
-  memset (&error, 0, sizeof (T_CM_ERROR));
+  memset (&db_stat, 0, sizeof (T_AM_DB_PROC_STAT));
+  memset (&error, 0, sizeof (T_AM_ERROR));
 
   if ((dbname = nv_get_val (req, "dbname")) == NULL)
     {
-      if ((db_stat_all = cm_get_db_proc_stat_all (&error)) == NULL)
+      if ((db_stat_all = am_get_db_proc_stat_all (&error)) == NULL)
 	{
 	  strcpy_limit (_dbmt_error, error.err_msg, DBMT_ERROR_MSG_SIZE);
 	  retval = ERR_WITH_MSG;
@@ -9860,12 +9860,12 @@ ts_get_dbproc_stat (nvplist *req, nvplist *res, char *_dbmt_error)
 	  print_db_stat_to_res ((db_stat_all->db_stats + i), res);
 	}
 
-      cm_db_proc_stat_all_free (db_stat_all);
+      am_db_proc_stat_all_free (db_stat_all);
       retval = ERR_NO_ERROR;
     }
   else
     {
-      if (cm_get_db_proc_stat (dbname, &db_stat, &error) < 0)
+      if (am_get_db_proc_stat (dbname, &db_stat, &error) < 0)
 	{
 	  strcpy_limit (_dbmt_error, error.err_msg, DBMT_ERROR_MSG_SIZE);
 	  retval = ERR_WITH_MSG;
@@ -10690,7 +10690,7 @@ error_return:
 }
 
 static void
-print_db_stat_to_res (T_CM_DB_PROC_STAT *db_stat, nvplist *res)
+print_db_stat_to_res (T_AM_DB_PROC_STAT *db_stat, nvplist *res)
 {
   nv_add_nvp (res, "open", "dbstat");
   nv_add_nvp (res, "dbname", db_stat->name);
@@ -11279,7 +11279,7 @@ ts_get_ams_env (nvplist *req, nvplist *res, char *_dbmt_error)
   nv_add_nvp (res, "PLATFORM", get_processor_architecture ());
   nv_add_nvp (res, "AMS_VER", makestring (BUILD_NUMBER));
 
-  nv_add_nvp_int (res, "cm_port", sco.iAMS_port);
+  nv_add_nvp_int (res, "am_port", sco.iAMS_port);
 
   is_default_cert_file = _is_default_cert (_dbmt_error);
   if (is_default_cert_file < 0)
@@ -12156,16 +12156,16 @@ fill_dbmode_into_dbinfo_list (T_HA_SERVER_INFO_ALL **all_info,
  * get port info from brokers config, that located by <broker_name>
  */
 static const char *
-_op_get_port_from_config (T_CM_BROKER_CONF *uc_conf, char *broker_name)
+_op_get_port_from_config (T_AM_BROKER_CONF *uc_conf, char *broker_name)
 {
   int pos;
   char *name;
   for (pos = 0; pos < uc_conf->num_broker; pos++)
     {
-      name = cm_br_conf_get_value (& (uc_conf->br_conf[pos]), "%");
+      name = am_br_conf_get_value (& (uc_conf->br_conf[pos]), "%");
       if (name != NULL && strcasecmp (broker_name, name) == 0)
 	{
-	  return cm_br_conf_get_value (& (uc_conf->br_conf[pos]),
+	  return am_br_conf_get_value (& (uc_conf->br_conf[pos]),
 				       "BROKER_PORT");
 	}
     }
@@ -12291,7 +12291,7 @@ get_user_name (int uid, char *name_buf)
 }
 
 static int
-uca_conf_write (T_CM_BROKER_CONF *uc_conf, char *del_broker,
+uca_conf_write (T_AM_BROKER_CONF *uc_conf, char *del_broker,
 		char *_dbmt_error)
 {
   char buf[512];
@@ -12319,17 +12319,17 @@ uca_conf_write (T_CM_BROKER_CONF *uc_conf, char *del_broker,
 	}
     }
 
-  cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
+  am_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
 
   if (stat (buf, &statbuf) < 0)
     {
-      cm_get_broker_file (UC_FID_ARNIADB_CAS_CONF, buf);
+      am_get_broker_file (UC_FID_ARNIADB_CAS_CONF, buf);
       if (stat (buf, &statbuf) < 0)
 	{
-	  cm_get_broker_file (UC_FID_UNICAS_CONF, buf);
+	  am_get_broker_file (UC_FID_UNICAS_CONF, buf);
 	  if (stat (buf, &statbuf) < 0)
 	    {
-	      cm_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
+	      am_get_broker_file (UC_FID_ARNIADB_BROKER_CONF, buf);
 	    }
 	}
     }
@@ -13211,7 +13211,7 @@ get_dbvoldir (char *vol_dir, size_t vol_dir_size, char *dbname, char *err_buf)
 }
 
 static char *
-cm_get_abs_file_path (const char *filename, char *buf)
+am_get_abs_file_path (const char *filename, char *buf)
 {
   strcpy (buf, filename);
 
@@ -14976,7 +14976,7 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
 
 /*static int _get_update_url(char *url)
 {
-    char cm_conf_file[PATH_MAX];
+    char am_conf_file[PATH_MAX];
     char line_buf[MAX_JOB_CONFIG_FILE_LINE_LENGTH];
 
     char *iter = NULL;
@@ -14984,12 +14984,12 @@ ts_ha_applylogdb (nvplist *req, nvplist *res, char *_dbmt_error)
     FILE *fin;
 
 #if !defined (DO_NOT_USE_ARNIADBENV)
-    snprintf (cm_conf_file, PATH_MAX - 1, "%s/conf/%s", sco.szArniadb, ARNIADB_DBMT_CONF);
+    snprintf (am_conf_file, PATH_MAX - 1, "%s/conf/%s", sco.szArniadb, ARNIADB_DBMT_CONF);
 #else
-    snprintf (cm_conf_file, PATH_MAX - 1, "%s/%s", ARNIADB_CONFDIR, ARNIADB_DBMT_CONF);
+    snprintf (am_conf_file, PATH_MAX - 1, "%s/%s", ARNIADB_CONFDIR, ARNIADB_DBMT_CONF);
 #endif
 
-    fin = fopen(cm_conf_file, "r");
+    fin = fopen(am_conf_file, "r");
     if (fin == NULL)
     {
         return ERR_FILE_OPEN_FAIL;

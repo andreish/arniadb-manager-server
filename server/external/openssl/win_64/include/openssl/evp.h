@@ -329,8 +329,8 @@ struct evp_cipher_st
 #define		EVP_CIPH_CFB_MODE		0x3
 #define		EVP_CIPH_OFB_MODE		0x4
 #define		EVP_CIPH_CTR_MODE		0x5
-#define		EVP_CIPH_GCM_MODE		0x6
-#define		EVP_CIPH_CCM_MODE		0x7
+#define		EVP_CIPH_GAM_MODE		0x6
+#define		EVP_CIPH_CAM_MODE		0x7
 #define		EVP_CIPH_XTS_MODE		0x10001
 #define 	EVP_CIPH_MODE			0xF0007
 /* Set if variable length cipher */
@@ -374,16 +374,16 @@ struct evp_cipher_st
 #define 	EVP_CTRL_RAND_KEY		0x6
 #define 	EVP_CTRL_PBE_PRF_NID		0x7
 #define 	EVP_CTRL_COPY			0x8
-#define 	EVP_CTRL_GCM_SET_IVLEN		0x9
-#define 	EVP_CTRL_GCM_GET_TAG		0x10
-#define 	EVP_CTRL_GCM_SET_TAG		0x11
-#define		EVP_CTRL_GCM_SET_IV_FIXED	0x12
-#define		EVP_CTRL_GCM_IV_GEN		0x13
-#define		EVP_CTRL_CCM_SET_IVLEN		EVP_CTRL_GCM_SET_IVLEN
-#define		EVP_CTRL_CCM_GET_TAG		EVP_CTRL_GCM_GET_TAG
-#define		EVP_CTRL_CCM_SET_TAG		EVP_CTRL_GCM_SET_TAG
-#define		EVP_CTRL_CCM_SET_L		0x14
-#define		EVP_CTRL_CCM_SET_MSGLEN		0x15
+#define 	EVP_CTRL_GAM_SET_IVLEN		0x9
+#define 	EVP_CTRL_GAM_GET_TAG		0x10
+#define 	EVP_CTRL_GAM_SET_TAG		0x11
+#define		EVP_CTRL_GAM_SET_IV_FIXED	0x12
+#define		EVP_CTRL_GAM_IV_GEN		0x13
+#define		EVP_CTRL_CAM_SET_IVLEN		EVP_CTRL_GAM_SET_IVLEN
+#define		EVP_CTRL_CAM_GET_TAG		EVP_CTRL_GAM_GET_TAG
+#define		EVP_CTRL_CAM_SET_TAG		EVP_CTRL_GAM_SET_TAG
+#define		EVP_CTRL_CAM_SET_L		0x14
+#define		EVP_CTRL_CAM_SET_MSGLEN		0x15
 /* AEAD cipher deduces payload length and returns number of bytes
  * required to store MAC and eventual padding. Subsequent call to
  * EVP_Cipher even appends/verifies MAC.
@@ -392,15 +392,15 @@ struct evp_cipher_st
 /* Used by composite AEAD ciphers, no-op in GCM, CCM... */
 #define		EVP_CTRL_AEAD_SET_MAC_KEY	0x17
 /* Set the GCM invocation field, decrypt only */
-#define		EVP_CTRL_GCM_SET_IV_INV		0x18
+#define		EVP_CTRL_GAM_SET_IV_INV		0x18
 
 /* GCM TLS constants */
 /* Length of fixed part of IV derived from PRF */
-#define EVP_GCM_TLS_FIXED_IV_LEN			4
+#define EVP_GAM_TLS_FIXED_IV_LEN			4
 /* Length of explicit part of IV part of TLS records */
-#define EVP_GCM_TLS_EXPLICIT_IV_LEN			8
+#define EVP_GAM_TLS_EXPLICIT_IV_LEN			8
 /* Length of tag for TLS */
-#define EVP_GCM_TLS_TAG_LEN				16
+#define EVP_GAM_TLS_TAG_LEN				16
 
 typedef struct evp_cipher_info_st
 	{

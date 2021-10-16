@@ -17,17 +17,17 @@
  *
  */
 
-#ifndef __CM_API_H__
-#define __CM_API_H__
+#ifndef __AM_API_H__
+#define __AM_API_H__
 #include <json/json.h>
 
-#include "cm_stat.h"
-#include "cm_dep.h"
-#include "cm_config.h"
-#include "cm_job_task.h"
-#include "cm_server_util.h"
+#include "am_stat.h"
+#include "am_dep.h"
+#include "am_config.h"
+#include "am_job_task.h"
+#include "am_server_util.h"
 
-int arn_cm_request_handler (Json::Value &request, Json::Value &response);
-void arn_cm_init_env ();
+int arn_am_request_handler (Json::Value &request, Json::Value &response);
+void arn_am_init_env ();
 
 #endif /*  */

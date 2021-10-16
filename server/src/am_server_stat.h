@@ -19,11 +19,11 @@
 
 
 /*
- * cm_server_stat.h -
+ * am_server_stat.h -
  */
 
-#ifndef _CM_SERVER_STAT_H_
-#define _CM_SERVER_STAT_H_
+#ifndef _AM_SERVER_STAT_H_
+#define _AM_SERVER_STAT_H_
 
 #ident "$Id$"
 
@@ -33,8 +33,8 @@
 #undef HOST_MONITOR_IO
 #endif
 
-#include "cm_dep.h"
-#include "cm_config.h"
+#include "am_dep.h"
+#include "am_config.h"
 
 #define CPUSTATES     5
 #define CPUSTATE_IOWAIT 3
@@ -96,4 +96,4 @@ void record_system_info (sys_stat *sstat);
 void record_arniadb_proc_info (userdata *ud);
 void record_unicas_proc_info (int casv[], cas_stat casb[]);
 
-#endif /* _CM_SERVER_STAT_H_ */
+#endif /* _AM_SERVER_STAT_H_ */

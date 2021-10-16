@@ -2,8 +2,8 @@
 ini_set("memory_limit","256M"); 
 error_reporting (E_ALL);
 
-define ("CM_PORT", 8001);
-define ("CM_SERVER_IP", "127.0.0.1");
+define ("AM_PORT", 8001);
+define ("AM_SERVER_IP", "127.0.0.1");
 define ("CLIENT_VERSION", "8.2.2");
 define ("TEST_CASE_DIR", "task_test_case/");
 define ("TEST_RESULT_DIR", "task_test_result/");
@@ -350,7 +350,7 @@ function exec_task($req_file, $token, $test_result)
             "\n";
     }
 
-    $result = socket_connect ($sock_js, CM_SERVER_IP, CM_PORT+1);
+    $result = socket_connect ($sock_js, AM_SERVER_IP, AM_PORT+1);
     if ($result < 0)
     {
         echo "socket_connect() failed.\nReason: ($result) ".
@@ -409,7 +409,7 @@ function exec_task($req_file, $token, $test_result)
 
 function get_token($sock_auto)
 {
-    $result = socket_connect ($sock_auto, CM_SERVER_IP, CM_PORT);
+    $result = socket_connect ($sock_auto, AM_SERVER_IP, AM_PORT);
     if ($result < 0)
     {
         echo "socket_connect() failed.\nReason: ($result) ".

@@ -17,7 +17,7 @@
  *
  */
 
-#include "cm_log.h"
+#include "am_log.h"
 
 #include <string.h>
 #ifdef WINDOWS
@@ -28,15 +28,15 @@
 #include <sys/stat.h>
 #endif
 
-#include "cm_dep.h"
-#include "cm_stat.h"
-#include "cm_cmd_exec.h"
-#include "cm_server_util.h"
-#include "cm_text_encryption.h"
-#include "cm_server_extend_interface.h"
-#include "cm_mailer.h"
-#include "cm_mon_stat.h"
-#include "cm_user.h"
+#include "am_dep.h"
+#include "am_stat.h"
+#include "am_cmd_exec.h"
+#include "am_server_util.h"
+#include "am_text_encryption.h"
+#include "am_server_extend_interface.h"
+#include "am_mailer.h"
+#include "am_mon_stat.h"
+#include "am_user.h"
 
 #include <fstream>
 #include <sstream>
@@ -473,17 +473,17 @@ int ext_get_active_dbs (Json::Value &activedbs)
 
 int ext_get_active_brokers (Json::Value &activebrokers)
 {
-  T_CM_BROKER_INFO_ALL uc_info;
-  T_CM_BROKER_CONF uc_conf;
-  T_CM_ERROR error;
+  T_AM_BROKER_INFO_ALL uc_info;
+  T_AM_BROKER_CONF uc_conf;
+  T_AM_ERROR error;
   Json::Value  broker;
   int i;
 
-  if (cm_get_broker_conf (&uc_conf, NULL, &error) < 0)
+  if (am_get_broker_conf (&uc_conf, NULL, &error) < 0)
     {
       return 1;
     }
-  if (cm_get_broker_info (&uc_info, &error) < 0)
+  if (am_get_broker_info (&uc_info, &error) < 0)
     {
       activebrokers["brokerstatus"] = "OFF";
     }
@@ -496,10 +496,10 @@ int ext_get_active_brokers (Json::Value &activebrokers)
           activebrokers["brokers"].append (broker);
         }
       activebrokers["brokerstatus"] = "ON";
-      cm_broker_info_free (&uc_info);
+      am_broker_info_free (&uc_info);
     }
 
-  cm_broker_conf_free (&uc_conf);
+  am_broker_conf_free (&uc_conf);
   return 0;
 }
 
@@ -2631,7 +2631,7 @@ int ext_get_mon_interval (Json::Value &request, Json::Value &response)
 {
   response["task"] = request["task"];
   time_t interval;
-  if (false == (cm_mon_stat::get_instance())->get_mon_interval (interval))
+  if (false == (am_mon_stat::get_instance())->get_mon_interval (interval))
     {
       return build_server_header (response, ERR_WITH_MSG,
                                   "Get interval failed, because the monitoring module is not initialized!");
@@ -2660,7 +2660,7 @@ int ext_set_mon_interval (Json::Value &request, Json::Value &response)
            " seconds";
       return build_server_header (response, ERR_WITH_MSG, sstr.str().c_str());
     }
-  if (true == (cm_mon_stat::get_instance())->set_mon_interval (interval))
+  if (true == (am_mon_stat::get_instance())->set_mon_interval (interval))
     {
       return build_server_header (response, ERR_NO_ERROR, STATUS_NONE);
     }
@@ -2696,7 +2696,7 @@ int ext_get_mon_statistic (Json::Value &request, Json::Value &response)
       JSON_FIND_V (request, "bname",
                    build_server_header (response, ERR_PARAM_MISSING, "Parameter(bname) missing in the request"));
     }
-  if (true == (cm_mon_stat::get_instance())->get_mon_statistic (request, response, errmsg))
+  if (true == (am_mon_stat::get_instance())->get_mon_statistic (request, response, errmsg))
     {
       return build_server_header (response, ERR_NO_ERROR, STATUS_NONE);
     }

@@ -343,71 +343,71 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\cm_auto_task.cpp"
+				RelativePath="..\..\src\am_auto_task.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_autojob.cpp"
+				RelativePath="..\..\src\am_autojob.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_cci_interface.cpp"
+				RelativePath="..\..\src\am_cci_interface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_cmd_exec.cpp"
+				RelativePath="..\..\src\am_cmd_exec.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_config.cpp"
+				RelativePath="..\..\src\am_config.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_connect_info.cpp"
+				RelativePath="..\..\src\am_connect_info.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_http_server.cpp"
+				RelativePath="..\..\src\am_http_server.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_httpd.cpp"
+				RelativePath="..\..\src\am_httpd.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_job_task.cpp"
+				RelativePath="..\..\src\am_job_task.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_mon_stat.cpp"
+				RelativePath="..\..\src\am_mon_stat.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_server_autoupdate.cpp"
+				RelativePath="..\..\src\am_server_autoupdate.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_server_extend_interface.cpp"
+				RelativePath="..\..\src\am_server_extend_interface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_server_interface.cpp"
+				RelativePath="..\..\src\am_server_interface.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_server_util.cpp"
+				RelativePath="..\..\src\am_server_util.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_text_encryption.c"
+				RelativePath="..\..\src\am_text_encryption.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_user.cpp"
+				RelativePath="..\..\src\am_user.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cm_win_wsa.c"
+				RelativePath="..\..\src\am_win_wsa.c"
 				>
 			</File>
 		</Filter>

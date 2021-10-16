@@ -18,7 +18,7 @@
  */
 
 /*
-*  cm_httpd.cpp
+*  am_httpd.cpp
 */
 
 #include <ctype.h>
@@ -44,7 +44,7 @@
 
 #ifdef WINDOWS
 #include <windows.h>
-#include "cm_win_wsa.h"
+#include "am_win_wsa.h"
 #include <io.h>
 #include <direct.h>
 #include <process.h>
@@ -57,19 +57,19 @@
 #include <dirent.h>
 #endif
 
-#include "cm_log.h"
-#include "cm_server_util.h"
-#include "cm_config.h"
-#include "cm_autojob.h"
-#include "cm_auto_task.h"
-#include "cm_cci_interface.h"
-#include "cm_server_interface.h"
-#include "cm_server_stat.h"
-#include "cm_server_extend_interface.h"
-#include "cm_mon_stat.h"
-#include "cm_http_server.h"
+#include "am_log.h"
+#include "am_server_util.h"
+#include "am_config.h"
+#include "am_autojob.h"
+#include "am_auto_task.h"
+#include "am_cci_interface.h"
+#include "am_server_interface.h"
+#include "am_server_stat.h"
+#include "am_server_extend_interface.h"
+#include "am_mon_stat.h"
+#include "am_http_server.h"
 
-//#include "cm_utf8.h"
+//#include "am_utf8.h"
 using namespace std;
 
 #define DEFAULT_THRD_NUM                      24
@@ -269,9 +269,9 @@ arn_generic_request_handler (struct evhttp_request *req, void *arg)
     {
       arn_cci_request_handler (root, response);
     }
-  else if (!strcmp ((char *) arg, "cm_api"))
+  else if (!strcmp ((char *) arg, "am_api"))
     {
-      arn_cm_request_handler (root, response);
+      arn_am_request_handler (root, response);
     }
 
   //outustr = utf8_encode(writer.write(response).c_str());
@@ -430,7 +430,7 @@ start_monitor_stat_cb (evutil_socket_t fd, short event, void *arg)
 
   if (sco.iSupportMonStat == TRUE)
     {
-      (cm_mon_stat::get_instance())->gather_mon_data();
+      (am_mon_stat::get_instance())->gather_mon_data();
     }
 
   evtimer_add (work_ctx->timer, &stat_tv);
@@ -545,7 +545,7 @@ start_service ()
           evhttp_set_bevcb (start_ctx[i]->httpd, create_sslconn_cb, ctx);
           evhttp_set_cb (start_ctx[i]->httpd, "/cci",
                          arn_generic_request_handler, (void *) "cci");
-          evhttp_set_cb (start_ctx[i]->httpd, "/cm_api", arn_generic_request_handler, (void *) "cm_api");
+          evhttp_set_cb (start_ctx[i]->httpd, "/am_api", arn_generic_request_handler, (void *) "am_api");
           evhttp_set_cb (start_ctx[i]->httpd, "/ctrl", arn_ctrl_request_handler, NULL);
           evhttp_set_cb (start_ctx[i]->httpd, "/upload", arn_post_request_handler, NULL);
           /* Start web server*/
@@ -687,7 +687,7 @@ get_processid ()
       fclose (pidfile);
     }
   if (pidfile == NULL || ((kill (pidnum, 0) < 0) && (errno == ESRCH))
-      || (is_amserver_process (pidnum, UTIL_CM_SERVER) == 0))
+      || (is_amserver_process (pidnum, UTIL_AM_SERVER) == 0))
     {
       unlink (pid_file_name);
       return 0;
@@ -854,7 +854,7 @@ main (int argc, char **argv)
 
   tmpstrbuf[0] = '\0';
 
-  arn_cm_init_env ();
+  arn_am_init_env ();
   if (argc >= 2)
     {
       if (strcmp (argv[1], "stop") == 0)

@@ -18,7 +18,7 @@
  */
 
 /*
-*  cm_http_server.cpp -
+*  am_http_server.cpp -
 */
 
 #include <event2/http.h>
@@ -27,8 +27,8 @@
 #include <event2/bufferevent_ssl.h>
 #include <event2/http_struct.h>
 
-#include "cm_http_server.h"
-#include "cm_log.h"
+#include "am_http_server.h"
+#include "am_log.h"
 
 using namespace std;
 

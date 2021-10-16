@@ -4,7 +4,7 @@ REM prepare vc environment
 
 call "%VS90COMNTOOLS%vsvars32.bat"
 
-echo Start build cm_server ...
+echo Start build am_server ...
 cd win
 
 set arniadb_libdir=%arniadb_libdir%

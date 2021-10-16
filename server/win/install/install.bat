@@ -16,7 +16,7 @@ copy %SRC_DIR%\*.pdb %DEST_DIR%\bin
 
 copy %SRC_DIR%\..\..\amserver\conf\*.conf %DEST_DIR%\conf
 copy %SRC_DIR%\..\..\amserver\conf\*.pass %DEST_DIR%\conf
-copy %SRC_DIR%\..\..\amserver\conf\cm_ssl_cert.* %DEST_DIR%\conf
+copy %SRC_DIR%\..\..\amserver\conf\am_ssl_cert.* %DEST_DIR%\conf
 
 if errorlevel 1 (
 	exit /b 0

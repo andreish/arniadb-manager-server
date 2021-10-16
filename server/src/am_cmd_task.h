@@ -19,11 +19,11 @@
 
 
 /*
- * cm_cmd_task.h -
+ * am_cmd_task.h -
  */
 
-#ifndef _CM_CMD_TASK_H_
-#define _CM_CMD_TASK_H_
+#ifndef _AM_CMD_TASK_H_
+#define _AM_CMD_TASK_H_
 
 #include <stdio.h>
 #ifdef HAVE_GETOPT_H
@@ -58,4 +58,4 @@ int cmd_adddbinfo (int argc, const char *in_argv[]);
 int cmd_deldbinfo (int argc, const char *in_argv[]);
 int cmd_chgdbinfo (int argc, const char *in_argv[]);
 
-#endif /* ! _CM_CMD_TASK_H_ */
+#endif /* ! _AM_CMD_TASK_H_ */

@@ -19,11 +19,11 @@
 
 
 /*
- * cm_user.h -
+ * am_user.h -
  */
 
-#ifndef _CM_USER_H_
-#define _CM_USER_H_
+#ifndef _AM_USER_H_
+#define _AM_USER_H_
 
 #define DBMT_USER_NAME_LEN 64
 
@@ -110,4 +110,4 @@ T_USER_TOKEN_INFO *dbmt_user_search_token_info_by_token (const char *token);
 T_USER_TOKEN_INFO *dbmt_user_delete_token_info (const char *user_id);
 T_USER_TOKEN_INFO *dbmt_user_delete_token_info_by_token (const char *token);
 
-#endif                /* _CM_USER_H_ */
+#endif                /* _AM_USER_H_ */

@@ -19,13 +19,13 @@
 
 #include <string.h>
 
-#include "cm_log.h"
+#include "am_log.h"
 #include "json/json.h"
-#include "cm_config.h"
-#include "cm_job_task.h"
-#include "cm_server_interface.h"
-#include "cm_mon_stat.h"
-#include "cm_server_extend_interface.h"
+#include "am_config.h"
+#include "am_job_task.h"
+#include "am_server_interface.h"
+#include "am_mon_stat.h"
+#include "am_server_extend_interface.h"
 
 #include <iostream>
 #include <fstream>
@@ -224,9 +224,9 @@ class scope_lock
     MUTEX_T _mutex;
 };
 
-cm_mon_stat *cm_mon_stat::_instance = NULL;
+am_mon_stat *am_mon_stat::_instance = NULL;
 
-cm_mon_stat::cm_mon_stat (string data_path):
+am_mon_stat::am_mon_stat (string data_path):
   _data_path (data_path + "/"),
   _meta_file (_data_path + META_NAME)
 {
@@ -238,16 +238,16 @@ cm_mon_stat::cm_mon_stat (string data_path):
   MUTEX_INIT (_data_mutex);
 }
 
-cm_mon_stat *cm_mon_stat::get_instance()
+am_mon_stat *am_mon_stat::get_instance()
 {
   if (NULL == _instance)
     {
-      _instance = new cm_mon_stat (sco.sMonStatDataPath);
+      _instance = new am_mon_stat (sco.sMonStatDataPath);
     }
   return _instance;
 }
 
-bool cm_mon_stat::get_mon_interval (time_t &interval) const
+bool am_mon_stat::get_mon_interval (time_t &interval) const
 {
   if (true == _init)
     {
@@ -260,7 +260,7 @@ bool cm_mon_stat::get_mon_interval (time_t &interval) const
     }
 }
 
-bool cm_mon_stat::set_mon_interval (time_t interval)
+bool am_mon_stat::set_mon_interval (time_t interval)
 {
   if (false == _init)
     {
@@ -280,7 +280,7 @@ bool cm_mon_stat::set_mon_interval (time_t interval)
     }
 }
 
-bool cm_mon_stat::initial()
+bool am_mon_stat::initial()
 {
   try
     {
@@ -300,7 +300,7 @@ bool cm_mon_stat::initial()
   return _init;
 }
 
-void cm_mon_stat::gather_mon_data (void)
+void am_mon_stat::gather_mon_data (void)
 {
 
   time_t gather_time = time (NULL);
@@ -348,7 +348,7 @@ void cm_mon_stat::gather_mon_data (void)
   //}
 }
 
-void cm_mon_stat::aggregate_2_hour (time_t gather_time)
+void am_mon_stat::aggregate_2_hour (time_t gather_time)
 {
   int monthly_idx = (gather_time % ( 30 * 60 * 60 * 24)) / 3600;
   int buf_base = 3600/_meta[K_INTERVAL].asInt();
@@ -370,7 +370,7 @@ void cm_mon_stat::aggregate_2_hour (time_t gather_time)
   aggregate_os (read_offset, buf_base, write_offset, HOUR, gather_time);
 }
 
-void cm_mon_stat::aggregate_2_day (time_t gather_time)
+void am_mon_stat::aggregate_2_day (time_t gather_time)
 {
   int yearly_idx = (gather_time % ( 365 * 60 * 60 * 24)) / (3600 * 24);
   int buf_base = 24;
@@ -392,7 +392,7 @@ void cm_mon_stat::aggregate_2_day (time_t gather_time)
   aggregate_os (read_offset, buf_base, write_offset, DAY, gather_time);
 }
 
-void cm_mon_stat::aggregate_os (int read_offset,
+void am_mon_stat::aggregate_os (int read_offset,
                                 int buf_base,
                                 int write_offset,
                                 AGG_TYPE atype,
@@ -454,7 +454,7 @@ void cm_mon_stat::aggregate_os (int read_offset,
   delete [] buf;
 }
 
-void cm_mon_stat::aggregate_dbs (int read_offset,
+void am_mon_stat::aggregate_dbs (int read_offset,
                                  int buf_base,
                                  int write_offset,
                                  AGG_TYPE atype,
@@ -647,7 +647,7 @@ static bool mdtype_from_str (const string &dtype, MDTYPE &mdtype)
   return true;
 }
 
-bool cm_mon_stat::get_mon_statistic (const Json::Value req, Json::Value &res, string &errmsg) const
+bool am_mon_stat::get_mon_statistic (const Json::Value req, Json::Value &res, string &errmsg) const
 {
   if (false == _init)
     {
@@ -742,7 +742,7 @@ bool cm_mon_stat::get_mon_statistic (const Json::Value req, Json::Value &res, st
 }
 
 // the data maybe wrong for the begin of the return data array
-bool cm_mon_stat::m_get_mon_statistic (const Json::Value req, Json::Value &res, string &errmsg) const
+bool am_mon_stat::m_get_mon_statistic (const Json::Value req, Json::Value &res, string &errmsg) const
 {
   res["metric"] = req["metric"];
   res["dtype"] = req["dtype"];
@@ -878,7 +878,7 @@ bool cm_mon_stat::m_get_mon_statistic (const Json::Value req, Json::Value &res, 
   return false;
 }
 
-bool cm_mon_stat::get_rrd_data (MDTYPE mdtype, string dpath, int didx,
+bool am_mon_stat::get_rrd_data (MDTYPE mdtype, string dpath, int didx,
                                 int midx, int pfactor, bool ddiff, int mlen,
                                 Json::Value &res, string &errmsg) const
 {
@@ -1029,7 +1029,7 @@ static bool get_volume_list (string dbname, Json::Value &vol_list)
   return true;
 }
 
-void cm_mon_stat::aggregate_brokers (int read_offset,
+void am_mon_stat::aggregate_brokers (int read_offset,
                                      int buf_base,
                                      int write_offset,
                                      AGG_TYPE atype,
@@ -1177,7 +1177,7 @@ static void mon_diff_avg (int *buf, int bufsize, int *agg_data, int idx, int mle
     }
 }
 
-void cm_mon_stat::gather_daily_brokers_mon (time_t gather_time)
+void am_mon_stat::gather_daily_brokers_mon (time_t gather_time)
 {
   int broker_data[BROKER_METRICS_LEN];
   memset (broker_data, 0, BROKER_METRICS_LEN * sizeof (int));
@@ -1236,7 +1236,7 @@ void cm_mon_stat::gather_daily_brokers_mon (time_t gather_time)
     }
 }
 
-bool cm_mon_stat::gather_dbs_tran_query (time_t gather_time, Json::Value &db_tq)
+bool am_mon_stat::gather_dbs_tran_query (time_t gather_time, Json::Value &db_tq)
 {
   string bstr = _brokers[0u].asString();
 
@@ -1296,7 +1296,7 @@ bool cm_mon_stat::gather_dbs_tran_query (time_t gather_time, Json::Value &db_tq)
   return true;
 }
 
-void cm_mon_stat::gather_daily_dbs_mon (time_t gather_time)
+void am_mon_stat::gather_daily_dbs_mon (time_t gather_time)
 {
   int db_data[DB_METRICS_LEN];
   Json::Value db_tq;
@@ -1491,7 +1491,7 @@ void cm_mon_stat::gather_daily_dbs_mon (time_t gather_time)
     }
 }
 
-void cm_mon_stat::gather_daily_os_mon (time_t gather_time)
+void am_mon_stat::gather_daily_os_mon (time_t gather_time)
 {
   int os_data[OS_METRICS_LEN];
   memset (os_data, 0, OS_METRICS_LEN * sizeof (int));
@@ -1545,7 +1545,7 @@ void cm_mon_stat::gather_daily_os_mon (time_t gather_time)
   update_rrdfile (_data_path + OS_MON, daily_idx, os_data, OS_METRICS_LEN, OS_METRICS_LEN);
 }
 
-bool cm_mon_stat::init_meta (int interval)
+bool am_mon_stat::init_meta (int interval)
 {
   _meta[K_INTERVAL] = interval;
   _meta[K_TOTAL_VOL_NUM] = 0;
@@ -1624,7 +1624,7 @@ bool cm_mon_stat::init_meta (int interval)
   return flush_meta_file();
 }
 
-bool cm_mon_stat::reset_meta (int new_interval)
+bool am_mon_stat::reset_meta (int new_interval)
 {
   scope_lock slocker (_data_mutex);
 
@@ -1656,7 +1656,7 @@ bool cm_mon_stat::reset_meta (int new_interval)
   return flush_meta_file();
 }
 
-bool cm_mon_stat::reset_mon_file (string fpath, int block_num, int mlen, int new_interval)
+bool am_mon_stat::reset_mon_file (string fpath, int block_num, int mlen, int new_interval)
 {
   int ori_bufsize = MON_DATA_BLOCK * block_num * mlen;
   int *ori_buf = new (int[ori_bufsize]);
@@ -1692,7 +1692,7 @@ bool cm_mon_stat::reset_mon_file (string fpath, int block_num, int mlen, int new
   return true;
 }
 
-bool cm_mon_stat::flush_meta_file (void)
+bool am_mon_stat::flush_meta_file (void)
 {
   Json::StyledWriter writer;
   ofstream ofs (_meta_file.c_str());
@@ -1706,7 +1706,7 @@ bool cm_mon_stat::flush_meta_file (void)
   return false;
 }
 
-bool cm_mon_stat::load_meta_file (void)
+bool am_mon_stat::load_meta_file (void)
 {
   Json::Reader reader;
   ifstream ifs (_meta_file.c_str());

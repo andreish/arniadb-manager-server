@@ -19,15 +19,15 @@
 
 
 /*
- * cm_cmd_exec.h -
+ * am_cmd_exec.h -
  */
 
-#ifndef _CM_COMMAND_EXECUTE_H_
-#define _CM_COMMAND_EXECUTE_H_
+#ifndef _AM_COMMAND_EXECUTE_H_
+#define _AM_COMMAND_EXECUTE_H_
 
 #include <time.h>
 
-#include "cm_dep.h"
+#include "am_dep.h"
 
 #if defined(WINDOWS)
 #define DBMT_EXE_EXT        ".exe"
@@ -78,7 +78,7 @@
 #endif
 
 #include <vector>
-#include "cm_autojob.h"
+#include "am_autojob.h"
 
 typedef enum
 {
@@ -276,4 +276,4 @@ int read_error_file (const char *err_file, char *err_buf, int err_buf_size);
 int read_error_file2 (char *err_file, char *err_buf, int err_buf_size, int *err_code);
 int read_asql_error_file (char *err_file, char *err_buf, int err_buf_size);
 
-#endif                /* _CM_COMMAND_EXECUTE_H_ */
+#endif                /* _AM_COMMAND_EXECUTE_H_ */

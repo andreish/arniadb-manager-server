@@ -19,14 +19,14 @@
 
 
 /*
- * cm_auto_task.h -
+ * am_auto_task.h -
  */
 
-#ifndef _CM_AUTO_TASK_H_
-#define _CM_AUTO_TASK_H_
+#ifndef _AM_AUTO_TASK_H_
+#define _AM_AUTO_TASK_H_
 
-#include "cm_porting.h"
-#include "cm_dep.h"
+#include "am_porting.h"
+#include "am_dep.h"
 
 typedef struct
 {
@@ -44,4 +44,4 @@ int ts_check_already_connected (nvplist *cli_response, int max_index,
                                 int current_index,
                                 T_CLIENT_INFO *client_info);
 
-#endif /* _CM_AUTO_TASK_H_ */
+#endif /* _AM_AUTO_TASK_H_ */

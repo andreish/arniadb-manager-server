@@ -21,8 +21,8 @@
 //   http://johnwiggins.net
 //   smtplib@johnwiggins.net
 //
-#ifndef __CM_MAILER_H__
-#define __CM_MAILER_H__
+#ifndef __AM_MAILER_H__
+#define __AM_MAILER_H__
 #ifdef WIN32
 // std::vector<std::string> This gives this warning in VC..
 // bloody annoying, there is a way round it according to MS.
@@ -1910,4 +1910,4 @@ private:
 
 } // end namespace jwsmtp
 
-#endif // !ifndef __CM_MAILER_H__
+#endif // !ifndef __AM_MAILER_H__

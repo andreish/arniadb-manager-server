@@ -19,7 +19,7 @@
 
 
 /*
- * cm_cmd_exec.cpp -
+ * am_cmd_exec.cpp -
  */
 
 #include <stdio.h>
@@ -35,12 +35,12 @@
 #include <unistd.h>
 #endif
 
-#include "cm_config.h"
-#include "cm_cmd_exec.h"
-#include "cm_server_util.h"
-#include "cm_stat.h"
-#include "cm_autojob.h"
-#include "cm_log.h"
+#include "am_config.h"
+#include "am_cmd_exec.h"
+#include "am_server_util.h"
+#include "am_stat.h"
+#include "am_autojob.h"
+#include "am_log.h"
 
 #ifdef    _DEBUG_
 #include "deb.h"

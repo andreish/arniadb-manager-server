@@ -13,7 +13,7 @@ AMS Architecture
 
 ## Writing HTTP Application Program
 
-AMS http interface is REST-like interface, client can POST JSON-format request to url `http://ams_ip:ams_port/cm_api`, and receive the execution result.
+AMS http interface is REST-like interface, client can POST JSON-format request to url `http://ams_ip:ams_port/am_api`, and receive the execution result.
 
 The basic steps used for writing programs are as follows. First client must log in AMS with DBMT user name and password. If client login success, AMS will return a token which will be used in following request. The steps are implemented in example codes.
 
@@ -29,7 +29,7 @@ body = "{\"task\":\"login\",\
 
 headers = {"Accept": "text/plain;charset=utf-8"}  
 conn = http.client.HTTPConnection("localhost", 8003)  
-conn.request("POST", "/cm_api", body, headers)  
+conn.request("POST", "/am_api", body, headers)  
 r = conn.getresponse()  
 print (r.read())
 ```

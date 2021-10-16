@@ -18,11 +18,11 @@
  */
 
 /**
-* @brief cm_mon_stat.h include the definition of cm_mon_stat class.
+* @brief am_mon_stat.h include the definition of am_mon_stat class.
 */
 
-#ifndef _CM_MON_STAT_H_
-#define _CM_MON_STAT_H_
+#ifndef _AM_MON_STAT_H_
+#define _AM_MON_STAT_H_
 
 #ifndef PATH_MAX
 #define PATH_MAX                1024
@@ -33,7 +33,7 @@
 #include <string.h>
 
 #include "json/json.h"
-#include "cm_porting.h"
+#include "am_porting.h"
 
 using namespace std;
 
@@ -52,10 +52,10 @@ enum MDTYPE
 
 // TODO: need a switch for monitoring data collection
 
-class cm_mon_stat
+class am_mon_stat
 {
   public:
-    static cm_mon_stat *get_instance (void);
+    static am_mon_stat *get_instance (void);
     bool initial (void);
     void gather_mon_data (void);
     bool set_mon_interval (time_t interval);
@@ -64,8 +64,8 @@ class cm_mon_stat
                             string &errmsg) const;
 
   protected:
-    cm_mon_stat (string data_path);
-    virtual ~ cm_mon_stat (void)
+    am_mon_stat (string data_path);
+    virtual ~ am_mon_stat (void)
     {
       MUTEX_DESTROY (_data_mutex);
       delete _instance;
@@ -96,7 +96,7 @@ class cm_mon_stat
     bool m_get_mon_statistic (const Json::Value req, Json::Value &res, string &errmsg) const;
 
   private:
-    static cm_mon_stat *_instance;
+    static am_mon_stat *_instance;
     const string _data_path;
     const string _meta_file;
     Json::Value _meta;
@@ -111,4 +111,4 @@ class cm_mon_stat
     bool _init;
 };
 
-#endif /* _CM_MON_STAT_H_ */
+#endif /* _AM_MON_STAT_H_ */
