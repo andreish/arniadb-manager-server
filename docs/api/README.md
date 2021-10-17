@@ -123,7 +123,7 @@ AMS Interfaces are conposed by Json and is used for communication between AMS an
 | [updateuser](updateuser.md) | socket, http | DBO |
 | [userverify](userverify.md) | socket, http | ALL_AUTHORITY |
 
-### CM User
+### AM User
 
 | **Interface Name**| **Connection Type** | **Permission** | **Support Version** |
 | --- | --- | --- | --- |

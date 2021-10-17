@@ -8,7 +8,7 @@ Get configuration files.
 | --- | --- |
 | task | task name |
 | token | token string encrypted. |
-| confname | arniadbconf, cmconf, haconf, databases |
+| confname | arniadbconf, amconf, haconf, databases |
 
 ## Request Sample
 

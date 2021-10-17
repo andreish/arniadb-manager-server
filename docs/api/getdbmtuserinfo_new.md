@@ -1,6 +1,6 @@
 # getdbmtuserinfo_new
 
-Get CM/CWM user information
+Get AM/AWM user information
 
 ## Request Json Syntax
 

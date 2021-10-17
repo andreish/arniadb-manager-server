@@ -1,6 +1,6 @@
 # updatedbmtuser_new
 
-Update CM/CWM user information
+Update AM/AWM user information
 
 ## Request Json Syntax
 
