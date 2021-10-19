@@ -1,6 +1,6 @@
 ARNIADB Manager Server System
 =============================
-ARNIADB Manager Server(AMS) use some 3rd software, like openssl, libevent and json.
+ARNIADB Manager Server(CMS) use some 3rd software, like openssl, libevent and json.
 The following is steps to compile them by yourself.
 
 ==============

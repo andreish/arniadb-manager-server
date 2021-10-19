@@ -407,7 +407,7 @@
 #undef TS_CONF_set_clock_precision_digits
 #define TS_CONF_set_clock_precision_digits	TS_CONF_set_clk_prec_digits
 
-/* Hack some long AMS names */
+/* Hack some long CMS names */
 #undef CMS_RecipientInfo_ktri_get0_algs
 #define CMS_RecipientInfo_ktri_get0_algs	CMS_RecipInfo_ktri_get0_algs
 #undef CMS_RecipientInfo_ktri_get0_signer_id
