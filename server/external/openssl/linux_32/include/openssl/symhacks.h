@@ -407,19 +407,19 @@
 #undef TS_CONF_set_clock_precision_digits
 #define TS_CONF_set_clock_precision_digits	TS_CONF_set_clk_prec_digits
 
-/* Hack some long AMS names */
-#undef AMS_RecipientInfo_ktri_get0_algs
-#define AMS_RecipientInfo_ktri_get0_algs	AMS_RecipInfo_ktri_get0_algs
-#undef AMS_RecipientInfo_ktri_get0_signer_id
-#define AMS_RecipientInfo_ktri_get0_signer_id	AMS_RecipInfo_ktri_get0_sigr_id
-#undef AMS_OtherRevocationInfoFormat_it
-#define AMS_OtherRevocationInfoFormat_it	AMS_OtherRevocInfoFormat_it
-#undef AMS_KeyAgreeRecipientIdentifier_it
-#define AMS_KeyAgreeRecipientIdentifier_it	AMS_KeyAgreeRecipIdentifier_it
-#undef AMS_OriginatorIdentifierOrKey_it
-#define AMS_OriginatorIdentifierOrKey_it	AMS_OriginatorIdOrKey_it
-#undef ams_SignerIdentifier_get0_signer_id
-#define ams_SignerIdentifier_get0_signer_id	ams_SignerId_get0_signer_id
+/* Hack some long CMS names */
+#undef CMS_RecipientInfo_ktri_get0_algs
+#define CMS_RecipientInfo_ktri_get0_algs	CMS_RecipInfo_ktri_get0_algs
+#undef CMS_RecipientInfo_ktri_get0_signer_id
+#define CMS_RecipientInfo_ktri_get0_signer_id	CMS_RecipInfo_ktri_get0_sigr_id
+#undef CMS_OtherRevocationInfoFormat_it
+#define CMS_OtherRevocationInfoFormat_it	CMS_OtherRevocInfoFormat_it
+#undef CMS_KeyAgreeRecipientIdentifier_it
+#define CMS_KeyAgreeRecipientIdentifier_it	CMS_KeyAgreeRecipIdentifier_it
+#undef CMS_OriginatorIdentifierOrKey_it
+#define CMS_OriginatorIdentifierOrKey_it	CMS_OriginatorIdOrKey_it
+#undef cms_SignerIdentifier_get0_signer_id
+#define cms_SignerIdentifier_get0_signer_id	cms_SignerId_get0_signer_id
 
 /* Hack some long DTLS1 names */
 #undef dtls1_retransmit_buffered_messages
@@ -471,9 +471,9 @@
 #undef X509v3_add_standard_extensions
 #define X509v3_add_standard_extensions		oX509v3_add_standard_extensions
 
-/* This one clashes with AMS_data_create */
-#undef ams_Data_create
-#define ams_Data_create				priv_ams_Data_create
+/* This one clashes with CMS_data_create */
+#undef cms_Data_create
+#define cms_Data_create				priv_cms_Data_create
 
 #endif
 

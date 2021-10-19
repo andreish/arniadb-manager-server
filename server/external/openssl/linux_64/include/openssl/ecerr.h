@@ -32,8 +32,8 @@ int ERR_load_EC_strings(void);
 #  define EC_F_D2I_ECPKPARAMETERS                          145
 #  define EC_F_D2I_ECPRIVATEKEY                            146
 #  define EC_F_DO_EC_KEY_PRINT                             221
-#  define EC_F_ECDH_AMS_DECRYPT                            238
-#  define EC_F_ECDH_AMS_SET_SHARED_INFO                    239
+#  define EC_F_ECDH_CMS_DECRYPT                            238
+#  define EC_F_ECDH_CMS_SET_SHARED_INFO                    239
 #  define EC_F_ECDH_COMPUTE_KEY                            246
 #  define EC_F_ECDH_SIMPLE_COMPUTE_KEY                     257
 #  define EC_F_ECDSA_DO_SIGN_EX                            251

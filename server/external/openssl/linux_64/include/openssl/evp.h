@@ -238,8 +238,8 @@ int (*EVP_CIPHER_meth_get_ctrl(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
 # define         EVP_CIPH_CFB_MODE               0x3
 # define         EVP_CIPH_OFB_MODE               0x4
 # define         EVP_CIPH_CTR_MODE               0x5
-# define         EVP_CIPH_GAM_MODE               0x6
-# define         EVP_CIPH_CAM_MODE               0x7
+# define         EVP_CIPH_GCM_MODE               0x6
+# define         EVP_CIPH_CCM_MODE               0x7
 # define         EVP_CIPH_XTS_MODE               0x10001
 # define         EVP_CIPH_WRAP_MODE              0x10002
 # define         EVP_CIPH_OCB_MODE               0x10003
@@ -301,17 +301,17 @@ int (*EVP_CIPHER_meth_get_ctrl(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
 # define         EVP_CTRL_AEAD_GET_TAG           0x10
 # define         EVP_CTRL_AEAD_SET_TAG           0x11
 # define         EVP_CTRL_AEAD_SET_IV_FIXED      0x12
-# define         EVP_CTRL_GAM_SET_IVLEN          EVP_CTRL_AEAD_SET_IVLEN
-# define         EVP_CTRL_GAM_GET_TAG            EVP_CTRL_AEAD_GET_TAG
-# define         EVP_CTRL_GAM_SET_TAG            EVP_CTRL_AEAD_SET_TAG
-# define         EVP_CTRL_GAM_SET_IV_FIXED       EVP_CTRL_AEAD_SET_IV_FIXED
-# define         EVP_CTRL_GAM_IV_GEN             0x13
-# define         EVP_CTRL_CAM_SET_IVLEN          EVP_CTRL_AEAD_SET_IVLEN
-# define         EVP_CTRL_CAM_GET_TAG            EVP_CTRL_AEAD_GET_TAG
-# define         EVP_CTRL_CAM_SET_TAG            EVP_CTRL_AEAD_SET_TAG
-# define         EVP_CTRL_CAM_SET_IV_FIXED       EVP_CTRL_AEAD_SET_IV_FIXED
-# define         EVP_CTRL_CAM_SET_L              0x14
-# define         EVP_CTRL_CAM_SET_MSGLEN         0x15
+# define         EVP_CTRL_GCM_SET_IVLEN          EVP_CTRL_AEAD_SET_IVLEN
+# define         EVP_CTRL_GCM_GET_TAG            EVP_CTRL_AEAD_GET_TAG
+# define         EVP_CTRL_GCM_SET_TAG            EVP_CTRL_AEAD_SET_TAG
+# define         EVP_CTRL_GCM_SET_IV_FIXED       EVP_CTRL_AEAD_SET_IV_FIXED
+# define         EVP_CTRL_GCM_IV_GEN             0x13
+# define         EVP_CTRL_CCM_SET_IVLEN          EVP_CTRL_AEAD_SET_IVLEN
+# define         EVP_CTRL_CCM_GET_TAG            EVP_CTRL_AEAD_GET_TAG
+# define         EVP_CTRL_CCM_SET_TAG            EVP_CTRL_AEAD_SET_TAG
+# define         EVP_CTRL_CCM_SET_IV_FIXED       EVP_CTRL_AEAD_SET_IV_FIXED
+# define         EVP_CTRL_CCM_SET_L              0x14
+# define         EVP_CTRL_CCM_SET_MSGLEN         0x15
 /*
  * AEAD cipher deduces payload length and returns number of bytes required to
  * store MAC and eventual padding. Subsequent call to EVP_Cipher even
@@ -321,7 +321,7 @@ int (*EVP_CIPHER_meth_get_ctrl(const EVP_CIPHER *cipher))(EVP_CIPHER_CTX *,
 /* Used by composite AEAD ciphers, no-op in GCM, CCM... */
 # define         EVP_CTRL_AEAD_SET_MAC_KEY       0x17
 /* Set the GCM invocation field, decrypt only */
-# define         EVP_CTRL_GAM_SET_IV_INV         0x18
+# define         EVP_CTRL_GCM_SET_IV_INV         0x18
 
 # define         EVP_CTRL_TLS1_1_MULTIBLOCK_AAD  0x19
 # define         EVP_CTRL_TLS1_1_MULTIBLOCK_ENCRYPT      0x1a
@@ -372,21 +372,21 @@ typedef struct {
 
 /* GCM TLS constants */
 /* Length of fixed part of IV derived from PRF */
-# define EVP_GAM_TLS_FIXED_IV_LEN                        4
+# define EVP_GCM_TLS_FIXED_IV_LEN                        4
 /* Length of explicit part of IV part of TLS records */
-# define EVP_GAM_TLS_EXPLICIT_IV_LEN                     8
+# define EVP_GCM_TLS_EXPLICIT_IV_LEN                     8
 /* Length of tag for TLS */
-# define EVP_GAM_TLS_TAG_LEN                             16
+# define EVP_GCM_TLS_TAG_LEN                             16
 
 /* CCM TLS constants */
 /* Length of fixed part of IV derived from PRF */
-# define EVP_CAM_TLS_FIXED_IV_LEN                        4
+# define EVP_CCM_TLS_FIXED_IV_LEN                        4
 /* Length of explicit part of IV part of TLS records */
-# define EVP_CAM_TLS_EXPLICIT_IV_LEN                     8
+# define EVP_CCM_TLS_EXPLICIT_IV_LEN                     8
 /* Total length of CCM IV length for TLS */
-# define EVP_CAM_TLS_IV_LEN                              12
+# define EVP_CCM_TLS_IV_LEN                              12
 /* Length of tag for TLS */
-# define EVP_CAM_TLS_TAG_LEN                             16
+# define EVP_CCM_TLS_TAG_LEN                             16
 /* Length of CCM8 tag for TLS */
 # define EVP_CCM8_TLS_TAG_LEN                            8
 
@@ -1135,9 +1135,9 @@ int EVP_PBE_get(int *ptype, int *ppbe_nid, size_t num);
 # define ASN1_PKEY_CTRL_PKCS7_SIGN       0x1
 # define ASN1_PKEY_CTRL_PKCS7_ENCRYPT    0x2
 # define ASN1_PKEY_CTRL_DEFAULT_MD_NID   0x3
-# define ASN1_PKEY_CTRL_AMS_SIGN         0x5
-# define ASN1_PKEY_CTRL_AMS_ENVELOPE     0x7
-# define ASN1_PKEY_CTRL_AMS_RI_TYPE      0x8
+# define ASN1_PKEY_CTRL_CMS_SIGN         0x5
+# define ASN1_PKEY_CTRL_CMS_ENVELOPE     0x7
+# define ASN1_PKEY_CTRL_CMS_RI_TYPE      0x8
 
 # define ASN1_PKEY_CTRL_SET1_TLS_ENCPT   0x9
 # define ASN1_PKEY_CTRL_GET1_TLS_ENCPT   0xa
@@ -1306,9 +1306,9 @@ void EVP_PKEY_asn1_set_security_bits(EVP_PKEY_ASN1_METHOD *ameth,
 /* Used by GOST key encryption in TLS */
 # define EVP_PKEY_CTRL_SET_IV            8
 
-# define EVP_PKEY_CTRL_AMS_ENCRYPT       9
-# define EVP_PKEY_CTRL_AMS_DECRYPT       10
-# define EVP_PKEY_CTRL_AMS_SIGN          11
+# define EVP_PKEY_CTRL_CMS_ENCRYPT       9
+# define EVP_PKEY_CTRL_CMS_DECRYPT       10
+# define EVP_PKEY_CTRL_CMS_SIGN          11
 
 # define EVP_PKEY_CTRL_CIPHER            12
 

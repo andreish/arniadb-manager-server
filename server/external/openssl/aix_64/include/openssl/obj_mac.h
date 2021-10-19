@@ -781,9 +781,9 @@
 #define NID_id_smime_cti		195
 #define OBJ_id_smime_cti		OBJ_SMIME,6L
 
-#define SN_id_smime_mod_ams		"id-smime-mod-ams"
-#define NID_id_smime_mod_ams		196
-#define OBJ_id_smime_mod_ams		OBJ_id_smime_mod,1L
+#define SN_id_smime_mod_cms		"id-smime-mod-cms"
+#define NID_id_smime_mod_cms		196
+#define OBJ_id_smime_mod_cms		OBJ_id_smime_mod,1L
 
 #define SN_id_smime_mod_ess		"id-smime-mod-ess"
 #define NID_id_smime_mod_ess		197
@@ -989,13 +989,13 @@
 #define NID_id_smime_alg_ESDH		245
 #define OBJ_id_smime_alg_ESDH		OBJ_id_smime_alg,5L
 
-#define SN_id_smime_alg_AMS3DESwrap		"id-smime-alg-AMS3DESwrap"
-#define NID_id_smime_alg_AMS3DESwrap		246
-#define OBJ_id_smime_alg_AMS3DESwrap		OBJ_id_smime_alg,6L
+#define SN_id_smime_alg_CMS3DESwrap		"id-smime-alg-CMS3DESwrap"
+#define NID_id_smime_alg_CMS3DESwrap		246
+#define OBJ_id_smime_alg_CMS3DESwrap		OBJ_id_smime_alg,6L
 
-#define SN_id_smime_alg_AMSRC2wrap		"id-smime-alg-AMSRC2wrap"
-#define NID_id_smime_alg_AMSRC2wrap		247
-#define OBJ_id_smime_alg_AMSRC2wrap		OBJ_id_smime_alg,7L
+#define SN_id_smime_alg_CMSRC2wrap		"id-smime-alg-CMSRC2wrap"
+#define NID_id_smime_alg_CMSRC2wrap		247
+#define OBJ_id_smime_alg_CMSRC2wrap		OBJ_id_smime_alg,7L
 
 #define SN_id_smime_cd_ldap		"id-smime-cd-ldap"
 #define NID_id_smime_cd_ldap		248

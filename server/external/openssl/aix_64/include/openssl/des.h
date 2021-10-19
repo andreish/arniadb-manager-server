@@ -193,7 +193,7 @@ void DES_ede3_cbc_encrypt(const unsigned char *input,unsigned char *output,
 			  long length,
 			  DES_key_schedule *ks1,DES_key_schedule *ks2,
 			  DES_key_schedule *ks3,DES_cblock *ivec,int enc);
-void DES_ede3_cbam_encrypt(const unsigned char *in,unsigned char *out,
+void DES_ede3_cbcm_encrypt(const unsigned char *in,unsigned char *out,
 			   long length,
 			   DES_key_schedule *ks1,DES_key_schedule *ks2,
 			   DES_key_schedule *ks3,

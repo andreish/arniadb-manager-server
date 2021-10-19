@@ -30,8 +30,8 @@
 #ifndef OPENSSL_NO_CAPIENG
 # define OPENSSL_NO_CAPIENG
 #endif
-#ifndef OPENSSL_NO_AMS
-# define OPENSSL_NO_AMS
+#ifndef OPENSSL_NO_CMS
+# define OPENSSL_NO_CMS
 #endif
 #ifndef OPENSSL_NO_EC
 # define OPENSSL_NO_EC
@@ -87,8 +87,8 @@
 # if defined(OPENSSL_NO_CAPIENG) && !defined(NO_CAPIENG)
 #  define NO_CAPIENG
 # endif
-# if defined(OPENSSL_NO_AMS) && !defined(NO_AMS)
-#  define NO_AMS
+# if defined(OPENSSL_NO_CMS) && !defined(NO_CMS)
+#  define NO_CMS
 # endif
 # if defined(OPENSSL_NO_EC) && !defined(NO_EC)
 #  define NO_EC

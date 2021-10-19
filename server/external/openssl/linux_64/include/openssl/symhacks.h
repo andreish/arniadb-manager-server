@@ -29,8 +29,8 @@
 #  define i2d_ECPKPARAMETERS                      i2d_UC_ECPKPARAMETERS
 
 /* This one clashes with AMS_data_create */
-#  undef ams_Data_create
-#  define ams_Data_create                         priv_ams_Data_create
+#  undef cms_Data_create
+#  define cms_Data_create                         priv_cms_Data_create
 
 # endif
 
