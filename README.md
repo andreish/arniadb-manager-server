@@ -75,6 +75,12 @@ If you want to build CMS on windows, VS2008 must be installed.
 	- `--enable-64bit` : Used to build in a 64-bit environment since supporting 64-bit from ARNIADB 2008 R2.0 or higher.
 	- `--with-arniadb-dir=%ARNIADB%` : Option specifies the directory ARNIADB is installed.
 
+3. Building with VS2008 requires to set new environment variables, as follow:
+arniadb_includedir = %ARNIADB%\include
+arniadb_libdir = %ARNIADB%\lib
+Also arniadb_lib64dir must be set to %ARNIADB%\lib or arniadb_lib64dir replaced with arniadb_libdir in .vcproj file.
+The alternative is to modify paths in .vcproj files, instead of adding new environment variables.
+
 
 ## PROGRAMMING APIs
 
