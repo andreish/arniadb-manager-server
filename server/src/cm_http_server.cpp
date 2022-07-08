@@ -578,11 +578,17 @@ SSL_CTX *init_SSL (const char *certificate_chain,const char *private_key)
   SSL_library_init ();
   /* We just use SSLv3,do not support SSLv2. */
 
-  ctx = SSL_CTX_new (TLSv1_2_server_method ());
+  ctx = SSL_CTX_new (TLS_server_method ());
   if (!ctx)
     {
       LOG_ERROR ("-- Web server: Fail to generate CTX for openSSL.");
     }
+  int rc = SSL_CTX_set_min_proto_version(ctx,TLS1_2_VERSION);
+  if (0==rc)
+    {
+      LOG_ERROR ("-- Web server: Fail to set min proto version to tls 1.2.");
+    }
+    
   SSL_CTX_set_options (ctx,
                        SSL_OP_SINGLE_DH_USE |
                        SSL_OP_SINGLE_ECDH_USE |
